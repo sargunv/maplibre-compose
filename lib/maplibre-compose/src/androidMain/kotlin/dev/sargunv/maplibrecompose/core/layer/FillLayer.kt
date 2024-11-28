@@ -45,7 +45,7 @@ internal actual class FillLayer actual constructor(id: String, source: Source) :
     impl.setProperties(PropertyFactory.fillTranslate(translate.toMLNExpression()))
   }
 
-  actual fun setFillTranslateAnchor(translateAnchor: Expression<String>) {
+  actual fun setFillTranslateAnchor(translateAnchor: Expression<TranslateAnchor>) {
     impl.setProperties(PropertyFactory.fillTranslateAnchor(translateAnchor.toMLNExpression()))
   }
 

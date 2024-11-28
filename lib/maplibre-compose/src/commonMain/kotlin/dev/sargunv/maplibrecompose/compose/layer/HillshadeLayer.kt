@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Color
 import dev.sargunv.maplibrecompose.core.expression.Expression
 import dev.sargunv.maplibrecompose.core.expression.Expression.Companion.const
 import dev.sargunv.maplibrecompose.core.layer.HillshadeLayer
+import dev.sargunv.maplibrecompose.core.layer.IlluminationAnchor
 import dev.sargunv.maplibrecompose.core.source.Source
 
 /**
@@ -28,8 +29,8 @@ import dev.sargunv.maplibrecompose.core.source.Source
  *     - the top of the viewport if [illuminationAnchor] = [IlluminationAnchor.Viewport] or
  *     - north if [illuminationAnchor] = [IlluminationAnchor.Map]
  *
- * @param illuminationAnchor Direction of light source when map is rotated. See [IlluminationAnchor]
- *   and [illuminationDirection].
+ * @param illuminationAnchor Direction of light source when map is rotated. See
+ *   [illuminationDirection].
  * @param exaggeration Intensity of the hillshade. A value in the range of `[0..1]`.
  */
 @Composable
@@ -44,7 +45,7 @@ public inline fun HillshadeLayer(
   highlightColor: Expression<Color> = const(Color.White),
   accentColor: Expression<Color> = const(Color.Black),
   illuminationDirection: Expression<Number> = const(355),
-  illuminationAnchor: Expression<String> = const(IlluminationAnchor.Viewport),
+  illuminationAnchor: Expression<IlluminationAnchor> = const(IlluminationAnchor.Viewport),
   exaggeration: Expression<Number> = const(0.5),
 ) {
   composeKey(id) {
@@ -65,14 +66,4 @@ public inline fun HillshadeLayer(
       onLongClick = null,
     )
   }
-}
-
-/** Direction of light source when map is rotated. */
-public object IlluminationAnchor {
-
-  /** The hillshade illumination is relative to the north direction. */
-  public const val Map: String = "map"
-
-  /** The hillshade illumination is relative to the top of the viewport. */
-  public const val Viewport: String = "viewport"
 }

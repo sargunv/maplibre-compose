@@ -48,15 +48,15 @@ internal actual class CircleLayer actual constructor(id: String, source: Source)
     impl.circleTranslation = translate.toNSExpression()
   }
 
-  actual fun setCircleTranslateAnchor(translateAnchor: Expression<String>) {
+  actual fun setCircleTranslateAnchor(translateAnchor: Expression<TranslateAnchor>) {
     impl.circleTranslationAnchor = translateAnchor.toNSExpression()
   }
 
-  actual fun setCirclePitchScale(pitchScale: Expression<String>) {
+  actual fun setCirclePitchScale(pitchScale: Expression<CirclePitchScale>) {
     impl.circleScaleAlignment = pitchScale.toNSExpression()
   }
 
-  actual fun setCirclePitchAlignment(pitchAlignment: Expression<String>) {
+  actual fun setCirclePitchAlignment(pitchAlignment: Expression<CirclePitchAlignment>) {
     impl.circlePitchAlignment = pitchAlignment.toNSExpression()
   }
 

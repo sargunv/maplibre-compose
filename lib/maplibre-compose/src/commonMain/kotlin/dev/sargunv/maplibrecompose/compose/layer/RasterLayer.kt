@@ -5,6 +5,7 @@ import androidx.compose.runtime.key as composeKey
 import dev.sargunv.maplibrecompose.core.expression.Expression
 import dev.sargunv.maplibrecompose.core.expression.Expression.Companion.const
 import dev.sargunv.maplibrecompose.core.layer.RasterLayer
+import dev.sargunv.maplibrecompose.core.layer.RasterResampling
 import dev.sargunv.maplibrecompose.core.source.Source
 
 /**
@@ -27,7 +28,7 @@ import dev.sargunv.maplibrecompose.core.source.Source
  * @param saturation Increase or reduce the saturation of the image. A value in range `[-1..1]`.
  * @param contrast Increase or reduce the contrast of the image. A value in range `[-1..1]`.
  * @param resampling The resampling/interpolation method to use for overscaling, also known as
- *   texture magnification filter. See [RasterResampling].
+ *   texture magnification filter.
  * @param fadeDuration Fade duration in milliseconds when a new tile is added, or when a video is
  *   started or its coordinates are updated. A value in range `[0..infinity)`.
  */
@@ -45,7 +46,7 @@ public inline fun RasterLayer(
   brightnessMax: Expression<Number> = const(1),
   saturation: Expression<Number> = const(0),
   contrast: Expression<Number> = const(0),
-  resampling: Expression<String> = const(RasterResampling.Linear),
+  resampling: Expression<RasterResampling> = const(RasterResampling.Linear),
   fadeDuration: Expression<Number> = const(300),
 ) {
   composeKey(id) {
@@ -68,22 +69,4 @@ public inline fun RasterLayer(
       onLongClick = null,
     )
   }
-}
-
-/**
- * The resampling/interpolation method to use for overscaling, also known as texture magnification
- * filter
- */
-public object RasterResampling {
-  /**
-   * (Bi)linear filtering interpolates pixel values using the weighted average of the four closest
-   * original source pixels creating a smooth but blurry look when overscaled
-   */
-  public const val Linear: String = "linear"
-
-  /**
-   * Nearest neighbor filtering interpolates pixel values using the nearest original source pixel
-   * creating a sharp but pixelated look when overscaled
-   */
-  public const val Nearest: String = "nearest"
 }

@@ -25,11 +25,11 @@ internal actual class LineLayer actual constructor(id: String, source: Source) :
     impl.predicate = filter.toNSPredicate()
   }
 
-  actual fun setLineCap(cap: Expression<String>) {
+  actual fun setLineCap(cap: Expression<LineCap>) {
     impl.lineCap = cap.toNSExpression()
   }
 
-  actual fun setLineJoin(join: Expression<String>) {
+  actual fun setLineJoin(join: Expression<LineJoin>) {
     impl.lineJoin = join.toNSExpression()
   }
 
@@ -57,7 +57,7 @@ internal actual class LineLayer actual constructor(id: String, source: Source) :
     impl.lineTranslation = translate.toNSExpression()
   }
 
-  actual fun setLineTranslateAnchor(translateAnchor: Expression<String>) {
+  actual fun setLineTranslateAnchor(translateAnchor: Expression<TranslateAnchor>) {
     impl.lineTranslationAnchor = translateAnchor.toNSExpression()
   }
 

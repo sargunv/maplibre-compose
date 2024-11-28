@@ -35,7 +35,7 @@ internal actual class RasterLayer actual constructor(id: String, actual val sour
     impl.setProperties(PropertyFactory.rasterContrast(contrast.toMLNExpression()))
   }
 
-  actual fun setRasterResampling(resampling: Expression<String>) {
+  actual fun setRasterResampling(resampling: Expression<RasterResampling>) {
     impl.setProperties(PropertyFactory.rasterResampling(resampling.toMLNExpression()))
   }
 

@@ -37,7 +37,7 @@ internal actual class FillExtrusionLayer actual constructor(id: String, source: 
     impl.fillExtrusionTranslation = translate.toNSExpression()
   }
 
-  actual fun setFillExtrusionTranslateAnchor(anchor: Expression<String>) {
+  actual fun setFillExtrusionTranslateAnchor(anchor: Expression<TranslateAnchor>) {
     impl.fillExtrusionTranslationAnchor = anchor.toNSExpression()
   }
 

@@ -33,7 +33,7 @@ internal actual class FillExtrusionLayer actual constructor(id: String, source: 
     impl.setProperties(PropertyFactory.fillExtrusionTranslate(translate.toMLNExpression()))
   }
 
-  actual fun setFillExtrusionTranslateAnchor(anchor: Expression<String>) {
+  actual fun setFillExtrusionTranslateAnchor(anchor: Expression<TranslateAnchor>) {
     impl.setProperties(PropertyFactory.fillExtrusionTranslateAnchor(anchor.toMLNExpression()))
   }
 

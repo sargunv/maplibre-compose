@@ -10,6 +10,9 @@ import dev.sargunv.maplibrecompose.core.expression.Expression.Companion.nil
 import dev.sargunv.maplibrecompose.core.expression.Expression.Companion.point
 import dev.sargunv.maplibrecompose.core.expression.Point
 import dev.sargunv.maplibrecompose.core.layer.CircleLayer
+import dev.sargunv.maplibrecompose.core.layer.CirclePitchAlignment
+import dev.sargunv.maplibrecompose.core.layer.CirclePitchScale
+import dev.sargunv.maplibrecompose.core.layer.TranslateAnchor
 import dev.sargunv.maplibrecompose.core.source.Source
 
 /**
@@ -31,7 +34,7 @@ import dev.sargunv.maplibrecompose.core.source.Source
  *   with a higher sort key will appear above features with a lower sort key.
  * @param translate The geometry's offset relative to the [translateAnchor]. Negative numbers
  *   indicate left and up, respectively.
- * @param translateAnchor Frame of reference for offsetting geometry. See [TranslateAnchor].
+ * @param translateAnchor Frame of reference for offsetting geometry.
  *
  *   Ignored if [translate] is not set.
  *
@@ -44,8 +47,8 @@ import dev.sargunv.maplibrecompose.core.source.Source
  * @param strokeColor Circles' stroke color.
  * @param strokeWidth Thickness of the circles' stroke in dp. Strokes are placed outside of the
  *   [radius]. A value in range `[0..infinity)`.
- * @param pitchScale Scaling behavior of circles when the map is pitched. See [CirclePitchScale].
- * @param pitchAlignment Orientation of circles when the map is pitched. See [CirclePitchAlignment].
+ * @param pitchScale Scaling behavior of circles when the map is pitched.
+ * @param pitchAlignment Orientation of circles when the map is pitched.
  * @param onClick Function to call when any feature in this layer has been clicked.
  * @param onLongClick Function to call when any feature in this layer has been long-clicked.
  */
@@ -61,7 +64,7 @@ public inline fun CircleLayer(
   visible: Boolean = true,
   sortKey: Expression<Number> = nil(),
   translate: Expression<Point> = point(0, 0),
-  translateAnchor: Expression<String> = const(TranslateAnchor.Map),
+  translateAnchor: Expression<TranslateAnchor> = const(TranslateAnchor.Map),
   opacity: Expression<Number> = const(1),
   color: Expression<Color> = const(Color.Black),
   blur: Expression<Number> = const(0),
@@ -69,8 +72,8 @@ public inline fun CircleLayer(
   strokeOpacity: Expression<Number> = const(1),
   strokeColor: Expression<Color> = const(Color.Black),
   strokeWidth: Expression<Number> = const(0),
-  pitchScale: Expression<String> = const(CirclePitchScale.Map),
-  pitchAlignment: Expression<String> = const(CirclePitchAlignment.Viewport),
+  pitchScale: Expression<CirclePitchScale> = const(CirclePitchScale.Map),
+  pitchAlignment: Expression<CirclePitchAlignment> = const(CirclePitchAlignment.Viewport),
   noinline onClick: FeaturesClickHandler? = null,
   noinline onLongClick: FeaturesClickHandler? = null,
 ) {
@@ -100,25 +103,4 @@ public inline fun CircleLayer(
       onLongClick = onLongClick,
     )
   }
-}
-
-/** Scaling behavior of circles when the map is pitched. */
-public object CirclePitchScale {
-  /**
-   * Circles are scaled according to their apparent distance to the camera, i.e. as if they are on
-   * the map.
-   */
-  public const val Map: String = "map"
-
-  /** Circles are not scaled, i.e. as if glued to the viewport. */
-  public const val Viewport: String = "viewport"
-}
-
-/** Orientation of circles when the map is pitched. */
-public object CirclePitchAlignment {
-  /** Circles are aligned to the plane of the map, i.e. flat on top of the map. */
-  public const val Map: String = "map"
-
-  /** Circles are aligned to the plane of the viewport, i.e. facing the camera. */
-  public const val Viewport: String = "viewport"
 }

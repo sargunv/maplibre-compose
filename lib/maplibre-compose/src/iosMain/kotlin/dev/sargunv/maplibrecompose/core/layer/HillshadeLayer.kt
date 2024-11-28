@@ -16,7 +16,7 @@ internal actual class HillshadeLayer actual constructor(id: String, actual val s
     impl.hillshadeIlluminationDirection = direction.toNSExpression()
   }
 
-  actual fun setHillshadeIlluminationAnchor(anchor: Expression<String>) {
+  actual fun setHillshadeIlluminationAnchor(anchor: Expression<IlluminationAnchor>) {
     impl.hillshadeIlluminationAnchor = anchor.toNSExpression()
   }
 

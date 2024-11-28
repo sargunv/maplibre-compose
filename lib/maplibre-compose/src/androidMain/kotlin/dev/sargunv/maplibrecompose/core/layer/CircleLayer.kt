@@ -44,15 +44,15 @@ internal actual class CircleLayer actual constructor(id: String, source: Source)
     impl.setProperties(PropertyFactory.circleTranslate(translate.toMLNExpression()))
   }
 
-  actual fun setCircleTranslateAnchor(translateAnchor: Expression<String>) {
+  actual fun setCircleTranslateAnchor(translateAnchor: Expression<TranslateAnchor>) {
     impl.setProperties(PropertyFactory.circleTranslateAnchor(translateAnchor.toMLNExpression()))
   }
 
-  actual fun setCirclePitchScale(pitchScale: Expression<String>) {
+  actual fun setCirclePitchScale(pitchScale: Expression<CirclePitchScale>) {
     impl.setProperties(PropertyFactory.circlePitchScale(pitchScale.toMLNExpression()))
   }
 
-  actual fun setCirclePitchAlignment(pitchAlignment: Expression<String>) {
+  actual fun setCirclePitchAlignment(pitchAlignment: Expression<CirclePitchAlignment>) {
     impl.setProperties(PropertyFactory.circlePitchAlignment(pitchAlignment.toMLNExpression()))
   }
 

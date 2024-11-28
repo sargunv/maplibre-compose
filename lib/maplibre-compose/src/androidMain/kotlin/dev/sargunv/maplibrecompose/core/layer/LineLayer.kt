@@ -22,11 +22,11 @@ internal actual class LineLayer actual constructor(id: String, source: Source) :
     impl.setFilter(filter.toMLNExpression() ?: MLNExpression.literal(true))
   }
 
-  actual fun setLineCap(cap: Expression<String>) {
+  actual fun setLineCap(cap: Expression<LineCap>) {
     impl.setProperties(PropertyFactory.lineCap(cap.toMLNExpression()))
   }
 
-  actual fun setLineJoin(join: Expression<String>) {
+  actual fun setLineJoin(join: Expression<LineJoin>) {
     impl.setProperties(PropertyFactory.lineJoin(join.toMLNExpression()))
   }
 
@@ -54,7 +54,7 @@ internal actual class LineLayer actual constructor(id: String, source: Source) :
     impl.setProperties(PropertyFactory.lineTranslate(translate.toMLNExpression()))
   }
 
-  actual fun setLineTranslateAnchor(translateAnchor: Expression<String>) {
+  actual fun setLineTranslateAnchor(translateAnchor: Expression<TranslateAnchor>) {
     impl.setProperties(PropertyFactory.lineTranslateAnchor(translateAnchor.toMLNExpression()))
   }
 

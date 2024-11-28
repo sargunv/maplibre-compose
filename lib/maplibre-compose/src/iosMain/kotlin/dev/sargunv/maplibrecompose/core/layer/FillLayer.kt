@@ -49,7 +49,7 @@ internal actual class FillLayer actual constructor(id: String, source: Source) :
     impl.fillTranslation = translate.toNSExpression()
   }
 
-  actual fun setFillTranslateAnchor(translateAnchor: Expression<String>) {
+  actual fun setFillTranslateAnchor(translateAnchor: Expression<TranslateAnchor>) {
     impl.fillTranslationAnchor = translateAnchor.toNSExpression()
   }
 

@@ -14,7 +14,19 @@ import dev.sargunv.maplibrecompose.core.expression.Insets
 import dev.sargunv.maplibrecompose.core.expression.Point
 import dev.sargunv.maplibrecompose.core.expression.TFormatted
 import dev.sargunv.maplibrecompose.core.expression.TResolvedImage
+import dev.sargunv.maplibrecompose.core.layer.IconPitchAlignment
+import dev.sargunv.maplibrecompose.core.layer.IconRotationAlignment
+import dev.sargunv.maplibrecompose.core.layer.IconTextFit
+import dev.sargunv.maplibrecompose.core.layer.SymbolAnchor
 import dev.sargunv.maplibrecompose.core.layer.SymbolLayer
+import dev.sargunv.maplibrecompose.core.layer.SymbolPlacement
+import dev.sargunv.maplibrecompose.core.layer.SymbolZOrder
+import dev.sargunv.maplibrecompose.core.layer.TextJustify
+import dev.sargunv.maplibrecompose.core.layer.TextPitchAlignment
+import dev.sargunv.maplibrecompose.core.layer.TextRotationAlignment
+import dev.sargunv.maplibrecompose.core.layer.TextTransform
+import dev.sargunv.maplibrecompose.core.layer.TextWritingMode
+import dev.sargunv.maplibrecompose.core.layer.TranslateAnchor
 import dev.sargunv.maplibrecompose.core.source.Source
 
 /**
@@ -34,7 +46,7 @@ import dev.sargunv.maplibrecompose.core.source.Source
  * @param visible Whether the layer should be displayed.
  * @param sortKey Sorts features within this layer in ascending order based on this value. Features
  *   with a higher sort key will appear above features with a lower sort key.
- * @param placement Symbol placement relative to its geometry. See [SymbolPlacement].
+ * @param placement Symbol placement relative to its geometry.
  * @param spacing Distance between two symbol anchors in dp.
  *
  *   Only applicable when [placement] is [SymbolPlacement.Line].
@@ -44,7 +56,7 @@ import dev.sargunv.maplibrecompose.core.source.Source
  *   or if it is a point symbol layer placed after a line symbol layer.
  * @param zOrder Determines whether overlapping symbols in the same layer are rendered in the order
  *   that they appear in the data source or by their y-position relative to the viewport. To control
- *   the order and prioritization of symbols otherwise, use [sortKey]. See [SymbolSortOrder].
+ *   the order and prioritization of symbols otherwise, use [sortKey].
  * @param iconImage Image to use for drawing an image background.
  * @param iconOpacity The opacity at which the icon will be drawn. A value in the range `[0..1]`.
  *
@@ -75,15 +87,15 @@ import dev.sargunv.maplibrecompose.core.source.Source
  *   Ignored if [iconImage] is not specified.
  *
  * @param iconRotationAlignment In combination with [placement], determines the rotation behavior of
- *   icons. See [IconRotationAlignment].
+ *   icons.
  *
  *   Ignored if [iconImage] is not specified.
  *
- * @param iconPitchAlignment Orientation of icon when map is pitched. See [IconPitchAlignment].
+ * @param iconPitchAlignment Orientation of icon when map is pitched.
  *
  *   Ignored if [iconImage] is not specified.
  *
- * @param iconTextFit Scales the icon to fit around the associated text. See [IconTextFit].
+ * @param iconTextFit Scales the icon to fit around the associated text.
  *
  *   Ignored if not both [iconImage] and [textField] are specified.
  *
@@ -105,7 +117,7 @@ import dev.sargunv.maplibrecompose.core.source.Source
  *
  *   Ignored if [iconImage] is not specified.
  *
- * @param iconAnchor Part of the icon placed closest to the anchor. See [SymbolAnchor].
+ * @param iconAnchor Part of the icon placed closest to the anchor.
  *
  *   Ignored if [iconImage] is not specified.
  *
@@ -127,7 +139,6 @@ import dev.sargunv.maplibrecompose.core.source.Source
  *   Ignored if [iconImage] is not specified, overridden by [iconOverlap], if specified.
  *
  * @param iconOverlap Controls whether to show an icon when it overlaps other symbols on the map.
- *   See [SymbolOverlap].
  *
  *   Ignored if [iconImage] is not specified.
  *
@@ -148,7 +159,7 @@ import dev.sargunv.maplibrecompose.core.source.Source
  *
  *   Ignored if [iconImage] is not specified.
  *
- * @param iconTranslateAnchor Frame of reference for offsetting geometry, see [TranslateAnchor].
+ * @param iconTranslateAnchor Frame of reference for offsetting geometry.
  *
  *   Ignored if [iconTranslate] is not set.
  *
@@ -166,6 +177,11 @@ import dev.sargunv.maplibrecompose.core.source.Source
  *
  *   Ignored if [textField] is not specified.
  *
+ * @param textHaloWidth Distance of halo to the font outline. Max text halo width is 1/4 of the
+ *   font-size.
+ *
+ *   Ignored if [textField] is not specified.
+ *
  * @param textHaloBlur The halo's fadeout distance towards the outside in dp.
  *
  *   Ignored if [textField] is not specified.
@@ -178,17 +194,17 @@ import dev.sargunv.maplibrecompose.core.source.Source
  *
  *   Ignored if [textField] is not specified.
  *
- * @param textTransform Specifies how to capitalize text. See [TextTransform].
+ * @param textTransform Specifies how to capitalize text.
  * @param textLetterSpacing Text tracking amount in ems.
  *
  *   Ignored if [textField] is not specified.
  *
  * @param textRotationAlignment In combination with [placement], determines the rotation behavior of
- *   the individual glyphs forming the text. See [TextRotationAlignment].
+ *   the individual glyphs forming the text.
  *
  *   Ignored if [textField] is not specified.
  *
- * @param textPitchAlignment Orientation of text when map is pitched. See [TextPitchAlignment].
+ * @param textPitchAlignment Orientation of text when map is pitched.
  *
  *   Ignored if [textField] is not specified.
  *
@@ -206,7 +222,7 @@ import dev.sargunv.maplibrecompose.core.source.Source
  *
  *   Ignored if [textField] is not specified.
  *
- * @param textJustify Text justification options. See [TextJustify].
+ * @param textJustify Text justification options.
  *
  *   Ignored if [textField] is not specified.
  *
@@ -214,8 +230,7 @@ import dev.sargunv.maplibrecompose.core.source.Source
  *   property values act as a hint, so that a symbol whose language doesn’t support the provided
  *   orientation will be laid out in its natural orientation. Example: English point symbol will be
  *   rendered horizontally even if array value contains single 'vertical' enum value. The order of
- *   elements in an array define priority order for the placement of an orientation variant. See
- *   [TextWritingMode]
+ *   elements in an array define priority order for the placement of an orientation variant.
  *
  *   Ignored if [textField] is not specified.
  *
@@ -231,7 +246,7 @@ import dev.sargunv.maplibrecompose.core.source.Source
  *
  *   Ignored if [textField] is not specified.
  *
- * @param textAnchor Part of the text placed closest to the anchor. See [SymbolAnchor].
+ * @param textAnchor Part of the text placed closest to the anchor.
  *
  *   Overridden by [textVariableAnchorOffset].
  *
@@ -318,8 +333,7 @@ import dev.sargunv.maplibrecompose.core.source.Source
  *
  *   Ignored if [textField] is not specified.
  *
- * @param textTranslateAnchor Controls the frame of reference for [textTranslate]. See
- *   [TranslateAnchor].
+ * @param textTranslateAnchor Controls the frame of reference for [textTranslate].
  *
  *   Ignored if [textField] is not specified.
  *
@@ -337,10 +351,10 @@ public inline fun SymbolLayer(
   filter: Expression<Boolean> = nil(),
   visible: Boolean = true,
   sortKey: Expression<Number> = nil(),
-  placement: Expression<String> = const(SymbolPlacement.Point),
+  placement: Expression<SymbolPlacement> = const(SymbolPlacement.Point),
   spacing: Expression<Number> = const(250.0),
   avoidEdges: Expression<Boolean> = const(false),
-  zOrder: Expression<String> = const(SymbolSortOrder.Auto),
+  zOrder: Expression<SymbolZOrder> = const(SymbolZOrder.Auto),
 
   // icon image
   iconImage: Expression<TResolvedImage> = nil(),
@@ -354,15 +368,15 @@ public inline fun SymbolLayer(
 
   // icon layout
   iconSize: Expression<Number> = const(1.0),
-  iconRotationAlignment: Expression<String> = const(IconRotationAlignment.Auto),
-  iconPitchAlignment: Expression<String> = const(IconPitchAlignment.Auto),
-  iconTextFit: Expression<String> = const(IconTextFit.None),
+  iconRotationAlignment: Expression<IconRotationAlignment> = const(IconRotationAlignment.Auto),
+  iconPitchAlignment: Expression<IconPitchAlignment> = const(IconPitchAlignment.Auto),
+  iconTextFit: Expression<IconTextFit> = const(IconTextFit.None),
   iconTextFitPadding: Expression<Insets> = insets(0, 0, 0, 0),
   iconKeepUpright: Expression<Boolean> = const(false),
   iconRotate: Expression<Number> = const(0.0),
 
   // icon anchoring
-  iconAnchor: Expression<String> = const(SymbolAnchor.Center),
+  iconAnchor: Expression<SymbolAnchor> = const(SymbolAnchor.Center),
   iconOffset: Expression<Point> = point(0, 0),
 
   // icon collision
@@ -374,7 +388,7 @@ public inline fun SymbolLayer(
 
   // icon translate
   iconTranslate: Expression<Point> = point(0, 0),
-  iconTranslateAnchor: Expression<String> = const(TranslateAnchor.Map),
+  iconTranslateAnchor: Expression<TranslateAnchor> = const(TranslateAnchor.Map),
 
   // text content
   textField: Expression<TFormatted> = nil(),
@@ -390,26 +404,26 @@ public inline fun SymbolLayer(
   textFont: Expression<List<String>> =
     literal(listOf(const("Open Sans Regular"), const("Arial Unicode MS Regular"))),
   textSize: Expression<Number> = const(16.0),
-  textTransform: Expression<String> = const(TextTransform.None),
+  textTransform: Expression<TextTransform> = const(TextTransform.None),
   textLetterSpacing: Expression<Number> = const(0.0),
-  textRotationAlignment: Expression<String> = const(TextRotationAlignment.Auto),
-  textPitchAlignment: Expression<String> = const(TextPitchAlignment.Auto),
+  textRotationAlignment: Expression<TextRotationAlignment> = const(TextRotationAlignment.Auto),
+  textPitchAlignment: Expression<TextPitchAlignment> = const(TextPitchAlignment.Auto),
   textMaxAngle: Expression<Number> = const(45.0),
 
   // text paragraph layout
   textMaxWidth: Expression<Number> = const(10.0),
   textLineHeight: Expression<Number> = const(1.2),
-  textJustify: Expression<String> = const(TextJustify.Center),
-  textWritingMode: Expression<List<String>> = nil(),
+  textJustify: Expression<TextJustify> = const(TextJustify.Center),
+  textWritingMode: Expression<List<TextWritingMode>> = nil(),
   textKeepUpright: Expression<Boolean> = const(true),
   textRotate: Expression<Number> = const(0.0),
 
   // text anchoring
-  textAnchor: Expression<String> = const(SymbolAnchor.Center),
+  textAnchor: Expression<SymbolAnchor> = const(SymbolAnchor.Center),
   textOffset: Expression<Point> = point(0, 0),
-  textVariableAnchor: Expression<List<String>> = nil(),
+  textVariableAnchor: Expression<List<SymbolAnchor>> = nil(),
   textRadialOffset: Expression<Number> = const(0.0),
-  textVariableAnchorOffset: Expression<List<Pair<String, Point>>> = nil(),
+  textVariableAnchorOffset: Expression<List<Pair<SymbolAnchor, Point>>> = nil(),
 
   // text collision
   textPadding: Expression<Number> = const(2.0),
@@ -420,7 +434,7 @@ public inline fun SymbolLayer(
 
   // text translate
   textTranslate: Expression<Point> = point(0, 0),
-  textTranslateAnchor: Expression<String> = const(TranslateAnchor.Map),
+  textTranslateAnchor: Expression<TranslateAnchor> = const(TranslateAnchor.Map),
   noinline onClick: FeaturesClickHandler? = null,
   noinline onLongClick: FeaturesClickHandler? = null,
 ) {
@@ -498,231 +512,4 @@ public inline fun SymbolLayer(
       onLongClick = onLongClick,
     )
   }
-}
-
-/** Symbol placement relative to its geometry. */
-public object SymbolPlacement {
-  /** The label is placed at the point where the geometry is located. */
-  public const val Point: String = "point"
-
-  /**
-   * The label is placed along the line of the geometry. Can only be used on LineString and Polygon
-   * geometries.
-   */
-  public const val Line: String = "line"
-
-  /**
-   * The label is placed at the center of the line of the geometry. Can only be used on LineString
-   * and Polygon geometries. Note that a single feature in a vector tile may contain multiple line
-   * geometries.
-   */
-  public const val LineCenter: String = "line-center"
-}
-
-/**
- * Determines whether overlapping symbols in the same layer are rendered in the order that they
- * appear in the data source or by their y-position relative to the viewport. To control the order
- * and prioritization of symbols otherwise, use `sortKey`.
- */
-public object SymbolSortOrder {
-  /**
-   * Sorts symbols by `sortKey` if set. Otherwise, sorts symbols by their y-position relative to the
-   * viewport if `iconAllowOverlap` or `textAllowOverlap` is set to `true` or `iconIgnorePlacement`
-   * or `textIgnorePlacement` is `false`.
-   */
-  public const val Auto: String = "auto"
-
-  /**
-   * Sorts symbols by their y-position relative to the viewport if `iconAllowOverlap` or
-   * `textAllowOverlap` is set to `true` or `iconIgnorePlacement` or `textIgnorePlacement` is
-   * `false`.
-   */
-  public const val ViewportY: String = "viewport-y"
-
-  /**
-   * Sorts symbols by `sortKey` if set. Otherwise, no sorting is applied; symbols are rendered in
-   * the same order as the source data.
-   */
-  public const val Source: String = "source"
-}
-
-/** Part of the icon/text placed closest to the anchor. */
-public object SymbolAnchor {
-  /** The center of the icon is placed closest to the anchor. */
-  public const val Center: String = "center"
-
-  /** The left side of the icon is placed closest to the anchor. */
-  public const val Left: String = "left"
-
-  /** The right side of the icon is placed closest to the anchor. */
-  public const val Right: String = "right"
-
-  /** The top of the icon is placed closest to the anchor. */
-  public const val Top: String = "top"
-
-  /** The bottom of the icon is placed closest to the anchor. */
-  public const val Bottom: String = "bottom"
-
-  /** The top left corner of the icon is placed closest to the anchor. */
-  public const val TopLeft: String = "top-left"
-
-  /** The top right corner of the icon is placed closest to the anchor. */
-  public const val TopRight: String = "top-right"
-
-  /** The bottom left corner of the icon is placed closest to the anchor. */
-  public const val BottomLeft: String = "bottom-left"
-
-  /** The bottom right corner of the icon is placed closest to the anchor. */
-  public const val BottomRight: String = "bottom-right"
-}
-
-/** Controls whether to show an icon/text when it overlaps other symbols on the map. */
-public object SymbolOverlap {
-  /** The icon/text will be hidden if it collides with any other previously drawn symbol. */
-  public const val Never: String = "never"
-
-  /** The icon/text will be visible even if it collides with any other previously drawn symbol. */
-  public const val Always: String = "always"
-
-  /**
-   * If the icon/text collides with another previously drawn symbol, the overlap mode for that
-   * symbol is checked. If the previous symbol was placed using never overlap mode, the new
-   * icon/text is hidden. If the previous symbol was placed using always or cooperative overlap
-   * mode, the new icon/text is visible.
-   */
-  public const val Cooperative: String = "cooperative"
-}
-
-/** In combination with [SymbolPlacement], determines the rotation behavior of icons. */
-public object IconRotationAlignment {
-  /**
-   * For [SymbolPlacement.Point], aligns icons east-west. Otherwise, aligns icon x-axes with the
-   * line.
-   */
-  public const val Map: String = "map"
-
-  /**
-   * Produces icons whose x-axes are aligned with the x-axis of the viewport, regardless of the
-   * [SymbolPlacement].
-   */
-  public const val Viewport: String = "viewport"
-
-  /**
-   * For [SymbolPlacement.Point], this is equivalent to [IconRotationAlignment.Viewport]. Otherwise,
-   * this is equivalent to [IconRotationAlignment.Map].
-   */
-  public const val Auto: String = "auto"
-}
-
-/** Scales the icon to fit around the associated text. */
-public object IconTextFit {
-  /** The icon is displayed at its intrinsic aspect ratio. */
-  public const val None: String = "none"
-
-  /** The icon is scaled in the x-dimension to fit the width of the text. */
-  public const val Width: String = "width"
-
-  /** The icon is scaled in the y-dimension to fit the height of the text. */
-  public const val Height: String = "height"
-
-  /** The icon is scaled in both x- and y-dimensions. */
-  public const val Both: String = "both"
-}
-
-/** Orientation of icon when map is pitched. */
-public object IconPitchAlignment {
-  /** The icon is aligned to the plane of the map. */
-  public const val Map: String = "map"
-
-  /** The icon is aligned to the plane of the viewport, i.e. as if glued to the screen */
-  public const val Viewport: String = "viewport"
-
-  /** Automatically matches the value of [IconRotationAlignment] */
-  public const val Auto: String = "auto"
-}
-
-/** Orientation of text when map is pitched. */
-public object TextPitchAlignment {
-  /** The text is aligned to the plane of the map. */
-  public const val Map: String = "map"
-
-  /** The text is aligned to the plane of the viewport, i.e. as if glued to the screen */
-  public const val Viewport: String = "viewport"
-
-  /** Automatically matches the value of [TextRotationAlignment] */
-  public const val Auto: String = "auto"
-}
-
-/**
- * In combination with [SymbolPlacement], determines the rotation behavior of the individual glyphs
- * forming the text.
- */
-public object TextRotationAlignment {
-  /**
-   * For [SymbolPlacement.Point], aligns text east-west. Otherwise, aligns text x-axes with the
-   * line.
-   */
-  public const val Map: String = "map"
-
-  /**
-   * Produces glyphs whose x-axes are aligned with the x-axis of the viewport, regardless of the
-   * [SymbolPlacement].
-   */
-  public const val Viewport: String = "viewport"
-
-  /**
-   * For [SymbolPlacement.Point], this is equivalent to [TextRotationAlignment.Viewport]. Otherwise,
-   * aligns glyphs to the x-axis of the viewport and places them along the line.
-   *
-   * **Note**: This value not supported on native platforms, yet
-   */
-  public const val ViewportGlyph: String = "viewport-glyph"
-
-  /**
-   * For [SymbolPlacement.Point], this is equivalent to [TextRotationAlignment.Viewport]. Otherwise,
-   * this is equivalent to [TextRotationAlignment.Map].
-   */
-  public const val Auto: String = "auto"
-}
-
-/** How the text will be laid out. */
-public object TextWritingMode {
-  /**
-   * If a text's language supports horizontal writing mode, symbols with point placement would be
-   * laid out horizontally.
-   */
-  public const val Horizontal: String = "horizontal"
-
-  /**
-   * If a text's language supports vertical writing mode, symbols with point placement would be laid
-   * out vertically.
-   */
-  public const val Vertical: String = "vertical"
-}
-
-/** Text justification options. */
-public object TextJustify {
-  /** The text is aligned towards the anchor position. */
-  public const val Auto: String = "auto"
-
-  /** The text is aligned to the left. */
-  public const val Left: String = "left"
-
-  /** The text is centered. */
-  public const val Center: String = "center"
-
-  /** The text is aligned to the right. */
-  public const val Right: String = "right"
-}
-
-/** Specifies how to capitalize text, similar to the CSS text-transform property. */
-public object TextTransform {
-  /** The text is not altered. */
-  public const val None: String = "none"
-
-  /** Forces all letters to be displayed in uppercase. */
-  public const val Uppercase: String = "uppercase"
-
-  /** Forces all letters to be displayed in lowercase. */
-  public const val Lowercase: String = "lowercase"
 }

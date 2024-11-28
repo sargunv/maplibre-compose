@@ -35,7 +35,7 @@ internal actual class RasterLayer actual constructor(id: String, actual val sour
     impl.rasterContrast = contrast.toNSExpression()
   }
 
-  actual fun setRasterResampling(resampling: Expression<String>) {
+  actual fun setRasterResampling(resampling: Expression<RasterResampling>) {
     impl.rasterResamplingMode = resampling.toNSExpression()
   }
 
