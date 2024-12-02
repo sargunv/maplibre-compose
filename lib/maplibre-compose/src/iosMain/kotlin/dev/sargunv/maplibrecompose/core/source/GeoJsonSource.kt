@@ -8,6 +8,7 @@ import cocoapods.MapLibre.MLNShapeSourceOptionClustered
 import cocoapods.MapLibre.MLNShapeSourceOptionLineDistanceMetrics
 import cocoapods.MapLibre.MLNShapeSourceOptionMaximumZoomLevel
 import cocoapods.MapLibre.MLNShapeSourceOptionMaximumZoomLevelForClustering
+import cocoapods.MapLibre.MLNShapeSourceOptionMinimumZoomLevel
 import cocoapods.MapLibre.MLNShapeSourceOptionSimplificationTolerance
 import dev.sargunv.maplibrecompose.core.expression.Expression
 import dev.sargunv.maplibrecompose.core.expression.Expression.Companion.const
@@ -36,6 +37,7 @@ public actual class GeoJsonSource : Source {
 
   private fun buildOptionMap(options: GeoJsonOptions) =
     buildMap<Any?, Any?> {
+      put(MLNShapeSourceOptionMinimumZoomLevel, NSNumber(options.minZoom))
       put(MLNShapeSourceOptionMaximumZoomLevel, NSNumber(options.maxZoom))
       put(MLNShapeSourceOptionBuffer, NSNumber(options.buffer))
       put(MLNShapeSourceOptionLineDistanceMetrics, NSNumber(options.lineMetrics))
