@@ -388,26 +388,31 @@ public object ExpressionsDsl {
       )
       .cast()
 
+  /** Configures a span of text in a [format] expression. */
   public fun span(
-    value: Expression<FormattableValue>,
+    value: Expression<StringValue>,
     textFont: Expression<StringValue>? = null,
     textColor: Expression<StringValue>? = null,
-    fontScale: Expression<FloatValue>? = null,
+    textSize: Expression<TextUnitValue>? = null,
   ): FormatSpan =
-    FormatSpan(value = value, textFont = textFont, textColor = textColor, fontScale = fontScale)
+    FormatSpan(value = value, textFont = textFont, textColor = textColor, textSize = textSize)
 
+  /** Configures an image in a [format] expression. */
+  public fun span(value: Expression<FormattableValue>): FormatSpan = FormatSpan(value = value)
+
+  /** Represents a component of a [format] expression. See [span]. */
   public data class FormatSpan
   internal constructor(
     val value: Expression<FormattableValue>,
-    val textFont: Expression<StringValue>?,
-    val textColor: Expression<StringValue>?,
-    val fontScale: Expression<FloatValue>?,
+    val textFont: Expression<StringValue>? = null,
+    val textColor: Expression<StringValue>? = null,
+    val textSize: Expression<TextUnitValue>? = null,
   ) {
     internal val options
       get() = buildOptions {
         textFont?.let { put("text-font", it) }
         textColor?.let { put("text-color", it) }
-        fontScale?.let { put("font-scale", it) }
+        textSize?.let { put("font-scale", it) }
       }
   }
 

@@ -480,10 +480,6 @@ public fun SymbolLayer(
   onClick: FeaturesClickHandler? = null,
   onLongClick: FeaturesClickHandler? = null,
 ) {
-  val node = LocalStyleNode.current
-  val resolvedIconImage = node.imageManager.resolveImages(iconImage)
-  val resolvedTextField = node.imageManager.resolveImages(textField)
-
   val textSizeSp = textSize.rememberTextUnitsAsSp(const(16f), 1f.em).cast<FloatValue>()
   val textLetterSpacingEm =
     textLetterSpacing.rememberTextUnitsAsEm(textSizeSp, 0f.em).cast<FloatValue>()
@@ -493,11 +489,16 @@ public fun SymbolLayer(
   val textRadialOffsetEm =
     textRadialOffset.rememberTextUnitsAsEm(textSizeSp, 0f.em).cast<FloatValue>()
   val textOffsetEm = textOffset.rememberTextUnitsAsEm(textSizeSp, 0f.em).cast<FloatOffsetValue>()
+  val textFieldEm = textField.rememberTextUnitsAsEm(textSizeSp, 1f.em).cast<FormattedValue>()
 
   // used for scaling textSize from sp (api) to dp (core)
   // TODO needs changes after https://github.com/maplibre/maplibre-native/issues/3057
   val fontScale = LocalDensity.current.fontScale
   val textSizeDp = remember(textSizeSp, fontScale) { (textSizeSp * const(fontScale)).dp }
+
+  val node = LocalStyleNode.current
+  val resolvedIconImage = node.imageManager.resolveImages(iconImage)
+  val resolvedTextField = node.imageManager.resolveImages(textFieldEm)
 
   LayerNode(
     factory = { SymbolLayer(id = id, source = source) },
