@@ -1,6 +1,7 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
 import org.jetbrains.compose.ExperimentalComposeLibrary
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
@@ -45,6 +46,7 @@ kotlin {
   iosArm64()
   iosSimulatorArm64()
   iosX64()
+  jvm("desktop")
 
   cocoapods {
     summary = "MapLibre Compose demo app"
@@ -64,6 +66,8 @@ kotlin {
   }
 
   sourceSets {
+    val desktopMain by getting
+
     all { languageSettings { optIn("androidx.compose.material3.ExperimentalMaterial3Api") } }
 
     commonMain.dependencies {
@@ -87,6 +91,11 @@ kotlin {
 
     iosMain.dependencies { implementation(libs.ktor.client.darwin) }
 
+    desktopMain.dependencies {
+      implementation(compose.desktop.currentOs)
+      implementation(libs.kotlinx.coroutines.swing)
+    }
+
     commonTest.dependencies {
       implementation(kotlin("test"))
       implementation(kotlin("test-common"))
@@ -107,3 +116,28 @@ kotlin {
 compose.resources { packageOfResClass = "dev.sargunv.maplibrecompose.demoapp.generated" }
 
 composeCompiler { reportsDestination = layout.buildDirectory.dir("compose/reports") }
+
+compose.desktop {
+  application {
+    mainClass = "dev.sargunv.maplibrecompose.demoapp.MainKt"
+
+    nativeDistributions {
+      targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+      packageName = "dev.sargunv.maplibrecompose.demoapp"
+      // https://youtrack.jetbrains.com/issue/CMP-2360
+      // packageVersion = project.ext["base_tag"].toString().replace("v", "")
+      packageVersion = "1.0.0"
+    }
+
+    // https://github.com/KevinnZou/compose-webview-multiplatform/blob/main/README.desktop.md#flags
+    jvmArgs("--add-opens", "java.desktop/sun.awt=ALL-UNNAMED")
+    jvmArgs(
+      "--add-opens",
+      "java.desktop/java.awt.peer=ALL-UNNAMED",
+    ) // recommended but not necessary
+    if (System.getProperty("os.name").contains("Mac")) {
+      jvmArgs("--add-opens", "java.desktop/sun.lwawt=ALL-UNNAMED")
+      jvmArgs("--add-opens", "java.desktop/sun.lwawt.macosx=ALL-UNNAMED")
+    }
+  }
+}

@@ -30,6 +30,12 @@ stability is not yet guaranteed; as we're still exploring how best to express an
 interactive map API in Compose.
 
 Android and iOS support is implemented with
-[MapLibre Native](https://github.com/maplibre/maplibre-native).
+[MapLibre Native](https://github.com/maplibre/maplibre-native). A broad set of
+features are supported.
 
-Desktop and Web are not yet supported.
+Desktop support is implemented with
+[MapLibre GL JS](https://github.com/maplibre/maplibre-gl-js) and
+[KCEF](https://github.com/DatL4g/KCEF). It's currently **very** limited and
+experimental.
+
+Web is not yet supported.

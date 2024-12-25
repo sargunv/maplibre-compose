@@ -34,6 +34,7 @@ kotlin {
   iosArm64()
   iosSimulatorArm64()
   iosX64()
+  jvm("desktop")
 
   cocoapods {
     noPodspec()
@@ -42,6 +43,8 @@ kotlin {
   }
 
   sourceSets {
+    val desktopMain by getting
+
     listOf(iosMain, iosArm64Main, iosSimulatorArm64Main, iosX64Main).forEach {
       it { languageSettings { optIn("kotlinx.cinterop.ExperimentalForeignApi") } }
     }
@@ -55,6 +58,10 @@ kotlin {
     androidMain.dependencies {
       api(libs.maplibre.android)
       implementation(libs.maplibre.android.scalebar)
+    }
+
+    desktopMain.dependencies {
+      implementation("io.github.kevinnzou:compose-webview-multiplatform:1.9.40")
     }
 
     commonTest.dependencies {

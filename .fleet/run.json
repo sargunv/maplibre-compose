@@ -17,6 +17,14 @@
       "module": "maplibre-compose.demo-app.main"
     },
     {
+      "name": "Desktop-App",
+      "type": "gradle",
+      "workingDir": "$PROJECT_DIR$",
+      "tasks": [
+        ":demo-app:run"
+      ]
+    },
+    {
       "name": "Reformat",
       "type": "gradle",
       "workingDir": "$PROJECT_DIR$",

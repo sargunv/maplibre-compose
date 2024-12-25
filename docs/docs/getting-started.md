@@ -96,6 +96,49 @@ androidMain.dependencies {
 }
 ```
 
+## Set up Desktop (JVM)
+
+!!! warning
+
+    Desktop support is not yet at feature parity with Android and iOS. Feel free to try it out,
+    but don't expect it to work well yet. Check the [status table](index.md#status) for more info.
+
+On desktop, we use [DATL4g/KCEF][kcef] to embed a Chromium based browser. It
+requires some special configuration.
+
+Add this Maven repo to your project:
+
+```kotlin title="settings.gradle.kts"
+repositories {
+  maven("https://jogamp.org/deployment/maven")
+}
+```
+
+Add these JVM flags to your app:
+
+```kotlin title="build.gradle.kts"
+compose.desktop {
+  application {
+    jvmArgs("--add-opens", "java.desktop/sun.awt=ALL-UNNAMED")
+    jvmArgs("--add-opens", "java.desktop/java.awt.peer=ALL-UNNAMED") // recommended but not necessary
+
+    if (System.getProperty("os.name").contains("Mac")) {
+      jvmArgs("--add-opens", "java.desktop/sun.lwawt=ALL-UNNAMED")
+      jvmArgs("--add-opens", "java.desktop/sun.lwawt.macosx=ALL-UNNAMED")
+    }
+  }
+}
+```
+
+Wrap your app with the `MaplibreContext` composable:
+
+```kotlin title="Main.kt"
+-8<- "demo-app/src/desktopMain/kotlin/dev/sargunv/maplibrecompose/demoapp/Main.kt:main"
+```
+
+When the app first launches, KCEF will be downloaded in the background before
+your UI is visible.
+
 ## Display your first map
 
 In your Composable UI, add a map:
@@ -118,3 +161,4 @@ to get a detailed map with all the features you'd expect, proceed to
 [kotlin-cocoapods]: https://kotlinlang.org/docs/native-cocoapods.html
 [repo]: https://github.com/sargunv/maplibre-compose
 [demotiles]: https://demotiles.maplibre.org/
+[kcef]: https://github.com/DatL4g/KCEF
