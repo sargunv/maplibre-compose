@@ -19,18 +19,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import dev.sargunv.maplibrecompose.compose.StyleState
+import dev.sargunv.maplibrecompose.material3.generated.Res
+import dev.sargunv.maplibrecompose.material3.generated.attribution
+import dev.sargunv.maplibrecompose.material3.generated.library_name
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 public fun AttributionButton(
   styleState: StyleState,
   modifier: Modifier = Modifier,
   colors: IconButtonColors = IconButtonDefaults.iconButtonColors(),
-  contentDescription: String = "Attribution",
 ) {
   var showDialog by remember { mutableStateOf(false) }
 
   IconButton(modifier = modifier, colors = colors, onClick = { showDialog = true }) {
-    Icon(Icons.Outlined.Info, contentDescription = contentDescription)
+    Icon(Icons.Outlined.Info, contentDescription = stringResource(Res.string.attribution))
   }
 
   if (showDialog) {
@@ -40,7 +43,12 @@ public fun AttributionButton(
     AlertDialog(
       onDismissRequest = { showDialog = false },
       confirmButton = {},
-      title = { Text(text = "MapLibre Compose", style = MaterialTheme.typography.headlineSmall) },
+      title = {
+        Text(
+          text = stringResource(Res.string.library_name),
+          style = MaterialTheme.typography.headlineSmall,
+        )
+      },
       text = {
         Column {
           attributions.forEach {

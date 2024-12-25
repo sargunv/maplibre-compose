@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrecompose.compose.CameraState
 import dev.sargunv.maplibrecompose.material3.generated.Res
+import dev.sargunv.maplibrecompose.material3.generated.compass
 import dev.sargunv.maplibrecompose.material3.generated.compass_needle
 import kotlin.math.abs
 import kotlin.time.Duration
@@ -33,6 +34,7 @@ import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 public fun CompassButton(
@@ -74,7 +76,6 @@ public fun DisappearingCompassButton(
   modifier: Modifier = Modifier,
   onClick: () -> Unit = {},
   colors: ButtonColors = ButtonDefaults.elevatedButtonColors(),
-  contentDescription: String = "Compass",
   visibilityDuration: Duration = 1.seconds,
   enterTransition: EnterTransition = fadeIn(),
   exitTransition: ExitTransition = fadeOut(),
@@ -107,7 +108,7 @@ public fun DisappearingCompassButton(
       modifier = modifier,
       onClick = onClick,
       colors = colors,
-      contentDescription = contentDescription,
+      contentDescription = stringResource(Res.string.compass),
     )
   }
 }
