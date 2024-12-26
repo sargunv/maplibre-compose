@@ -1,10 +1,10 @@
 package dev.sargunv.maplibrecompose.core.layer
 
 import dev.sargunv.maplibrecompose.core.source.Source
-import dev.sargunv.maplibrecompose.expression.ast.CompiledExpression
-import dev.sargunv.maplibrecompose.expression.value.ColorValue
-import dev.sargunv.maplibrecompose.expression.value.FloatValue
-import dev.sargunv.maplibrecompose.expression.value.IlluminationAnchor
+import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
+import dev.sargunv.maplibrecompose.expressions.value.ColorValue
+import dev.sargunv.maplibrecompose.expressions.value.FloatValue
+import dev.sargunv.maplibrecompose.expressions.value.IlluminationAnchor
 
 internal actual class HillshadeLayer actual constructor(id: String, actual val source: Source) :
   Layer() {

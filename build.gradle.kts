@@ -46,6 +46,7 @@ tasks.register("generateDocs") {
 
 dependencies {
   dokka(project(":lib:maplibre-compose:"))
+  dokka(project(":lib:maplibre-compose-expressions:"))
   dokka(project(":lib:maplibre-compose-material3:"))
 }
 

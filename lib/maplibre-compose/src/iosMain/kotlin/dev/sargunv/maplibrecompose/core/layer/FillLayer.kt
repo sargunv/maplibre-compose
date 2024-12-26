@@ -4,14 +4,14 @@ import cocoapods.MapLibre.MLNFillStyleLayer
 import dev.sargunv.maplibrecompose.core.source.Source
 import dev.sargunv.maplibrecompose.core.util.toNSExpression
 import dev.sargunv.maplibrecompose.core.util.toNSPredicate
-import dev.sargunv.maplibrecompose.expression.ast.CompiledExpression
-import dev.sargunv.maplibrecompose.expression.ast.NullLiteral
-import dev.sargunv.maplibrecompose.expression.value.BooleanValue
-import dev.sargunv.maplibrecompose.expression.value.ColorValue
-import dev.sargunv.maplibrecompose.expression.value.DpOffsetValue
-import dev.sargunv.maplibrecompose.expression.value.FloatValue
-import dev.sargunv.maplibrecompose.expression.value.ImageValue
-import dev.sargunv.maplibrecompose.expression.value.TranslateAnchor
+import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
+import dev.sargunv.maplibrecompose.expressions.ast.NullLiteral
+import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
+import dev.sargunv.maplibrecompose.expressions.value.ColorValue
+import dev.sargunv.maplibrecompose.expressions.value.DpOffsetValue
+import dev.sargunv.maplibrecompose.expressions.value.FloatValue
+import dev.sargunv.maplibrecompose.expressions.value.ImageValue
+import dev.sargunv.maplibrecompose.expressions.value.TranslateAnchor
 
 internal actual class FillLayer actual constructor(id: String, source: Source) :
   FeatureLayer(source) {

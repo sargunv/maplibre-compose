@@ -1,10 +1,10 @@
 package dev.sargunv.maplibrecompose.core.layer
 
 import dev.sargunv.maplibrecompose.core.util.toMLNExpression
-import dev.sargunv.maplibrecompose.expression.ast.CompiledExpression
-import dev.sargunv.maplibrecompose.expression.value.ColorValue
-import dev.sargunv.maplibrecompose.expression.value.FloatValue
-import dev.sargunv.maplibrecompose.expression.value.ImageValue
+import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
+import dev.sargunv.maplibrecompose.expressions.value.ColorValue
+import dev.sargunv.maplibrecompose.expressions.value.FloatValue
+import dev.sargunv.maplibrecompose.expressions.value.ImageValue
 import org.maplibre.android.style.layers.BackgroundLayer as MLNBackgroundLayer
 import org.maplibre.android.style.layers.PropertyFactory
 

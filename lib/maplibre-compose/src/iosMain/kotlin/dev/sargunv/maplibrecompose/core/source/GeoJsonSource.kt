@@ -12,8 +12,8 @@ import cocoapods.MapLibre.MLNShapeSourceOptionMinimumZoomLevel
 import cocoapods.MapLibre.MLNShapeSourceOptionSimplificationTolerance
 import dev.sargunv.maplibrecompose.core.util.toMLNShape
 import dev.sargunv.maplibrecompose.core.util.toNSExpression
-import dev.sargunv.maplibrecompose.expression.ExpressionContext
-import dev.sargunv.maplibrecompose.expression.ast.FunctionCall
+import dev.sargunv.maplibrecompose.expressions.ExpressionContext
+import dev.sargunv.maplibrecompose.expressions.ast.FunctionCall
 import io.github.dellisd.spatialk.geojson.GeoJson
 import platform.Foundation.NSNumber
 import platform.Foundation.NSURL

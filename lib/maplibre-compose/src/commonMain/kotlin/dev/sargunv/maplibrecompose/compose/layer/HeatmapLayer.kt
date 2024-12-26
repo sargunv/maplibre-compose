@@ -6,15 +6,15 @@ import dev.sargunv.maplibrecompose.compose.FeaturesClickHandler
 import dev.sargunv.maplibrecompose.compose.MaplibreComposable
 import dev.sargunv.maplibrecompose.core.layer.HeatmapLayer
 import dev.sargunv.maplibrecompose.core.source.Source
-import dev.sargunv.maplibrecompose.expression.Defaults
-import dev.sargunv.maplibrecompose.expression.ast.Expression
-import dev.sargunv.maplibrecompose.expression.dsl.const
-import dev.sargunv.maplibrecompose.expression.dsl.heatmapDensity
-import dev.sargunv.maplibrecompose.expression.dsl.nil
-import dev.sargunv.maplibrecompose.expression.value.BooleanValue
-import dev.sargunv.maplibrecompose.expression.value.ColorValue
-import dev.sargunv.maplibrecompose.expression.value.DpValue
-import dev.sargunv.maplibrecompose.expression.value.FloatValue
+import dev.sargunv.maplibrecompose.expressions.Defaults
+import dev.sargunv.maplibrecompose.expressions.ast.Expression
+import dev.sargunv.maplibrecompose.expressions.dsl.const
+import dev.sargunv.maplibrecompose.expressions.dsl.heatmapDensity
+import dev.sargunv.maplibrecompose.expressions.dsl.nil
+import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
+import dev.sargunv.maplibrecompose.expressions.value.ColorValue
+import dev.sargunv.maplibrecompose.expressions.value.DpValue
+import dev.sargunv.maplibrecompose.expressions.value.FloatValue
 
 /**
  * A heatmap layer draws points from the [sourceLayer] in the given [source] as a heatmap.
@@ -28,8 +28,8 @@ import dev.sargunv.maplibrecompose.expression.value.FloatValue
  *   this, the layer will be hidden. A value in the range of `[0..24]`.
  * @param filter An expression specifying conditions on source features. Only features that match
  *   the filter are displayed. Zoom expressions in filters are only evaluated at integer zoom
- *   levels. The [featureState][dev.sargunv.maplibrecompose.expression.dsl.Feature.state] expression
- *   is not supported in filter expressions.
+ *   levels. The [featureState][dev.sargunv.maplibrecompose.expressions.dsl.Feature.state]
+ *   expression is not supported in filter expressions.
  * @param visible Whether the layer should be displayed.
  * @param color Defines the color of each pixel based on its density value in a heatmap. Should be
  *   an expression that uses [heatmapDensity] as input.

@@ -8,17 +8,17 @@ import dev.sargunv.maplibrecompose.compose.FeaturesClickHandler
 import dev.sargunv.maplibrecompose.compose.MaplibreComposable
 import dev.sargunv.maplibrecompose.core.layer.CircleLayer
 import dev.sargunv.maplibrecompose.core.source.Source
-import dev.sargunv.maplibrecompose.expression.ast.Expression
-import dev.sargunv.maplibrecompose.expression.dsl.const
-import dev.sargunv.maplibrecompose.expression.dsl.nil
-import dev.sargunv.maplibrecompose.expression.value.BooleanValue
-import dev.sargunv.maplibrecompose.expression.value.CirclePitchAlignment
-import dev.sargunv.maplibrecompose.expression.value.CirclePitchScale
-import dev.sargunv.maplibrecompose.expression.value.ColorValue
-import dev.sargunv.maplibrecompose.expression.value.DpOffsetValue
-import dev.sargunv.maplibrecompose.expression.value.DpValue
-import dev.sargunv.maplibrecompose.expression.value.FloatValue
-import dev.sargunv.maplibrecompose.expression.value.TranslateAnchor
+import dev.sargunv.maplibrecompose.expressions.ast.Expression
+import dev.sargunv.maplibrecompose.expressions.dsl.const
+import dev.sargunv.maplibrecompose.expressions.dsl.nil
+import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
+import dev.sargunv.maplibrecompose.expressions.value.CirclePitchAlignment
+import dev.sargunv.maplibrecompose.expressions.value.CirclePitchScale
+import dev.sargunv.maplibrecompose.expressions.value.ColorValue
+import dev.sargunv.maplibrecompose.expressions.value.DpOffsetValue
+import dev.sargunv.maplibrecompose.expressions.value.DpValue
+import dev.sargunv.maplibrecompose.expressions.value.FloatValue
+import dev.sargunv.maplibrecompose.expressions.value.TranslateAnchor
 
 /**
  * A circle layer draws points from the [sourceLayer] in the given [source] in the given style as a
@@ -33,8 +33,8 @@ import dev.sargunv.maplibrecompose.expression.value.TranslateAnchor
  *   this, the layer will be hidden. A value in the range of `[0..24]`.
  * @param filter An expression specifying conditions on source features. Only features that match
  *   the filter are displayed. Zoom expressions in filters are only evaluated at integer zoom
- *   levels. The [featureState][dev.sargunv.maplibrecompose.expression.dsl.Feature.state] expression
- *   is not supported in filter expressions.
+ *   levels. The [featureState][dev.sargunv.maplibrecompose.expressions.dsl.Feature.state]
+ *   expression is not supported in filter expressions.
  * @param visible Whether the layer should be displayed.
  * @param sortKey Sorts features within this layer in ascending order based on this value. Features
  *   with a higher sort key will appear above features with a lower sort key.

@@ -2,11 +2,11 @@ package dev.sargunv.maplibrecompose.core.layer
 
 import cocoapods.MapLibre.MLNBackgroundStyleLayer
 import dev.sargunv.maplibrecompose.core.util.toNSExpression
-import dev.sargunv.maplibrecompose.expression.ast.CompiledExpression
-import dev.sargunv.maplibrecompose.expression.ast.NullLiteral
-import dev.sargunv.maplibrecompose.expression.value.ColorValue
-import dev.sargunv.maplibrecompose.expression.value.FloatValue
-import dev.sargunv.maplibrecompose.expression.value.ImageValue
+import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
+import dev.sargunv.maplibrecompose.expressions.ast.NullLiteral
+import dev.sargunv.maplibrecompose.expressions.value.ColorValue
+import dev.sargunv.maplibrecompose.expressions.value.FloatValue
+import dev.sargunv.maplibrecompose.expressions.value.ImageValue
 
 internal actual class BackgroundLayer actual constructor(id: String) : Layer() {
   override val impl = MLNBackgroundStyleLayer(id)

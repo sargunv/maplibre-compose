@@ -11,39 +11,39 @@ import dev.sargunv.maplibrecompose.compose.FeaturesClickHandler
 import dev.sargunv.maplibrecompose.compose.MaplibreComposable
 import dev.sargunv.maplibrecompose.core.layer.SymbolLayer
 import dev.sargunv.maplibrecompose.core.source.Source
-import dev.sargunv.maplibrecompose.expression.Defaults
-import dev.sargunv.maplibrecompose.expression.ZeroPadding
-import dev.sargunv.maplibrecompose.expression.ast.Expression
-import dev.sargunv.maplibrecompose.expression.dsl.const
-import dev.sargunv.maplibrecompose.expression.dsl.div
-import dev.sargunv.maplibrecompose.expression.dsl.nil
-import dev.sargunv.maplibrecompose.expression.dsl.offset
-import dev.sargunv.maplibrecompose.expression.dsl.times
-import dev.sargunv.maplibrecompose.expression.value.BooleanValue
-import dev.sargunv.maplibrecompose.expression.value.ColorValue
-import dev.sargunv.maplibrecompose.expression.value.DpOffsetValue
-import dev.sargunv.maplibrecompose.expression.value.DpPaddingValue
-import dev.sargunv.maplibrecompose.expression.value.DpValue
-import dev.sargunv.maplibrecompose.expression.value.FloatOffsetValue
-import dev.sargunv.maplibrecompose.expression.value.FloatValue
-import dev.sargunv.maplibrecompose.expression.value.FormattedValue
-import dev.sargunv.maplibrecompose.expression.value.IconPitchAlignment
-import dev.sargunv.maplibrecompose.expression.value.IconRotationAlignment
-import dev.sargunv.maplibrecompose.expression.value.IconTextFit
-import dev.sargunv.maplibrecompose.expression.value.ImageValue
-import dev.sargunv.maplibrecompose.expression.value.ListValue
-import dev.sargunv.maplibrecompose.expression.value.StringValue
-import dev.sargunv.maplibrecompose.expression.value.SymbolAnchor
-import dev.sargunv.maplibrecompose.expression.value.SymbolPlacement
-import dev.sargunv.maplibrecompose.expression.value.SymbolZOrder
-import dev.sargunv.maplibrecompose.expression.value.TextJustify
-import dev.sargunv.maplibrecompose.expression.value.TextPitchAlignment
-import dev.sargunv.maplibrecompose.expression.value.TextRotationAlignment
-import dev.sargunv.maplibrecompose.expression.value.TextTransform
-import dev.sargunv.maplibrecompose.expression.value.TextUnitOffsetValue
-import dev.sargunv.maplibrecompose.expression.value.TextUnitValue
-import dev.sargunv.maplibrecompose.expression.value.TextWritingMode
-import dev.sargunv.maplibrecompose.expression.value.TranslateAnchor
+import dev.sargunv.maplibrecompose.expressions.Defaults
+import dev.sargunv.maplibrecompose.expressions.ZeroPadding
+import dev.sargunv.maplibrecompose.expressions.ast.Expression
+import dev.sargunv.maplibrecompose.expressions.dsl.const
+import dev.sargunv.maplibrecompose.expressions.dsl.div
+import dev.sargunv.maplibrecompose.expressions.dsl.nil
+import dev.sargunv.maplibrecompose.expressions.dsl.offset
+import dev.sargunv.maplibrecompose.expressions.dsl.times
+import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
+import dev.sargunv.maplibrecompose.expressions.value.ColorValue
+import dev.sargunv.maplibrecompose.expressions.value.DpOffsetValue
+import dev.sargunv.maplibrecompose.expressions.value.DpPaddingValue
+import dev.sargunv.maplibrecompose.expressions.value.DpValue
+import dev.sargunv.maplibrecompose.expressions.value.FloatOffsetValue
+import dev.sargunv.maplibrecompose.expressions.value.FloatValue
+import dev.sargunv.maplibrecompose.expressions.value.FormattedValue
+import dev.sargunv.maplibrecompose.expressions.value.IconPitchAlignment
+import dev.sargunv.maplibrecompose.expressions.value.IconRotationAlignment
+import dev.sargunv.maplibrecompose.expressions.value.IconTextFit
+import dev.sargunv.maplibrecompose.expressions.value.ImageValue
+import dev.sargunv.maplibrecompose.expressions.value.ListValue
+import dev.sargunv.maplibrecompose.expressions.value.StringValue
+import dev.sargunv.maplibrecompose.expressions.value.SymbolAnchor
+import dev.sargunv.maplibrecompose.expressions.value.SymbolPlacement
+import dev.sargunv.maplibrecompose.expressions.value.SymbolZOrder
+import dev.sargunv.maplibrecompose.expressions.value.TextJustify
+import dev.sargunv.maplibrecompose.expressions.value.TextPitchAlignment
+import dev.sargunv.maplibrecompose.expressions.value.TextRotationAlignment
+import dev.sargunv.maplibrecompose.expressions.value.TextTransform
+import dev.sargunv.maplibrecompose.expressions.value.TextUnitOffsetValue
+import dev.sargunv.maplibrecompose.expressions.value.TextUnitValue
+import dev.sargunv.maplibrecompose.expressions.value.TextWritingMode
+import dev.sargunv.maplibrecompose.expressions.value.TranslateAnchor
 
 /**
  * A symbol layer draws data from the [sourceLayer] in the given [source] as icons and/or text
@@ -58,8 +58,8 @@ import dev.sargunv.maplibrecompose.expression.value.TranslateAnchor
  *   this, the layer will be hidden. A value in the range of `[0..24]`.
  * @param filter An expression specifying conditions on source features. Only features that match
  *   the filter are displayed. Zoom expressions in filters are only evaluated at integer zoom
- *   levels. The [featureState][dev.sargunv.maplibrecompose.expression.dsl.Feature.state] expression
- *   is not supported in filter expressions.
+ *   levels. The [featureState][dev.sargunv.maplibrecompose.expressions.dsl.Feature.state]
+ *   expression is not supported in filter expressions.
  * @param visible Whether the layer should be displayed.
  * @param sortKey Sorts features within this layer in ascending order based on this value. Features
  *   with a higher sort key will appear above features with a lower sort key.
@@ -185,7 +185,7 @@ import dev.sargunv.maplibrecompose.expression.value.TranslateAnchor
  *   the plain string "My label".
  *
  *   The text can also be formatted, employing different colors, fonts, etc., see
- *   [format][dev.sargunv.maplibrecompose.expression.dsl.format].
+ *   [format][dev.sargunv.maplibrecompose.expressions.dsl.format].
  *
  * @param textOpacity The opacity at which the text will be drawn.
  *
@@ -344,7 +344,7 @@ import dev.sargunv.maplibrecompose.expression.value.TranslateAnchor
  *   Ignored if [textField] is not specified.
  *
  * @param textOverlap Controls whether to show an icon/text when it overlaps other symbols on the
- *   map. See [SymbolOverlap][dev.sargunv.maplibrecompose.expression.SymbolOverlap]. Overrides
+ *   map. See [SymbolOverlap][dev.sargunv.maplibrecompose.expressions.SymbolOverlap]. Overrides
  *   [textAllowOverlap].
  *
  *   Ignored if [textField] is not specified.
