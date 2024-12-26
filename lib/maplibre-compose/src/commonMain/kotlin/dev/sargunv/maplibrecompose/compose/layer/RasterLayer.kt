@@ -2,14 +2,13 @@ package dev.sargunv.maplibrecompose.compose.layer
 
 import androidx.compose.runtime.Composable
 import dev.sargunv.maplibrecompose.compose.MaplibreComposable
-import dev.sargunv.maplibrecompose.core.expression.EnumValue
-import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.const
-import dev.sargunv.maplibrecompose.core.expression.FloatValue
-import dev.sargunv.maplibrecompose.core.expression.MillisecondsValue
-import dev.sargunv.maplibrecompose.core.expression.RasterResampling
 import dev.sargunv.maplibrecompose.core.layer.RasterLayer
 import dev.sargunv.maplibrecompose.core.source.Source
+import dev.sargunv.maplibrecompose.expression.Expression
+import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.const
+import dev.sargunv.maplibrecompose.expression.FloatValue
+import dev.sargunv.maplibrecompose.expression.MillisecondsValue
+import dev.sargunv.maplibrecompose.expression.RasterResampling
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
@@ -50,23 +49,34 @@ public fun RasterLayer(
   brightnessMax: Expression<FloatValue> = const(1f),
   saturation: Expression<FloatValue> = const(0f),
   contrast: Expression<FloatValue> = const(0f),
-  resampling: Expression<EnumValue<RasterResampling>> = const(RasterResampling.Linear),
+  resampling: Expression<RasterResampling> = const(RasterResampling.Linear),
   fadeDuration: Expression<MillisecondsValue> = const(300.milliseconds),
 ) {
+  val compiler = rememberPropertyCompiler()
+
+  val compiledOpacity = compiler.invoke(opacity)
+  val compiledHueRotate = compiler.invoke(hueRotate)
+  val compiledBrightnessMin = compiler.invoke(brightnessMin)
+  val compiledBrightnessMax = compiler.invoke(brightnessMax)
+  val compiledSaturation = compiler.invoke(saturation)
+  val compiledContrast = compiler.invoke(contrast)
+  val compiledResampling = compiler.invoke(resampling)
+  val compiledFadeDuration = compiler.invoke(fadeDuration)
+
   LayerNode(
     factory = { RasterLayer(id = id, source = source) },
     update = {
       set(minZoom) { layer.minZoom = it }
       set(maxZoom) { layer.maxZoom = it }
       set(visible) { layer.visible = it }
-      set(opacity) { layer.setRasterOpacity(it) }
-      set(hueRotate) { layer.setRasterHueRotate(it) }
-      set(brightnessMin) { layer.setRasterBrightnessMin(it) }
-      set(brightnessMax) { layer.setRasterBrightnessMax(it) }
-      set(saturation) { layer.setRasterSaturation(it) }
-      set(contrast) { layer.setRasterContrast(it) }
-      set(resampling) { layer.setRasterResampling(it) }
-      set(fadeDuration) { layer.setRasterFadeDuration(it) }
+      set(compiledOpacity) { layer.setRasterOpacity(it) }
+      set(compiledHueRotate) { layer.setRasterHueRotate(it) }
+      set(compiledBrightnessMin) { layer.setRasterBrightnessMin(it) }
+      set(compiledBrightnessMax) { layer.setRasterBrightnessMax(it) }
+      set(compiledSaturation) { layer.setRasterSaturation(it) }
+      set(compiledContrast) { layer.setRasterContrast(it) }
+      set(compiledResampling) { layer.setRasterResampling(it) }
+      set(compiledFadeDuration) { layer.setRasterFadeDuration(it) }
     },
     onClick = null,
     onLongClick = null,

@@ -20,13 +20,6 @@ import dev.sargunv.maplibrecompose.compose.rememberCameraState
 import dev.sargunv.maplibrecompose.compose.rememberStyleState
 import dev.sargunv.maplibrecompose.compose.source.rememberGeoJsonSource
 import dev.sargunv.maplibrecompose.core.CameraPosition
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.Feature.get
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.asString
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.const
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.format
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.image
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.offset
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.span
 import dev.sargunv.maplibrecompose.demoapp.DEFAULT_STYLE
 import dev.sargunv.maplibrecompose.demoapp.Demo
 import dev.sargunv.maplibrecompose.demoapp.DemoMapControls
@@ -34,6 +27,13 @@ import dev.sargunv.maplibrecompose.demoapp.DemoOrnamentSettings
 import dev.sargunv.maplibrecompose.demoapp.DemoScaffold
 import dev.sargunv.maplibrecompose.demoapp.generated.Res
 import dev.sargunv.maplibrecompose.demoapp.generated.marker
+import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.Feature.get
+import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.asString
+import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.const
+import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.format
+import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.image
+import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.offset
+import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.span
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
 import org.jetbrains.compose.resources.painterResource

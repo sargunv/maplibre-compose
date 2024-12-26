@@ -1,15 +1,14 @@
 package dev.sargunv.maplibrecompose.core.layer
 
-import dev.sargunv.maplibrecompose.core.expression.ColorValue
-import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.FloatValue
-import dev.sargunv.maplibrecompose.core.expression.ImageValue
-import dev.sargunv.maplibrecompose.core.expression.ResolvedValue
+import dev.sargunv.maplibrecompose.expression.ColorValue
+import dev.sargunv.maplibrecompose.expression.CompiledExpression
+import dev.sargunv.maplibrecompose.expression.FloatValue
+import dev.sargunv.maplibrecompose.expression.ImageValue
 
 internal expect class BackgroundLayer(id: String) : Layer {
-  fun setBackgroundColor(color: Expression<ColorValue>)
+  fun setBackgroundColor(color: CompiledExpression<ColorValue>)
 
-  fun setBackgroundPattern(pattern: Expression<ResolvedValue<ImageValue>>)
+  fun setBackgroundPattern(pattern: CompiledExpression<ImageValue>)
 
-  fun setBackgroundOpacity(opacity: Expression<FloatValue>)
+  fun setBackgroundOpacity(opacity: CompiledExpression<FloatValue>)
 }

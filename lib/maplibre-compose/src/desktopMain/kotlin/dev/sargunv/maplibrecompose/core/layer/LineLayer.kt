@@ -1,19 +1,17 @@
 package dev.sargunv.maplibrecompose.core.layer
 
-import dev.sargunv.maplibrecompose.core.expression.BooleanValue
-import dev.sargunv.maplibrecompose.core.expression.ColorValue
-import dev.sargunv.maplibrecompose.core.expression.DpOffsetValue
-import dev.sargunv.maplibrecompose.core.expression.DpValue
-import dev.sargunv.maplibrecompose.core.expression.EnumValue
-import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.FloatValue
-import dev.sargunv.maplibrecompose.core.expression.ImageValue
-import dev.sargunv.maplibrecompose.core.expression.LineCap
-import dev.sargunv.maplibrecompose.core.expression.LineJoin
-import dev.sargunv.maplibrecompose.core.expression.ResolvedValue
-import dev.sargunv.maplibrecompose.core.expression.TranslateAnchor
-import dev.sargunv.maplibrecompose.core.expression.VectorValue
 import dev.sargunv.maplibrecompose.core.source.Source
+import dev.sargunv.maplibrecompose.expression.BooleanValue
+import dev.sargunv.maplibrecompose.expression.ColorValue
+import dev.sargunv.maplibrecompose.expression.CompiledExpression
+import dev.sargunv.maplibrecompose.expression.DpOffsetValue
+import dev.sargunv.maplibrecompose.expression.DpValue
+import dev.sargunv.maplibrecompose.expression.FloatValue
+import dev.sargunv.maplibrecompose.expression.ImageValue
+import dev.sargunv.maplibrecompose.expression.LineCap
+import dev.sargunv.maplibrecompose.expression.LineJoin
+import dev.sargunv.maplibrecompose.expression.TranslateAnchor
+import dev.sargunv.maplibrecompose.expression.VectorValue
 
 internal actual class LineLayer actual constructor(id: String, source: Source) :
   FeatureLayer(source) {
@@ -22,71 +20,71 @@ internal actual class LineLayer actual constructor(id: String, source: Source) :
 
   actual override var sourceLayer: String = TODO()
 
-  actual override fun setFilter(filter: Expression<BooleanValue>) {
+  actual override fun setFilter(filter: CompiledExpression<BooleanValue>) {
     TODO()
   }
 
-  actual fun setLineCap(cap: Expression<EnumValue<LineCap>>) {
+  actual fun setLineCap(cap: CompiledExpression<LineCap>) {
     TODO()
   }
 
-  actual fun setLineJoin(join: Expression<EnumValue<LineJoin>>) {
+  actual fun setLineJoin(join: CompiledExpression<LineJoin>) {
     TODO()
   }
 
-  actual fun setLineMiterLimit(miterLimit: Expression<FloatValue>) {
+  actual fun setLineMiterLimit(miterLimit: CompiledExpression<FloatValue>) {
     TODO()
   }
 
-  actual fun setLineRoundLimit(roundLimit: Expression<FloatValue>) {
+  actual fun setLineRoundLimit(roundLimit: CompiledExpression<FloatValue>) {
     TODO()
   }
 
-  actual fun setLineSortKey(sortKey: Expression<FloatValue>) {
+  actual fun setLineSortKey(sortKey: CompiledExpression<FloatValue>) {
     TODO()
   }
 
-  actual fun setLineOpacity(opacity: Expression<FloatValue>) {
+  actual fun setLineOpacity(opacity: CompiledExpression<FloatValue>) {
     TODO()
   }
 
-  actual fun setLineColor(color: Expression<ColorValue>) {
+  actual fun setLineColor(color: CompiledExpression<ColorValue>) {
     TODO()
   }
 
-  actual fun setLineTranslate(translate: Expression<DpOffsetValue>) {
+  actual fun setLineTranslate(translate: CompiledExpression<DpOffsetValue>) {
     TODO()
   }
 
-  actual fun setLineTranslateAnchor(translateAnchor: Expression<EnumValue<TranslateAnchor>>) {
+  actual fun setLineTranslateAnchor(translateAnchor: CompiledExpression<TranslateAnchor>) {
     TODO()
   }
 
-  actual fun setLineWidth(width: Expression<DpValue>) {
+  actual fun setLineWidth(width: CompiledExpression<DpValue>) {
     TODO()
   }
 
-  actual fun setLineGapWidth(gapWidth: Expression<DpValue>) {
+  actual fun setLineGapWidth(gapWidth: CompiledExpression<DpValue>) {
     TODO()
   }
 
-  actual fun setLineOffset(offset: Expression<DpValue>) {
+  actual fun setLineOffset(offset: CompiledExpression<DpValue>) {
     TODO()
   }
 
-  actual fun setLineBlur(blur: Expression<DpValue>) {
+  actual fun setLineBlur(blur: CompiledExpression<DpValue>) {
     TODO()
   }
 
-  actual fun setLineDasharray(dasharray: Expression<VectorValue<Number>>) {
+  actual fun setLineDasharray(dasharray: CompiledExpression<VectorValue<Number>>) {
     TODO()
   }
 
-  actual fun setLinePattern(pattern: Expression<ResolvedValue<ImageValue>>) {
+  actual fun setLinePattern(pattern: CompiledExpression<ImageValue>) {
     TODO()
   }
 
-  actual fun setLineGradient(gradient: Expression<ColorValue>) {
+  actual fun setLineGradient(gradient: CompiledExpression<ColorValue>) {
     TODO()
   }
 }

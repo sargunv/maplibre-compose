@@ -53,6 +53,7 @@ kotlin {
       implementation(compose.foundation)
       api(libs.kermit)
       api(libs.spatialk.geojson)
+      api(project(":lib:maplibre-compose-expressions"))
     }
 
     androidMain.dependencies {
@@ -60,9 +61,7 @@ kotlin {
       implementation(libs.maplibre.android.scalebar)
     }
 
-    desktopMain.dependencies {
-      implementation("io.github.kevinnzou:compose-webview-multiplatform:1.9.40")
-    }
+    desktopMain.dependencies { implementation(libs.webview) }
 
     commonTest.dependencies {
       implementation(kotlin("test"))

@@ -9,45 +9,42 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import dev.sargunv.maplibrecompose.compose.FeaturesClickHandler
 import dev.sargunv.maplibrecompose.compose.MaplibreComposable
-import dev.sargunv.maplibrecompose.compose.engine.LocalStyleNode
-import dev.sargunv.maplibrecompose.core.expression.BooleanValue
-import dev.sargunv.maplibrecompose.core.expression.ColorValue
-import dev.sargunv.maplibrecompose.core.expression.Defaults
-import dev.sargunv.maplibrecompose.core.expression.DpOffsetValue
-import dev.sargunv.maplibrecompose.core.expression.DpPaddingValue
-import dev.sargunv.maplibrecompose.core.expression.DpValue
-import dev.sargunv.maplibrecompose.core.expression.EnumValue
-import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.cast
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.const
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.dp
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.nil
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.offset
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.times
-import dev.sargunv.maplibrecompose.core.expression.FloatOffsetValue
-import dev.sargunv.maplibrecompose.core.expression.FloatValue
-import dev.sargunv.maplibrecompose.core.expression.FormattedValue
-import dev.sargunv.maplibrecompose.core.expression.IconPitchAlignment
-import dev.sargunv.maplibrecompose.core.expression.IconRotationAlignment
-import dev.sargunv.maplibrecompose.core.expression.IconTextFit
-import dev.sargunv.maplibrecompose.core.expression.ImageValue
-import dev.sargunv.maplibrecompose.core.expression.ListValue
-import dev.sargunv.maplibrecompose.core.expression.StringValue
-import dev.sargunv.maplibrecompose.core.expression.SymbolAnchor
-import dev.sargunv.maplibrecompose.core.expression.SymbolPlacement
-import dev.sargunv.maplibrecompose.core.expression.SymbolZOrder
-import dev.sargunv.maplibrecompose.core.expression.TextJustify
-import dev.sargunv.maplibrecompose.core.expression.TextPitchAlignment
-import dev.sargunv.maplibrecompose.core.expression.TextRotationAlignment
-import dev.sargunv.maplibrecompose.core.expression.TextTransform
-import dev.sargunv.maplibrecompose.core.expression.TextUnitOffsetValue
-import dev.sargunv.maplibrecompose.core.expression.TextUnitValue
-import dev.sargunv.maplibrecompose.core.expression.TextWritingMode
-import dev.sargunv.maplibrecompose.core.expression.TranslateAnchor
-import dev.sargunv.maplibrecompose.core.expression.ZeroPadding
 import dev.sargunv.maplibrecompose.core.layer.SymbolLayer
 import dev.sargunv.maplibrecompose.core.source.Source
-import dev.sargunv.maplibrecompose.core.util.JsOnlyApi
+import dev.sargunv.maplibrecompose.expression.BooleanValue
+import dev.sargunv.maplibrecompose.expression.ColorValue
+import dev.sargunv.maplibrecompose.expression.Defaults
+import dev.sargunv.maplibrecompose.expression.DpOffsetValue
+import dev.sargunv.maplibrecompose.expression.DpPaddingValue
+import dev.sargunv.maplibrecompose.expression.DpValue
+import dev.sargunv.maplibrecompose.expression.Expression
+import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.const
+import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.div
+import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.dp
+import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.nil
+import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.offset
+import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.times
+import dev.sargunv.maplibrecompose.expression.FloatOffsetValue
+import dev.sargunv.maplibrecompose.expression.FloatValue
+import dev.sargunv.maplibrecompose.expression.FormattedValue
+import dev.sargunv.maplibrecompose.expression.IconPitchAlignment
+import dev.sargunv.maplibrecompose.expression.IconRotationAlignment
+import dev.sargunv.maplibrecompose.expression.IconTextFit
+import dev.sargunv.maplibrecompose.expression.ImageValue
+import dev.sargunv.maplibrecompose.expression.ListValue
+import dev.sargunv.maplibrecompose.expression.StringValue
+import dev.sargunv.maplibrecompose.expression.SymbolAnchor
+import dev.sargunv.maplibrecompose.expression.SymbolPlacement
+import dev.sargunv.maplibrecompose.expression.SymbolZOrder
+import dev.sargunv.maplibrecompose.expression.TextJustify
+import dev.sargunv.maplibrecompose.expression.TextPitchAlignment
+import dev.sargunv.maplibrecompose.expression.TextRotationAlignment
+import dev.sargunv.maplibrecompose.expression.TextTransform
+import dev.sargunv.maplibrecompose.expression.TextUnitOffsetValue
+import dev.sargunv.maplibrecompose.expression.TextUnitValue
+import dev.sargunv.maplibrecompose.expression.TextWritingMode
+import dev.sargunv.maplibrecompose.expression.TranslateAnchor
+import dev.sargunv.maplibrecompose.expression.ZeroPadding
 
 /**
  * A symbol layer draws data from the [sourceLayer] in the given [source] as icons and/or text
@@ -62,8 +59,7 @@ import dev.sargunv.maplibrecompose.core.util.JsOnlyApi
  *   this, the layer will be hidden. A value in the range of `[0..24]`.
  * @param filter An expression specifying conditions on source features. Only features that match
  *   the filter are displayed. Zoom expressions in filters are only evaluated at integer zoom
- *   levels. The
- *   [featureState][dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.Feature.state]
+ *   levels. The [featureState][dev.sargunv.maplibrecompose.expression.ExpressionsDsl.Feature.state]
  *   expression is not supported in filter expressions.
  * @param visible Whether the layer should be displayed.
  * @param sortKey Sorts features within this layer in ascending order based on this value. Features
@@ -190,7 +186,7 @@ import dev.sargunv.maplibrecompose.core.util.JsOnlyApi
  *   the plain string "My label".
  *
  *   The text can also be formatted, employing different colors, fonts, etc., see
- *   [format][dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.format].
+ *   [format][dev.sargunv.maplibrecompose.expression.ExpressionsDsl.format].
  *
  * @param textOpacity The opacity at which the text will be drawn.
  *
@@ -349,7 +345,7 @@ import dev.sargunv.maplibrecompose.core.util.JsOnlyApi
  *   Ignored if [textField] is not specified.
  *
  * @param textOverlap Controls whether to show an icon/text when it overlaps other symbols on the
- *   map. See [SymbolOverlap][dev.sargunv.maplibrecompose.core.expression.SymbolOverlap]. Overrides
+ *   map. See [SymbolOverlap][dev.sargunv.maplibrecompose.expression.SymbolOverlap]. Overrides
  *   [textAllowOverlap].
  *
  *   Ignored if [textField] is not specified.
@@ -379,7 +375,6 @@ import dev.sargunv.maplibrecompose.core.util.JsOnlyApi
  * @param onClick Function to call when any feature in this layer has been clicked.
  * @param onLongClick Function to call when any feature in this layer has been long-clicked.
  */
-@OptIn(JsOnlyApi::class)
 @Composable
 @MaplibreComposable
 public fun SymbolLayer(
@@ -391,10 +386,10 @@ public fun SymbolLayer(
   filter: Expression<BooleanValue> = nil(),
   visible: Boolean = true,
   sortKey: Expression<FloatValue> = nil(),
-  placement: Expression<EnumValue<SymbolPlacement>> = const(SymbolPlacement.Point),
+  placement: Expression<SymbolPlacement> = const(SymbolPlacement.Point),
   spacing: Expression<DpValue> = const(250.dp),
   avoidEdges: Expression<BooleanValue> = const(false),
-  zOrder: Expression<EnumValue<SymbolZOrder>> = const(SymbolZOrder.Auto),
+  zOrder: Expression<SymbolZOrder> = const(SymbolZOrder.Auto),
 
   // icon image
   iconImage: Expression<ImageValue> = nil(),
@@ -408,16 +403,15 @@ public fun SymbolLayer(
 
   // icon layout
   iconSize: Expression<FloatValue> = const(1f),
-  iconRotationAlignment: Expression<EnumValue<IconRotationAlignment>> =
-    const(IconRotationAlignment.Auto),
-  iconPitchAlignment: Expression<EnumValue<IconPitchAlignment>> = const(IconPitchAlignment.Auto),
-  iconTextFit: Expression<EnumValue<IconTextFit>> = const(IconTextFit.None),
+  iconRotationAlignment: Expression<IconRotationAlignment> = const(IconRotationAlignment.Auto),
+  iconPitchAlignment: Expression<IconPitchAlignment> = const(IconPitchAlignment.Auto),
+  iconTextFit: Expression<IconTextFit> = const(IconTextFit.None),
   iconTextFitPadding: Expression<DpPaddingValue> = const(ZeroPadding),
   iconKeepUpright: Expression<BooleanValue> = const(false),
   iconRotate: Expression<FloatValue> = const(0f),
 
   // icon anchoring
-  iconAnchor: Expression<EnumValue<SymbolAnchor>> = const(SymbolAnchor.Center),
+  iconAnchor: Expression<SymbolAnchor> = const(SymbolAnchor.Center),
   iconOffset: Expression<DpOffsetValue> = const(DpOffset.Zero),
 
   // icon collision
@@ -429,7 +423,7 @@ public fun SymbolLayer(
 
   // icon translate
   iconTranslate: Expression<DpOffsetValue> = const(DpOffset.Zero),
-  iconTranslateAnchor: Expression<EnumValue<TranslateAnchor>> = const(TranslateAnchor.Map),
+  iconTranslateAnchor: Expression<TranslateAnchor> = const(TranslateAnchor.Map),
 
   // text content
   textField: Expression<FormattedValue> = const("").cast(),
@@ -444,25 +438,24 @@ public fun SymbolLayer(
   // text glyph properties
   textFont: Expression<ListValue<StringValue>> = Defaults.FontNames,
   textSize: Expression<TextUnitValue> = const(1.em),
-  textTransform: Expression<EnumValue<TextTransform>> = const(TextTransform.None),
+  textTransform: Expression<TextTransform> = const(TextTransform.None),
   textLetterSpacing: Expression<TextUnitValue> = const(0f.em),
-  textRotationAlignment: Expression<EnumValue<TextRotationAlignment>> =
-    const(TextRotationAlignment.Auto),
-  textPitchAlignment: Expression<EnumValue<TextPitchAlignment>> = const(TextPitchAlignment.Auto),
+  textRotationAlignment: Expression<TextRotationAlignment> = const(TextRotationAlignment.Auto),
+  textPitchAlignment: Expression<TextPitchAlignment> = const(TextPitchAlignment.Auto),
   textMaxAngle: Expression<FloatValue> = const(45f),
 
   // text paragraph layout
   textMaxWidth: Expression<TextUnitValue> = const(10f.em),
   textLineHeight: Expression<TextUnitValue> = const(1.2f.em),
-  textJustify: Expression<EnumValue<TextJustify>> = const(TextJustify.Center),
-  textWritingMode: Expression<ListValue<EnumValue<TextWritingMode>>> = nil(),
+  textJustify: Expression<TextJustify> = const(TextJustify.Center),
+  textWritingMode: Expression<ListValue<TextWritingMode>> = nil(),
   textKeepUpright: Expression<BooleanValue> = const(true),
   textRotate: Expression<FloatValue> = const(0f),
 
   // text anchoring
-  textAnchor: Expression<EnumValue<SymbolAnchor>> = const(SymbolAnchor.Center),
+  textAnchor: Expression<SymbolAnchor> = const(SymbolAnchor.Center),
   textOffset: Expression<TextUnitOffsetValue> = offset(0f.em, 0f.em),
-  textVariableAnchor: Expression<ListValue<EnumValue<SymbolAnchor>>> = nil(),
+  textVariableAnchor: Expression<ListValue<SymbolAnchor>> = nil(),
   textRadialOffset: Expression<TextUnitValue> = const(0f.em),
   //  textVariableAnchorOffset: Expression<TextVariableAnchorOffsetValue> = nil(),
   textVariableAnchorOffset: Expression<Nothing> = nil(),
@@ -476,29 +469,80 @@ public fun SymbolLayer(
 
   // text translate
   textTranslate: Expression<DpOffsetValue> = const(DpOffset.Zero),
-  textTranslateAnchor: Expression<EnumValue<TranslateAnchor>> = const(TranslateAnchor.Map),
+  textTranslateAnchor: Expression<TranslateAnchor> = const(TranslateAnchor.Map),
   onClick: FeaturesClickHandler? = null,
   onLongClick: FeaturesClickHandler? = null,
 ) {
-  val textSizeSp = textSize.rememberTextUnitsAsSp(const(16f), 1f.em).cast<FloatValue>()
-  val textLetterSpacingEm =
-    textLetterSpacing.rememberTextUnitsAsEm(textSizeSp, 0f.em).cast<FloatValue>()
-  val textMaxWidthEm = textMaxWidth.rememberTextUnitsAsEm(textSizeSp, 10f.em).cast<FloatValue>()
-  val textLineHeightEm =
-    textLineHeight.rememberTextUnitsAsEm(textSizeSp, 1.2f.em).cast<FloatValue>()
-  val textRadialOffsetEm =
-    textRadialOffset.rememberTextUnitsAsEm(textSizeSp, 0f.em).cast<FloatValue>()
-  val textOffsetEm = textOffset.rememberTextUnitsAsEm(textSizeSp, 0f.em).cast<FloatOffsetValue>()
-  val textFieldEm = textField.rememberTextUnitsAsEm(textSizeSp, 1f.em).cast<FormattedValue>()
-
   // used for scaling textSize from sp (api) to dp (core)
-  // TODO needs changes after https://github.com/maplibre/maplibre-native/issues/3057
-  val fontScale = LocalDensity.current.fontScale
-  val textSizeDp = remember(textSizeSp, fontScale) { (textSizeSp * const(fontScale)).dp }
+  // needs changes after https://github.com/maplibre/maplibre-native/issues/3057
+  val dpPerSp = LocalDensity.current.fontScale
+  val textSizeCompiler = rememberPropertyCompiler(emScale = const(16f), spScale = const(1f))
+  val textSizeSp = textSizeCompiler.invoke(textSize).cast<FloatValue>()
+  val textSizeDp = remember(textSizeSp, dpPerSp) { textSizeSp * const(dpPerSp).dp }
 
-  val node = LocalStyleNode.current
-  val resolvedIconImage = node.imageManager.resolveImages(iconImage)
-  val resolvedTextField = node.imageManager.resolveImages(textFieldEm)
+  val emCompiler = rememberPropertyCompiler(emScale = const(1f), spScale = const(1f) / textSizeSp)
+
+  val compiledFilter = emCompiler.invoke(filter)
+  val compiledSortKey = emCompiler.invoke(sortKey)
+  val compiledSpacing = emCompiler.invoke(spacing)
+  val compiledAvoidEdges = emCompiler.invoke(avoidEdges)
+  val compiledZOrder = emCompiler.invoke(zOrder)
+  val compiledPlacement = emCompiler.invoke(placement)
+
+  val compiledIconImage = emCompiler.invoke(iconImage)
+  val compiledIconOpacity = emCompiler.invoke(iconOpacity)
+  val compiledIconColor = emCompiler.invoke(iconColor)
+  val compiledIconHaloColor = emCompiler.invoke(iconHaloColor)
+  val compiledIconHaloWidth = emCompiler.invoke(iconHaloWidth)
+  val compiledIconHaloBlur = emCompiler.invoke(iconHaloBlur)
+  val compiledIconSize = emCompiler.invoke(iconSize)
+  val compiledIconRotationAlignment = emCompiler.invoke(iconRotationAlignment)
+  val compiledIconPitchAlignment = emCompiler.invoke(iconPitchAlignment)
+  val compiledIconTextFit = emCompiler.invoke(iconTextFit)
+  val compiledIconTextFitPadding = emCompiler.invoke(iconTextFitPadding)
+  val compiledIconKeepUpright = emCompiler.invoke(iconKeepUpright)
+  val compiledIconRotate = emCompiler.invoke(iconRotate)
+  val compiledIconAnchor = emCompiler.invoke(iconAnchor)
+  val compiledIconOffset = emCompiler.invoke(iconOffset)
+  val compiledIconPadding = emCompiler.invoke(iconPadding)
+  val compiledIconAllowOverlap = emCompiler.invoke(iconAllowOverlap)
+  val compiledIconOverlap = emCompiler.invoke(iconOverlap)
+  val compiledIconIgnorePlacement = emCompiler.invoke(iconIgnorePlacement)
+  val compiledIconOptional = emCompiler.invoke(iconOptional)
+  val compiledIconTranslate = emCompiler.invoke(iconTranslate)
+  val compiledIconTranslateAnchor = emCompiler.invoke(iconTranslateAnchor)
+
+  val compiledTextField = emCompiler.invoke(textField)
+  val compiledTextOpacity = emCompiler.invoke(textOpacity)
+  val compiledTextColor = emCompiler.invoke(textColor)
+  val compiledTextHaloColor = emCompiler.invoke(textHaloColor)
+  val compiledTextHaloWidth = emCompiler.invoke(textHaloWidth)
+  val compiledTextHaloBlur = emCompiler.invoke(textHaloBlur)
+  val compiledTextFont = emCompiler.invoke(textFont)
+  val compiledTextSize = emCompiler.invoke(textSizeDp)
+  val compiledTextTransform = emCompiler.invoke(textTransform)
+  val compiledTextLetterSpacing = emCompiler.invoke(textLetterSpacing)
+  val compiledTextRotationAlignment = emCompiler.invoke(textRotationAlignment)
+  val compiledTextPitchAlignment = emCompiler.invoke(textPitchAlignment)
+  val compiledTextMaxAngle = emCompiler.invoke(textMaxAngle)
+  val compiledTextMaxWidth = emCompiler.invoke(textMaxWidth)
+  val compiledTextLineHeight = emCompiler.invoke(textLineHeight)
+  val compiledTextJustify = emCompiler.invoke(textJustify)
+  val compiledTextWritingMode = emCompiler.invoke(textWritingMode)
+  val compiledTextKeepUpright = emCompiler.invoke(textKeepUpright)
+  val compiledTextRotate = emCompiler.invoke(textRotate)
+  val compiledTextAnchor = emCompiler.invoke(textAnchor)
+  val compiledTextOffset = emCompiler.invoke(textOffset)
+  val compiledTextVariableAnchor = emCompiler.invoke(textVariableAnchor)
+  val compiledTextRadialOffset = emCompiler.invoke(textRadialOffset)
+  val compiledTextVariableAnchorOffset = emCompiler.invoke(textVariableAnchorOffset)
+  val compiledTextPadding = emCompiler.invoke(textPadding)
+  val compiledTextAllowOverlap = emCompiler.invoke(textAllowOverlap)
+  val compiledTextOverlap = emCompiler.invoke(textOverlap)
+  val compiledTextIgnorePlacement = emCompiler.invoke(textIgnorePlacement)
+  val compiledTextOptional = emCompiler.invoke(textOptional)
+  val compiledTextTranslate = emCompiler.invoke(textTranslate)
+  val compiledTextTranslateAnchor = emCompiler.invoke(textTranslateAnchor)
 
   LayerNode(
     factory = { SymbolLayer(id = id, source = source) },
@@ -506,68 +550,68 @@ public fun SymbolLayer(
       set(sourceLayer) { layer.sourceLayer = it }
       set(minZoom) { layer.minZoom = it }
       set(maxZoom) { layer.maxZoom = it }
-      set(filter) { layer.setFilter(it) }
+      set(compiledFilter) { layer.setFilter(it) }
       set(visible) { layer.visible = it }
-      set(placement) { layer.setSymbolPlacement(it) }
-      set(spacing) { layer.setSymbolSpacing(it) }
-      set(avoidEdges) { layer.setSymbolAvoidEdges(it) }
-      set(sortKey) { layer.setSymbolSortKey(it) }
-      set(zOrder) { layer.setSymbolZOrder(it) }
+      set(compiledPlacement) { layer.setSymbolPlacement(it) }
+      set(compiledSpacing) { layer.setSymbolSpacing(it) }
+      set(compiledAvoidEdges) { layer.setSymbolAvoidEdges(it) }
+      set(compiledSortKey) { layer.setSymbolSortKey(it) }
+      set(compiledZOrder) { layer.setSymbolZOrder(it) }
 
-      set(iconAllowOverlap) { layer.setIconAllowOverlap(it) }
-      set(iconOverlap) { layer.setIconOverlap(it) }
-      set(iconIgnorePlacement) { layer.setIconIgnorePlacement(it) }
-      set(iconOptional) { layer.setIconOptional(it) }
-      set(iconRotationAlignment) { layer.setIconRotationAlignment(it) }
-      set(iconSize) { layer.setIconSize(it) }
-      set(iconTextFit) { layer.setIconTextFit(it) }
-      set(iconTextFitPadding) { layer.setIconTextFitPadding(it) }
-      set(resolvedIconImage) { layer.setIconImage(it) }
-      set(iconRotate) { layer.setIconRotate(it) }
-      set(iconPadding) { layer.setIconPadding(it) }
-      set(iconKeepUpright) { layer.setIconKeepUpright(it) }
-      set(iconOffset) { layer.setIconOffset(it) }
-      set(iconAnchor) { layer.setIconAnchor(it) }
-      set(iconPitchAlignment) { layer.setIconPitchAlignment(it) }
-      set(iconOpacity) { layer.setIconOpacity(it) }
-      set(iconColor) { layer.setIconColor(it) }
-      set(iconHaloColor) { layer.setIconHaloColor(it) }
-      set(iconHaloWidth) { layer.setIconHaloWidth(it) }
-      set(iconHaloBlur) { layer.setIconHaloBlur(it) }
-      set(iconTranslate) { layer.setIconTranslate(it) }
-      set(iconTranslateAnchor) { layer.setIconTranslateAnchor(it) }
+      set(compiledIconAllowOverlap) { layer.setIconAllowOverlap(it) }
+      set(compiledIconOverlap) { layer.setIconOverlap(it) }
+      set(compiledIconIgnorePlacement) { layer.setIconIgnorePlacement(it) }
+      set(compiledIconOptional) { layer.setIconOptional(it) }
+      set(compiledIconRotationAlignment) { layer.setIconRotationAlignment(it) }
+      set(compiledIconSize) { layer.setIconSize(it) }
+      set(compiledIconTextFit) { layer.setIconTextFit(it) }
+      set(compiledIconTextFitPadding) { layer.setIconTextFitPadding(it) }
+      set(compiledIconImage) { layer.setIconImage(it) }
+      set(compiledIconRotate) { layer.setIconRotate(it) }
+      set(compiledIconPadding) { layer.setIconPadding(it) }
+      set(compiledIconKeepUpright) { layer.setIconKeepUpright(it) }
+      set(compiledIconOffset) { layer.setIconOffset(it) }
+      set(compiledIconAnchor) { layer.setIconAnchor(it) }
+      set(compiledIconPitchAlignment) { layer.setIconPitchAlignment(it) }
+      set(compiledIconOpacity) { layer.setIconOpacity(it) }
+      set(compiledIconColor) { layer.setIconColor(it) }
+      set(compiledIconHaloColor) { layer.setIconHaloColor(it) }
+      set(compiledIconHaloWidth) { layer.setIconHaloWidth(it) }
+      set(compiledIconHaloBlur) { layer.setIconHaloBlur(it) }
+      set(compiledIconTranslate) { layer.setIconTranslate(it) }
+      set(compiledIconTranslateAnchor) { layer.setIconTranslateAnchor(it) }
 
-      set(textPitchAlignment) { layer.setTextPitchAlignment(it) }
-      set(textRotationAlignment) { layer.setTextRotationAlignment(it) }
-      set(resolvedTextField) { layer.setTextField(it) }
-      set(textFont) { layer.setTextFont(it) }
-      set(textSizeDp) { layer.setTextSize(it) }
-      set(textMaxWidthEm) { layer.setTextMaxWidth(it) }
-      set(textLineHeightEm) { layer.setTextLineHeight(it) }
-      set(textLetterSpacingEm) { layer.setTextLetterSpacing(it) }
-      set(textJustify) { layer.setTextJustify(it) }
-      set(textRadialOffsetEm) { layer.setTextRadialOffset(it) }
-      set(textVariableAnchor) { layer.setTextVariableAnchor(it) }
-      set(textVariableAnchorOffset) { layer.setTextVariableAnchorOffset(it) }
-      set(textAnchor) { layer.setTextAnchor(it) }
-      set(textMaxAngle) { layer.setTextMaxAngle(it) }
-      set(textWritingMode) { layer.setTextWritingMode(it) }
-      set(textRotate) { layer.setTextRotate(it) }
-      set(textPadding) { layer.setTextPadding(it) }
-      set(textKeepUpright) { layer.setTextKeepUpright(it) }
-      set(textTransform) { layer.setTextTransform(it) }
-      set(textOffsetEm) { layer.setTextOffset(it) }
-      set(textAllowOverlap) { layer.setTextAllowOverlap(it) }
-      set(textOverlap) { layer.setTextOverlap(it) }
-      set(textIgnorePlacement) { layer.setTextIgnorePlacement(it) }
-      set(textOptional) { layer.setTextOptional(it) }
-      set(textOpacity) { layer.setTextOpacity(it) }
-      set(textColor) { layer.setTextColor(it) }
-      set(textHaloColor) { layer.setTextHaloColor(it) }
-      set(textHaloWidth) { layer.setTextHaloWidth(it) }
-      set(textHaloBlur) { layer.setTextHaloBlur(it) }
-      set(textTranslate) { layer.setTextTranslate(it) }
-      set(textTranslateAnchor) { layer.setTextTranslateAnchor(it) }
+      set(compiledTextPitchAlignment) { layer.setTextPitchAlignment(it) }
+      set(compiledTextRotationAlignment) { layer.setTextRotationAlignment(it) }
+      set(compiledTextField) { layer.setTextField(it) }
+      set(compiledTextFont) { layer.setTextFont(it) }
+      set(compiledTextSize) { layer.setTextSize(it) }
+      set(compiledTextMaxWidth.cast<FloatValue>()) { layer.setTextMaxWidth(it) }
+      set(compiledTextLineHeight.cast<FloatValue>()) { layer.setTextLineHeight(it) }
+      set(compiledTextLetterSpacing.cast<FloatValue>()) { layer.setTextLetterSpacing(it) }
+      set(compiledTextJustify) { layer.setTextJustify(it) }
+      set(compiledTextRadialOffset.cast<FloatValue>()) { layer.setTextRadialOffset(it) }
+      set(compiledTextVariableAnchor) { layer.setTextVariableAnchor(it) }
+      set(compiledTextVariableAnchorOffset) { layer.setTextVariableAnchorOffset(it) }
+      set(compiledTextAnchor) { layer.setTextAnchor(it) }
+      set(compiledTextMaxAngle) { layer.setTextMaxAngle(it) }
+      set(compiledTextWritingMode) { layer.setTextWritingMode(it) }
+      set(compiledTextRotate) { layer.setTextRotate(it) }
+      set(compiledTextPadding) { layer.setTextPadding(it) }
+      set(compiledTextKeepUpright) { layer.setTextKeepUpright(it) }
+      set(compiledTextTransform) { layer.setTextTransform(it) }
+      set(compiledTextOffset.cast<FloatOffsetValue>()) { layer.setTextOffset(it) }
+      set(compiledTextAllowOverlap) { layer.setTextAllowOverlap(it) }
+      set(compiledTextOverlap) { layer.setTextOverlap(it) }
+      set(compiledTextIgnorePlacement) { layer.setTextIgnorePlacement(it) }
+      set(compiledTextOptional) { layer.setTextOptional(it) }
+      set(compiledTextOpacity) { layer.setTextOpacity(it) }
+      set(compiledTextColor) { layer.setTextColor(it) }
+      set(compiledTextHaloColor) { layer.setTextHaloColor(it) }
+      set(compiledTextHaloWidth) { layer.setTextHaloWidth(it) }
+      set(compiledTextHaloBlur) { layer.setTextHaloBlur(it) }
+      set(compiledTextTranslate) { layer.setTextTranslate(it) }
+      set(compiledTextTranslateAnchor) { layer.setTextTranslateAnchor(it) }
     },
     onClick = onClick,
     onLongClick = onLongClick,

@@ -1,45 +1,44 @@
 package dev.sargunv.maplibrecompose.core.layer
 
-import dev.sargunv.maplibrecompose.core.expression.EnumValue
-import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.FloatValue
-import dev.sargunv.maplibrecompose.core.expression.MillisecondsValue
-import dev.sargunv.maplibrecompose.core.expression.RasterResampling
 import dev.sargunv.maplibrecompose.core.source.Source
+import dev.sargunv.maplibrecompose.expression.CompiledExpression
+import dev.sargunv.maplibrecompose.expression.FloatValue
+import dev.sargunv.maplibrecompose.expression.MillisecondsValue
+import dev.sargunv.maplibrecompose.expression.RasterResampling
 
 internal actual class RasterLayer actual constructor(id: String, actual val source: Source) :
   Layer() {
   override val impl = TODO()
 
-  actual fun setRasterOpacity(opacity: Expression<FloatValue>) {
+  actual fun setRasterOpacity(opacity: CompiledExpression<FloatValue>) {
     TODO()
   }
 
-  actual fun setRasterHueRotate(hueRotate: Expression<FloatValue>) {
+  actual fun setRasterHueRotate(hueRotate: CompiledExpression<FloatValue>) {
     TODO()
   }
 
-  actual fun setRasterBrightnessMin(brightnessMin: Expression<FloatValue>) {
+  actual fun setRasterBrightnessMin(brightnessMin: CompiledExpression<FloatValue>) {
     TODO()
   }
 
-  actual fun setRasterBrightnessMax(brightnessMax: Expression<FloatValue>) {
+  actual fun setRasterBrightnessMax(brightnessMax: CompiledExpression<FloatValue>) {
     TODO()
   }
 
-  actual fun setRasterSaturation(saturation: Expression<FloatValue>) {
+  actual fun setRasterSaturation(saturation: CompiledExpression<FloatValue>) {
     TODO()
   }
 
-  actual fun setRasterContrast(contrast: Expression<FloatValue>) {
+  actual fun setRasterContrast(contrast: CompiledExpression<FloatValue>) {
     TODO()
   }
 
-  actual fun setRasterResampling(resampling: Expression<EnumValue<RasterResampling>>) {
+  actual fun setRasterResampling(resampling: CompiledExpression<RasterResampling>) {
     TODO()
   }
 
-  actual fun setRasterFadeDuration(fadeDuration: Expression<MillisecondsValue>) {
+  actual fun setRasterFadeDuration(fadeDuration: CompiledExpression<MillisecondsValue>) {
     TODO()
   }
 }

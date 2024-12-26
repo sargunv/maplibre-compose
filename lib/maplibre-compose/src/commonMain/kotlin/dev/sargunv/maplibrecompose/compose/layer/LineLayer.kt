@@ -6,23 +6,21 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrecompose.compose.FeaturesClickHandler
 import dev.sargunv.maplibrecompose.compose.MaplibreComposable
-import dev.sargunv.maplibrecompose.compose.engine.LocalStyleNode
-import dev.sargunv.maplibrecompose.core.expression.BooleanValue
-import dev.sargunv.maplibrecompose.core.expression.ColorValue
-import dev.sargunv.maplibrecompose.core.expression.DpOffsetValue
-import dev.sargunv.maplibrecompose.core.expression.DpValue
-import dev.sargunv.maplibrecompose.core.expression.EnumValue
-import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.const
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.nil
-import dev.sargunv.maplibrecompose.core.expression.FloatValue
-import dev.sargunv.maplibrecompose.core.expression.ImageValue
-import dev.sargunv.maplibrecompose.core.expression.LineCap
-import dev.sargunv.maplibrecompose.core.expression.LineJoin
-import dev.sargunv.maplibrecompose.core.expression.TranslateAnchor
-import dev.sargunv.maplibrecompose.core.expression.VectorValue
 import dev.sargunv.maplibrecompose.core.layer.LineLayer
 import dev.sargunv.maplibrecompose.core.source.Source
+import dev.sargunv.maplibrecompose.expression.BooleanValue
+import dev.sargunv.maplibrecompose.expression.ColorValue
+import dev.sargunv.maplibrecompose.expression.DpOffsetValue
+import dev.sargunv.maplibrecompose.expression.DpValue
+import dev.sargunv.maplibrecompose.expression.Expression
+import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.const
+import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.nil
+import dev.sargunv.maplibrecompose.expression.FloatValue
+import dev.sargunv.maplibrecompose.expression.ImageValue
+import dev.sargunv.maplibrecompose.expression.LineCap
+import dev.sargunv.maplibrecompose.expression.LineJoin
+import dev.sargunv.maplibrecompose.expression.TranslateAnchor
+import dev.sargunv.maplibrecompose.expression.VectorValue
 
 /**
  * A line layer draws polylines and polygons from the [sourceLayer] in the given [source] in the
@@ -38,8 +36,7 @@ import dev.sargunv.maplibrecompose.core.source.Source
  *   this, the layer will be hidden. A value in the range of `[0..24]`.
  * @param filter An expression specifying conditions on source features. Only features that match
  *   the filter are displayed. Zoom expressions in filters are only evaluated at integer zoom
- *   levels. The
- *   [featureState][dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.featureState]
+ *   levels. The [featureState][dev.sargunv.maplibrecompose.expression.ExpressionsDsl.Feature.state]
  *   expression is not supported in filter expressions.
  * @param visible Whether the layer should be displayed.
  * @param sortKey Sorts features within this layer in ascending order based on this value. Features
@@ -96,7 +93,7 @@ public fun LineLayer(
   visible: Boolean = true,
   sortKey: Expression<FloatValue> = nil(),
   translate: Expression<DpOffsetValue> = const(DpOffset.Zero),
-  translateAnchor: Expression<EnumValue<TranslateAnchor>> = const(TranslateAnchor.Map),
+  translateAnchor: Expression<TranslateAnchor> = const(TranslateAnchor.Map),
   opacity: Expression<FloatValue> = const(1f),
   color: Expression<ColorValue> = const(Color.Black),
   dasharray: Expression<VectorValue<Number>> = nil(),
@@ -106,15 +103,32 @@ public fun LineLayer(
   width: Expression<DpValue> = const(1.dp),
   gapWidth: Expression<DpValue> = const(0.dp),
   offset: Expression<DpValue> = const(0.dp),
-  cap: Expression<EnumValue<LineCap>> = const(LineCap.Butt),
-  join: Expression<EnumValue<LineJoin>> = const(LineJoin.Miter),
+  cap: Expression<LineCap> = const(LineCap.Butt),
+  join: Expression<LineJoin> = const(LineJoin.Miter),
   miterLimit: Expression<FloatValue> = const(2f),
   roundLimit: Expression<FloatValue> = const(1.05f),
   onClick: FeaturesClickHandler? = null,
   onLongClick: FeaturesClickHandler? = null,
 ) {
-  val styleNode = LocalStyleNode.current
-  val resolvedPattern = styleNode.imageManager.resolveImages(pattern)
+  val compiler = rememberPropertyCompiler()
+
+  val compiledFilter = compiler.invoke(filter)
+  val compiledSortKey = compiler.invoke(sortKey)
+  val compiledTranslate = compiler.invoke(translate)
+  val compiledTranslateAnchor = compiler.invoke(translateAnchor)
+  val compiledOpacity = compiler.invoke(opacity)
+  val compiledColor = compiler.invoke(color)
+  val compiledDasharray = compiler.invoke(dasharray)
+  val compiledPattern = compiler.invoke(pattern)
+  val compiledGradient = compiler.invoke(gradient)
+  val compiledBlur = compiler.invoke(blur)
+  val compiledWidth = compiler.invoke(width)
+  val compiledGapWidth = compiler.invoke(gapWidth)
+  val compiledOffset = compiler.invoke(offset)
+  val compiledCap = compiler.invoke(cap)
+  val compiledJoin = compiler.invoke(join)
+  val compiledMiterLimit = compiler.invoke(miterLimit)
+  val compiledRoundLimit = compiler.invoke(roundLimit)
 
   LayerNode(
     factory = { LineLayer(id = id, source = source) },
@@ -122,24 +136,24 @@ public fun LineLayer(
       set(sourceLayer) { layer.sourceLayer = it }
       set(minZoom) { layer.minZoom = it }
       set(maxZoom) { layer.maxZoom = it }
-      set(filter) { layer.setFilter(it) }
+      set(compiledFilter) { layer.setFilter(it) }
       set(visible) { layer.visible = it }
-      set(cap) { layer.setLineCap(it) }
-      set(join) { layer.setLineJoin(it) }
-      set(miterLimit) { layer.setLineMiterLimit(it) }
-      set(roundLimit) { layer.setLineRoundLimit(it) }
-      set(sortKey) { layer.setLineSortKey(it) }
-      set(opacity) { layer.setLineOpacity(it) }
-      set(color) { layer.setLineColor(it) }
-      set(translate) { layer.setLineTranslate(it) }
-      set(translateAnchor) { layer.setLineTranslateAnchor(it) }
-      set(width) { layer.setLineWidth(it) }
-      set(gapWidth) { layer.setLineGapWidth(it) }
-      set(offset) { layer.setLineOffset(it) }
-      set(blur) { layer.setLineBlur(it) }
-      set(dasharray) { layer.setLineDasharray(it) }
-      set(resolvedPattern) { layer.setLinePattern(it) }
-      set(gradient) { layer.setLineGradient(it) }
+      set(compiledCap) { layer.setLineCap(it) }
+      set(compiledJoin) { layer.setLineJoin(it) }
+      set(compiledMiterLimit) { layer.setLineMiterLimit(it) }
+      set(compiledRoundLimit) { layer.setLineRoundLimit(it) }
+      set(compiledSortKey) { layer.setLineSortKey(it) }
+      set(compiledOpacity) { layer.setLineOpacity(it) }
+      set(compiledColor) { layer.setLineColor(it) }
+      set(compiledTranslate) { layer.setLineTranslate(it) }
+      set(compiledTranslateAnchor) { layer.setLineTranslateAnchor(it) }
+      set(compiledWidth) { layer.setLineWidth(it) }
+      set(compiledGapWidth) { layer.setLineGapWidth(it) }
+      set(compiledOffset) { layer.setLineOffset(it) }
+      set(compiledBlur) { layer.setLineBlur(it) }
+      set(compiledDasharray) { layer.setLineDasharray(it) }
+      set(compiledPattern) { layer.setLinePattern(it) }
+      set(compiledGradient) { layer.setLineGradient(it) }
     },
     onClick = onClick,
     onLongClick = onLongClick,

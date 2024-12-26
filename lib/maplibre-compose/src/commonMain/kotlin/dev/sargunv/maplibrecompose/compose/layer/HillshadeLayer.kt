@@ -3,14 +3,13 @@ package dev.sargunv.maplibrecompose.compose.layer
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import dev.sargunv.maplibrecompose.compose.MaplibreComposable
-import dev.sargunv.maplibrecompose.core.expression.ColorValue
-import dev.sargunv.maplibrecompose.core.expression.EnumValue
-import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.const
-import dev.sargunv.maplibrecompose.core.expression.FloatValue
-import dev.sargunv.maplibrecompose.core.expression.IlluminationAnchor
 import dev.sargunv.maplibrecompose.core.layer.HillshadeLayer
 import dev.sargunv.maplibrecompose.core.source.Source
+import dev.sargunv.maplibrecompose.expression.ColorValue
+import dev.sargunv.maplibrecompose.expression.Expression
+import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.const
+import dev.sargunv.maplibrecompose.expression.FloatValue
+import dev.sargunv.maplibrecompose.expression.IlluminationAnchor
 
 /**
  * Client-side hillshading visualization based on DEM data. The implementation supports Mapbox
@@ -48,22 +47,30 @@ public fun HillshadeLayer(
   highlightColor: Expression<ColorValue> = const(Color.White),
   accentColor: Expression<ColorValue> = const(Color.Black),
   illuminationDirection: Expression<FloatValue> = const(355f),
-  illuminationAnchor: Expression<EnumValue<IlluminationAnchor>> =
-    const(IlluminationAnchor.Viewport),
+  illuminationAnchor: Expression<IlluminationAnchor> = const(IlluminationAnchor.Viewport),
   exaggeration: Expression<FloatValue> = const(0.5f),
 ) {
+  val compiler = rememberPropertyCompiler()
+
+  val compiledShadowColor = compiler.invoke(shadowColor)
+  val compiledHighlightColor = compiler.invoke(highlightColor)
+  val compiledAccentColor = compiler.invoke(accentColor)
+  val compiledIlluminationDirection = compiler.invoke(illuminationDirection)
+  val compiledIlluminationAnchor = compiler.invoke(illuminationAnchor)
+  val compiledExaggeration = compiler.invoke(exaggeration)
+
   LayerNode(
     factory = { HillshadeLayer(id = id, source = source) },
     update = {
       set(minZoom) { layer.minZoom = it }
       set(maxZoom) { layer.maxZoom = it }
       set(visible) { layer.visible = it }
-      set(illuminationDirection) { layer.setHillshadeIlluminationDirection(it) }
-      set(illuminationAnchor) { layer.setHillshadeIlluminationAnchor(it) }
-      set(exaggeration) { layer.setHillshadeExaggeration(it) }
-      set(shadowColor) { layer.setHillshadeShadowColor(it) }
-      set(highlightColor) { layer.setHillshadeHighlightColor(it) }
-      set(accentColor) { layer.setHillshadeAccentColor(it) }
+      set(compiledIlluminationDirection) { layer.setHillshadeIlluminationDirection(it) }
+      set(compiledIlluminationAnchor) { layer.setHillshadeIlluminationAnchor(it) }
+      set(compiledExaggeration) { layer.setHillshadeExaggeration(it) }
+      set(compiledShadowColor) { layer.setHillshadeShadowColor(it) }
+      set(compiledHighlightColor) { layer.setHillshadeHighlightColor(it) }
+      set(compiledAccentColor) { layer.setHillshadeAccentColor(it) }
     },
     onClick = null,
     onLongClick = null,

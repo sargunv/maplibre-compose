@@ -42,8 +42,6 @@ import cocoapods.MapLibre.MLNOrnamentPositionTopRight
 import cocoapods.MapLibre.MLNStyle
 import cocoapods.MapLibre.MLNZoomLevelForAltitude
 import cocoapods.MapLibre.allowsTilting
-import dev.sargunv.maplibrecompose.core.expression.BooleanValue
-import dev.sargunv.maplibrecompose.core.expression.Expression
 import dev.sargunv.maplibrecompose.core.util.toBoundingBox
 import dev.sargunv.maplibrecompose.core.util.toCGPoint
 import dev.sargunv.maplibrecompose.core.util.toCGRect
@@ -53,6 +51,8 @@ import dev.sargunv.maplibrecompose.core.util.toFeature
 import dev.sargunv.maplibrecompose.core.util.toMLNOrnamentPosition
 import dev.sargunv.maplibrecompose.core.util.toNSPredicate
 import dev.sargunv.maplibrecompose.core.util.toPosition
+import dev.sargunv.maplibrecompose.expression.BooleanValue
+import dev.sargunv.maplibrecompose.expression.CompiledExpression
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
@@ -180,6 +180,7 @@ internal class IosMap(
     @ObjCSignatureOverride
     override fun mapView(
       mapView: MLNMapView,
+      @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
       regionWillChangeWithReason: MLNCameraChangeReason,
       animated: Boolean,
     ) {
@@ -203,6 +204,7 @@ internal class IosMap(
     @ObjCSignatureOverride
     override fun mapView(
       mapView: MLNMapView,
+      @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
       regionDidChangeWithReason: MLNCameraChangeReason,
       animated: Boolean,
     ) {
@@ -439,7 +441,7 @@ internal class IosMap(
   override fun queryRenderedFeatures(
     offset: DpOffset,
     layerIds: Set<String>?,
-    predicate: Expression<BooleanValue>?,
+    predicate: CompiledExpression<BooleanValue>?,
   ): List<Feature> =
     mapView
       .visibleFeaturesAtPoint(
@@ -452,7 +454,7 @@ internal class IosMap(
   override fun queryRenderedFeatures(
     rect: DpRect,
     layerIds: Set<String>?,
-    predicate: Expression<BooleanValue>?,
+    predicate: CompiledExpression<BooleanValue>?,
   ): List<Feature> =
     mapView
       .visibleFeaturesInRect(

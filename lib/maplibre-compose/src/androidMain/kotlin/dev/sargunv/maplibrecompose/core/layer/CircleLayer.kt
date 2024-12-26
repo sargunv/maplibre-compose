@@ -1,17 +1,16 @@
 package dev.sargunv.maplibrecompose.core.layer
 
-import dev.sargunv.maplibrecompose.core.expression.BooleanValue
-import dev.sargunv.maplibrecompose.core.expression.CirclePitchAlignment
-import dev.sargunv.maplibrecompose.core.expression.CirclePitchScale
-import dev.sargunv.maplibrecompose.core.expression.ColorValue
-import dev.sargunv.maplibrecompose.core.expression.DpOffsetValue
-import dev.sargunv.maplibrecompose.core.expression.DpValue
-import dev.sargunv.maplibrecompose.core.expression.EnumValue
-import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.FloatValue
-import dev.sargunv.maplibrecompose.core.expression.TranslateAnchor
 import dev.sargunv.maplibrecompose.core.source.Source
 import dev.sargunv.maplibrecompose.core.util.toMLNExpression
+import dev.sargunv.maplibrecompose.expression.BooleanValue
+import dev.sargunv.maplibrecompose.expression.CirclePitchAlignment
+import dev.sargunv.maplibrecompose.expression.CirclePitchScale
+import dev.sargunv.maplibrecompose.expression.ColorValue
+import dev.sargunv.maplibrecompose.expression.CompiledExpression
+import dev.sargunv.maplibrecompose.expression.DpOffsetValue
+import dev.sargunv.maplibrecompose.expression.DpValue
+import dev.sargunv.maplibrecompose.expression.FloatValue
+import dev.sargunv.maplibrecompose.expression.TranslateAnchor
 import org.maplibre.android.style.expressions.Expression as MLNExpression
 import org.maplibre.android.style.layers.CircleLayer as MLNCircleLayer
 import org.maplibre.android.style.layers.PropertyFactory
@@ -22,55 +21,55 @@ internal actual class CircleLayer actual constructor(id: String, source: Source)
 
   actual override var sourceLayer: String by impl::sourceLayer
 
-  actual override fun setFilter(filter: Expression<BooleanValue>) {
+  actual override fun setFilter(filter: CompiledExpression<BooleanValue>) {
     impl.setFilter(filter.toMLNExpression() ?: MLNExpression.literal(true))
   }
 
-  actual fun setCircleSortKey(sortKey: Expression<FloatValue>) {
+  actual fun setCircleSortKey(sortKey: CompiledExpression<FloatValue>) {
     impl.setProperties(PropertyFactory.circleSortKey(sortKey.toMLNExpression()))
   }
 
-  actual fun setCircleRadius(radius: Expression<DpValue>) {
+  actual fun setCircleRadius(radius: CompiledExpression<DpValue>) {
     impl.setProperties(PropertyFactory.circleRadius(radius.toMLNExpression()))
   }
 
-  actual fun setCircleColor(color: Expression<ColorValue>) {
+  actual fun setCircleColor(color: CompiledExpression<ColorValue>) {
     impl.setProperties(PropertyFactory.circleColor(color.toMLNExpression()))
   }
 
-  actual fun setCircleBlur(blur: Expression<FloatValue>) {
+  actual fun setCircleBlur(blur: CompiledExpression<FloatValue>) {
     impl.setProperties(PropertyFactory.circleBlur(blur.toMLNExpression()))
   }
 
-  actual fun setCircleOpacity(opacity: Expression<FloatValue>) {
+  actual fun setCircleOpacity(opacity: CompiledExpression<FloatValue>) {
     impl.setProperties(PropertyFactory.circleOpacity(opacity.toMLNExpression()))
   }
 
-  actual fun setCircleTranslate(translate: Expression<DpOffsetValue>) {
+  actual fun setCircleTranslate(translate: CompiledExpression<DpOffsetValue>) {
     impl.setProperties(PropertyFactory.circleTranslate(translate.toMLNExpression()))
   }
 
-  actual fun setCircleTranslateAnchor(translateAnchor: Expression<EnumValue<TranslateAnchor>>) {
+  actual fun setCircleTranslateAnchor(translateAnchor: CompiledExpression<TranslateAnchor>) {
     impl.setProperties(PropertyFactory.circleTranslateAnchor(translateAnchor.toMLNExpression()))
   }
 
-  actual fun setCirclePitchScale(pitchScale: Expression<EnumValue<CirclePitchScale>>) {
+  actual fun setCirclePitchScale(pitchScale: CompiledExpression<CirclePitchScale>) {
     impl.setProperties(PropertyFactory.circlePitchScale(pitchScale.toMLNExpression()))
   }
 
-  actual fun setCirclePitchAlignment(pitchAlignment: Expression<EnumValue<CirclePitchAlignment>>) {
+  actual fun setCirclePitchAlignment(pitchAlignment: CompiledExpression<CirclePitchAlignment>) {
     impl.setProperties(PropertyFactory.circlePitchAlignment(pitchAlignment.toMLNExpression()))
   }
 
-  actual fun setCircleStrokeWidth(strokeWidth: Expression<DpValue>) {
+  actual fun setCircleStrokeWidth(strokeWidth: CompiledExpression<DpValue>) {
     impl.setProperties(PropertyFactory.circleStrokeWidth(strokeWidth.toMLNExpression()))
   }
 
-  actual fun setCircleStrokeColor(strokeColor: Expression<ColorValue>) {
+  actual fun setCircleStrokeColor(strokeColor: CompiledExpression<ColorValue>) {
     impl.setProperties(PropertyFactory.circleStrokeColor(strokeColor.toMLNExpression()))
   }
 
-  actual fun setCircleStrokeOpacity(strokeOpacity: Expression<FloatValue>) {
+  actual fun setCircleStrokeOpacity(strokeOpacity: CompiledExpression<FloatValue>) {
     impl.setProperties(PropertyFactory.circleStrokeOpacity(strokeOpacity.toMLNExpression()))
   }
 }

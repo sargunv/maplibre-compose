@@ -1,4 +1,4 @@
-package dev.sargunv.maplibrecompose.core.expression
+package dev.sargunv.maplibrecompose.expression
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.geometry.Offset
@@ -9,79 +9,71 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
-import androidx.compose.ui.unit.isSpecified
-import dev.sargunv.maplibrecompose.core.util.JsOnlyApi
 import kotlin.enums.enumEntries
 import kotlin.jvm.JvmInline
 import kotlin.jvm.JvmName
 import kotlin.time.Duration
 
+// TODO move to package dsl
+
 public object ExpressionsDsl {
   // region Literals
 
   /** Creates a literal expression for a [String] value. */
-  public fun const(string: String): Expression<StringValue> = Expression.ofString(string)
+  public fun const(string: String): StringLiteral = StringLiteral.of(string)
 
   /** Creates a literal expression for an enum value implementing [EnumValue]. */
-  public fun <T : EnumValue<T>> const(value: T): Expression<T> = value.stringConst.cast()
+  public fun <T : EnumValue<T>> const(value: T): EnumLiteral<T> = EnumLiteral.of(value)
 
   /** Creates a literal expression for a dimensionless [Float] value. */
-  public fun const(float: Float): Expression<FloatValue> = Expression.ofFloat(float)
+  public fun const(float: Float): FloatLiteral = FloatLiteral.of(float)
 
   /** Creates a literal expression for an dimensionless [Int] value. */
-  public fun const(int: Int): Expression<IntValue> = Expression.ofInt(int)
+  public fun const(int: Int): IntLiteral = IntLiteral.of(int)
 
   /** Creates a literal expression for a [Dp] value. */
-  public fun const(dp: Dp): Expression<DpValue> = Expression.ofFloat(dp.value).cast()
+  public fun const(dp: Dp): DpLiteral = DpLiteral.of(dp)
 
   /**
    * Creates a literal expression for a specified [TextUnit] value in SP or EM. It can be provided
    * in either unit, and will resolve to one at runtime depending on the property it is used in.
    */
-  public fun const(textUnit: TextUnit): Expression<TextUnitValue> =
-    when (textUnit.type) {
-      TextUnitType.Sp -> const(textUnit.value).sp
-      TextUnitType.Em -> const(textUnit.value).em
-      TextUnitType.Unspecified -> unspecifiedValueVar.use()
-      else -> error("Unrecognized TextUnitType: ${textUnit.type}")
-    }
+  public fun const(textUnit: TextUnit): TextUnitExpression = TextUnitExpression.of(textUnit)
 
   /**
    * Creates a literal expression for a [Duration] value.
    *
    * The duration will be rounded to the nearest whole milliseconds.
    */
-  public fun const(duration: Duration): Expression<MillisecondsValue> =
-    Expression.ofInt(duration.inWholeMilliseconds.toInt()).cast()
+  public fun const(duration: Duration): MillisecondsLiteral = MillisecondsLiteral.of(duration)
 
   /** Creates a literal expression for a [Boolean] value. */
-  public fun const(bool: Boolean): Expression<BooleanValue> =
-    if (bool) Expression.ofTrue else Expression.ofFalse
+  public fun const(bool: Boolean): BooleanLiteral = BooleanLiteral.of(bool)
 
   /** Creates a literal expression for a [Color] value. */
-  public fun const(color: Color): Expression<ColorValue> = Expression.ofColor(color)
+  public fun const(color: Color): ColorLiteral = ColorLiteral.of(color)
 
   /** Creates a literal expression for an [Offset] value. */
-  public fun const(offset: Offset): Expression<FloatOffsetValue> = Expression.ofOffset(offset)
+  public fun const(offset: Offset): OffsetLiteral = OffsetLiteral.of(offset)
 
   /** Creates a literal expression for a [DpOffset] value. */
-  public fun const(dpOffset: DpOffset): Expression<DpOffsetValue> =
-    Expression.ofOffset(Offset(dpOffset.x.value, dpOffset.y.value)).cast()
+  public fun const(dpOffset: DpOffset): DpOffsetLiteral = DpOffsetLiteral.of(dpOffset)
 
   /** Creates a literal expression for a [PaddingValues.Absolute] value. */
-  public fun const(padding: PaddingValues.Absolute): Expression<DpPaddingValue> =
-    Expression.ofPadding(padding)
+  public fun const(padding: PaddingValues.Absolute): DpPaddingLiteral = DpPaddingLiteral.of(padding)
 
-  internal fun literal(list: List<Any?>): Expression<ListValue<*>> =
-    Expression.ofList(listOf("literal", list)).cast()
+  /** Creates a literal expression for a list. */
+  public fun <T : ExpressionValue> const(list: List<Literal<T, *>>): ListLiteral<T> =
+    ListLiteral.of(list)
 
   /** Creates a literal expression for a list of strings. */
   @JvmName("constStringList")
-  public fun const(list: List<String>): Expression<ListValue<StringValue>> = literal(list).cast()
+  public fun const(list: List<String>): ListLiteral<StringValue> = const(list.map { const(it) })
 
   /** Creates a literal expression for a list of numbers. */
   @JvmName("constNumberList")
-  public fun const(list: List<Number>): Expression<VectorValue<FloatValue>> = literal(list).cast()
+  public fun const(list: List<Number>): Literal<VectorValue<Number>, *> =
+    const(list.map { const(it.toFloat()) }).cast()
 
   /**
    * Creates a literal expression for [TextVariableAnchorOffsetValue], used by
@@ -93,54 +85,29 @@ public object ExpressionsDsl {
    */
   public fun textVariableAnchorOffset(
     vararg pairs: Pair<SymbolAnchor, Offset>
-  ): Expression<TextVariableAnchorOffsetValue> {
-    return literal(
-        buildList {
-          pairs.forEach { (anchor, offset) ->
-            add(anchor.stringConst)
-            add(offset)
-          }
-        }
-      )
-      .cast()
+  ): Literal<TextVariableAnchorOffsetValue, List<*>> {
+    val elements = buildList {
+      pairs.forEach { (anchor, offset) ->
+        add(anchor.stringConst)
+        add(const(offset))
+      }
+    }
+    return const(elements).cast()
   }
 
   /** Creates a literal expression for a 2D [Offset]. */
-  public fun offset(x: Float, y: Float): Expression<FloatOffsetValue> = const(Offset(x, y))
+  public fun offset(x: Float, y: Float): OffsetLiteral = OffsetLiteral.of(Offset(x, y))
 
   /** Creates a literal expression for a 2D [DpOffset]. */
-  public fun offset(x: Dp, y: Dp): Expression<DpOffsetValue> = const(DpOffset(x, y))
+  public fun offset(x: Dp, y: Dp): DpOffsetLiteral = DpOffsetLiteral.of(DpOffset(x, y))
 
   /**
    * Creates a literal expression for a 2D [TextUnit] offset.
    *
    * Both [x] and [y] must have the same [TextUnitType].
    */
-  public fun offset(x: TextUnit, y: TextUnit): Expression<TextUnitOffsetValue> {
-    require(x.type == y.type) { "x and y must have the same TextUnitType" }
-
-    val reasonablyLargeMultiplier = 1000f
-    val type = x.type
-    val xVal = if (x.isSpecified) x.value else 1f
-    val yVal = if (y.isSpecified) y.value else 1f
-
-    return interpolate(
-        linear(),
-        when (type) {
-            TextUnitType.Sp -> spMultiplierVar
-            TextUnitType.Em -> emMultiplierVar
-            TextUnitType.Unspecified -> unspecifiedValueVar
-            else -> error("Unrecognized TextUnitType: $type")
-          }
-          .use()
-          .cast(),
-        0f to const(listOf(0, 0)),
-        1f to const(listOf(xVal, yVal)),
-        reasonablyLargeMultiplier to
-          const(listOf(xVal * reasonablyLargeMultiplier, yVal * reasonablyLargeMultiplier)),
-      )
-      .cast()
-  }
+  public fun offset(x: TextUnit, y: TextUnit): Expression<TextUnitOffsetValue> =
+    TextUnitOffsetExpression.of(x, y)
 
   /**
    * Creates a literal expression for a `null` value.
@@ -148,7 +115,7 @@ public object ExpressionsDsl {
    * For simplicity, the expression type system does not encode nullability, so the return value of
    * this function is assignable to any kind of expression.
    */
-  public fun <T : ExpressionValue> nil(): Expression<T> = Expression.ofNull.cast()
+  public fun <T : ExpressionValue> nil(): Expression<T> = NullLiteral.cast()
 
   // endregion
 
@@ -168,25 +135,11 @@ public object ExpressionsDsl {
 
   /** Converts a numeric [Expression] to an [TextUnitValue] expression in SP. */
   public val Expression<FloatValue>.sp: Expression<TextUnitValue>
-    get() = this.cast<TextUnitValue>() * spMultiplierVar.use()
+    get() = TextUnitExpression.of(this, TextUnitType.Sp)
 
   /** Converts a numeric [Expression] to an [TextUnitValue] expression in EM */
   public val Expression<FloatValue>.em: Expression<TextUnitValue>
-    get() = this.cast<TextUnitValue>() * emMultiplierVar.use()
-
-  internal val spMultiplierVar = Variable<FloatValue>("__sp_multiplier")
-  internal val emMultiplierVar = Variable<FloatValue>("__em_multiplier")
-  internal val unspecifiedValueVar = Variable<TextUnitValue>("__unspecified_value")
-
-  internal fun Expression<*>.resolveTextUnits(
-    spMultiplier: Expression<FloatValue>,
-    emMultiplier: Expression<FloatValue>,
-    unspecifiedValue: Expression<TextUnitValue>,
-  ): Expression<*> =
-    spMultiplierVar.bind(
-      spMultiplier,
-      emMultiplierVar.bind(emMultiplier, unspecifiedValueVar.bind(unspecifiedValue, this)),
-    )
+    get() = TextUnitExpression.of(this, TextUnitType.Em)
 
   // endregion
 
@@ -214,7 +167,7 @@ public object ExpressionsDsl {
 
   /** References a [Variable] bound in [withVariable]. */
   public fun <T : ExpressionValue> Variable<T>.use(): Expression<T> =
-    callFn("var", const(name)).cast()
+    FunctionCall.of("var", const(name)).cast()
 
   /** Represents a variable bound with [withVariable]. Reference the bound expression with [use]. */
   @JvmInline
@@ -226,14 +179,15 @@ public object ExpressionsDsl {
   internal fun <V : ExpressionValue, T : ExpressionValue> Variable<V>.bind(
     value: Expression<V>,
     expression: Expression<T>,
-  ): Expression<T> = callFn("let", const(name), value, expression).cast()
+  ): Expression<T> = FunctionCall.of("let", const(name), value, expression).cast()
 
   // endregion
 
   // region Types
 
   /** Returns a string describing the type of this expression. */
-  public fun Expression<*>.type(): Expression<ExpressionType> = callFn("typeof", this).cast()
+  public fun Expression<*>.type(): Expression<ExpressionType> =
+    FunctionCall.of("typeof", this).cast()
 
   /**
    * Asserts that this is a list (optionally with a specific item [type] and [length]).
@@ -244,7 +198,7 @@ public object ExpressionsDsl {
   public fun Expression<*>.asList(
     type: Expression<ExpressionType> = nil(),
     length: Expression<IntValue> = nil(),
-  ): Expression<ListValue<*>> = callFn("array", this, type, length).cast()
+  ): Expression<ListValue<*>> = FunctionCall.of("array", this, type, length).cast()
 
   /**
    * Asserts that this is a list of numbers, optionally with a specific [length].
@@ -290,7 +244,7 @@ public object ExpressionsDsl {
    * string is obtained. If none of the inputs are strings, the expression is an error.
    */
   public fun Expression<*>.asString(vararg fallbacks: Expression<*>): Expression<StringValue> =
-    callFn("string", this, *fallbacks).cast()
+    FunctionCall.of("string", this, *fallbacks).cast()
 
   /**
    * Asserts that this value is an entry of the enum specified by [T].
@@ -318,7 +272,7 @@ public object ExpressionsDsl {
    * number is obtained. If none of the inputs are numbers, the expression is an error.
    */
   public fun Expression<*>.asNumber(vararg fallbacks: Expression<*>): Expression<FloatValue> =
-    callFn("number", this, *fallbacks).cast()
+    FunctionCall.of("number", this, *fallbacks).cast()
 
   /**
    * Asserts that this value is a boolean.
@@ -327,7 +281,7 @@ public object ExpressionsDsl {
    * boolean is obtained. If none of the inputs are booleans, the expression is an error.
    */
   public fun Expression<*>.asBoolean(vararg fallbacks: Expression<*>): Expression<BooleanValue> =
-    callFn("boolean", this, *fallbacks).cast()
+    FunctionCall.of("boolean", this, *fallbacks).cast()
 
   /**
    * Asserts that this value is a map.
@@ -336,7 +290,7 @@ public object ExpressionsDsl {
    * is obtained. If none of the inputs are maps, the expression is an error.
    */
   public fun Expression<*>.asMap(vararg fallbacks: Expression<*>): Expression<MapValue<*>> =
-    callFn("object", this, *fallbacks).cast()
+    FunctionCall.of("object", this, *fallbacks).cast()
 
   /**
    * Returns a collator for use in locale-dependent comparison operations. The [caseSensitive] and
@@ -350,13 +304,15 @@ public object ExpressionsDsl {
     diacriticSensitive: Expression<BooleanValue>? = null,
     locale: Expression<StringValue>? = null,
   ): Expression<CollatorValue> =
-    callFn(
+    FunctionCall.of(
         "collator",
-        buildOptions {
-          caseSensitive?.let { put("case-sensitive", it) }
-          diacriticSensitive?.let { put("diacritic-sensitive", it) }
-          locale?.let { put("locale", it) }
-        },
+        Options.build(
+          fun MutableMap<String, Expression<*>>.() {
+            caseSensitive?.let { put("case-sensitive", it) }
+            diacriticSensitive?.let { put("diacritic-sensitive", it) }
+            locale?.let { put("locale", it) }
+          }
+        ),
       )
       .cast()
 
@@ -380,7 +336,7 @@ public object ExpressionsDsl {
    * the rest of the name is written normally.
    */
   public fun format(vararg spans: FormatSpan): Expression<FormattedValue> =
-    callFn(
+    FunctionCall.of(
         "format",
         *spans.foldToArgs { span ->
           add(span.value)
@@ -410,11 +366,14 @@ public object ExpressionsDsl {
     val textSize: Expression<TextUnitValue>? = null,
   ) {
     internal val options
-      get() = buildOptions {
-        textFont?.let { put("text-font", it) }
-        textColor?.let { put("text-color", it) }
-        textSize?.let { put("font-scale", it) }
-      }
+      get() =
+        Options.build(
+          fun MutableMap<String, Expression<*>>.() {
+            textFont?.let { put("text-font", it) }
+            textColor?.let { put("text-color", it) }
+            textSize?.let { put("font-scale", it) }
+          }
+        )
   }
 
   /**
@@ -432,7 +391,7 @@ public object ExpressionsDsl {
    * been added to the style before requesting it in the image argument.
    */
   public fun image(value: Expression<StringValue>): Expression<ImageValue> =
-    callFn("image", value).cast()
+    FunctionCall.of("image", value).cast()
 
   /**
    * Returns an image type for use in `iconImage` (see
@@ -447,7 +406,8 @@ public object ExpressionsDsl {
    * unregistered from the style if it's no longer referenced by any layer. An ID referencing the
    * bitmap will be generated automatically and inserted into the expression.
    */
-  public fun image(value: ImageBitmap): Expression<ImageValue> = Expression.ofBitmap(value)
+  public fun image(value: ImageBitmap): Expression<ImageValue> =
+    FunctionCall.of("image", BitmapLiteral.of(value)).cast()
 
   /**
    * Returns an image type for use in `iconImage` (see
@@ -466,7 +426,8 @@ public object ExpressionsDsl {
    * The bitmap will be created with the intrinsic size of the painter, or 16x16 DP if the painter
    * does not have an intrinsic size.
    */
-  public fun image(value: Painter): Expression<ImageValue> = Expression.ofPainter(value)
+  public fun image(value: Painter): Expression<ImageValue> =
+    FunctionCall.of("image", PainterLiteral.of(value)).cast()
 
   /**
    * Converts this number into a string representation using the provided formatting rules.
@@ -482,15 +443,17 @@ public object ExpressionsDsl {
     minFractionDigits: Expression<IntValue>? = null,
     maxFractionDigits: Expression<IntValue>? = null,
   ): Expression<StringValue> =
-    callFn(
+    FunctionCall.of(
         "number-format",
         this,
-        buildOptions {
-          locale?.let { put("locale", it) }
-          currency?.let { put("currency", it) }
-          minFractionDigits?.let { put("min-fraction-digits", it) }
-          maxFractionDigits?.let { put("max-fraction-digits", it) }
-        },
+        Options.build(
+          fun MutableMap<String, Expression<*>>.() {
+            locale?.let { put("locale", it) }
+            currency?.let { put("currency", it) }
+            minFractionDigits?.let { put("min-fraction-digits", it) }
+            maxFractionDigits?.let { put("max-fraction-digits", it) }
+          }
+        ),
       )
       .cast()
 
@@ -509,7 +472,7 @@ public object ExpressionsDsl {
    * function of the ECMAScript Language Specification.
    */
   public fun Expression<*>.convertToString(): Expression<StringValue> =
-    callFn("to-string", this).cast()
+    FunctionCall.of("to-string", this).cast()
 
   /**
    * Converts this expression to a number.
@@ -524,7 +487,7 @@ public object ExpressionsDsl {
    */
   public fun Expression<*>.convertToNumber(
     vararg fallbacks: Expression<*>
-  ): Expression<FloatValue> = callFn("to-number", this, *fallbacks).cast()
+  ): Expression<FloatValue> = FunctionCall.of("to-number", this, *fallbacks).cast()
 
   /**
    * Converts this expression to a boolean expression.
@@ -533,7 +496,7 @@ public object ExpressionsDsl {
    * otherwise it is `true`.
    */
   public fun Expression<*>.convertToBoolean(): Expression<BooleanValue> =
-    callFn("to-boolean", this).cast()
+    FunctionCall.of("to-boolean", this).cast()
 
   /**
    * Converts this expression to a color expression.
@@ -543,7 +506,7 @@ public object ExpressionsDsl {
    * converted, the expression is an error.
    */
   public fun Expression<*>.convertToColor(vararg fallbacks: Expression<*>): Expression<ColorValue> =
-    callFn("to-color", this, *fallbacks).cast()
+    FunctionCall.of("to-color", this, *fallbacks).cast()
 
   // endregion
 
@@ -553,13 +516,13 @@ public object ExpressionsDsl {
   @JvmName("getAt")
   public operator fun <T : ExpressionValue> Expression<ListValue<T>>.get(
     index: Expression<IntValue>
-  ): Expression<T> = callFn("at", index, this).cast()
+  ): Expression<T> = FunctionCall.of("at", index, this).cast()
 
   /** Returns whether this list contains the [item]. */
   @JvmName("containsList")
   public fun <T : ExpressionValue> Expression<ListValue<T>>.contains(
     item: Expression<T>
-  ): Expression<BooleanValue> = callFn("in", item, this).cast()
+  ): Expression<BooleanValue> = FunctionCall.of("in", item, this).cast()
 
   /**
    * Returns the first index at which the [item] is located in this list, or `-1` if it cannot be
@@ -575,7 +538,7 @@ public object ExpressionsDsl {
       add(this@indexOf)
       startIndex?.let { add(it) }
     }
-    return callFn("index-of", *args.toTypedArray()).cast()
+    return FunctionCall.of("index-of", *args.toTypedArray()).cast()
   }
 
   /**
@@ -591,12 +554,13 @@ public object ExpressionsDsl {
       add(startIndex)
       endIndex?.let { add(it) }
     }
-    return callFn("slice", *args.toTypedArray()).cast()
+    return FunctionCall.of("slice", *args.toTypedArray()).cast()
   }
 
   /** Gets the length of a this list. */
   @JvmName("lengthOfList")
-  public fun Expression<ListValue<*>>.length(): Expression<IntValue> = callFn("length", this).cast()
+  public fun Expression<ListValue<*>>.length(): Expression<IntValue> =
+    FunctionCall.of("length", this).cast()
 
   // endregion
 
@@ -605,11 +569,11 @@ public object ExpressionsDsl {
   /** Returns the value corresponding the given [key] or `null` if it is not present in this map. */
   public operator fun <T : ExpressionValue> Expression<MapValue<T>>.get(
     key: Expression<StringValue>
-  ): Expression<T> = callFn("get", key, this).cast()
+  ): Expression<T> = FunctionCall.of("get", key, this).cast()
 
   /** Returns whether the given [key] is in this map. */
   public fun Expression<MapValue<*>>.has(key: Expression<StringValue>): Expression<BooleanValue> =
-    callFn("has", key, this).cast()
+    FunctionCall.of("has", key, this).cast()
 
   // endregion
 
@@ -619,7 +583,7 @@ public object ExpressionsDsl {
   @JvmName("containsString")
   public fun Expression<StringValue>.contains(
     substring: Expression<StringValue>
-  ): Expression<BooleanValue> = callFn("in", substring, this).cast()
+  ): Expression<BooleanValue> = FunctionCall.of("in", substring, this).cast()
 
   /**
    * Returns the first index at which the [substring] is located in this string, or `-1` if it
@@ -635,7 +599,7 @@ public object ExpressionsDsl {
       add(this@indexOf)
       startIndex?.let { add(it) }
     }
-    return callFn("index-of", *args.toTypedArray<Expression<*>>()).cast()
+    return FunctionCall.of("index-of", *args.toTypedArray<Expression<*>>()).cast()
   }
 
   /**
@@ -653,7 +617,7 @@ public object ExpressionsDsl {
       add(startIndex)
       endIndex?.let { add(it) }
     }
-    return callFn("slice", *args.toTypedArray<Expression<*>>()).cast()
+    return FunctionCall.of("slice", *args.toTypedArray<Expression<*>>()).cast()
   }
 
   /**
@@ -662,7 +626,8 @@ public object ExpressionsDsl {
    * A UTF-16 surrogate pair counts as a single position.
    */
   @JvmName("lengthOfString")
-  public fun Expression<StringValue>.length(): Expression<IntValue> = callFn("length", this).cast()
+  public fun Expression<StringValue>.length(): Expression<IntValue> =
+    FunctionCall.of("length", this).cast()
 
   /**
    * Returns `true` if this string is expected to render legibly. Returns `false` if this string
@@ -670,27 +635,27 @@ public object ExpressionsDsl {
    * that require complex text shaping).
    */
   public fun Expression<StringValue>.isScriptSupported(): Expression<BooleanValue> =
-    callFn("is-supported-script", this).cast()
+    FunctionCall.of("is-supported-script", this).cast()
 
   /**
    * Returns this string converted to uppercase. Follows the Unicode Default Case Conversion
    * algorithm and the locale-insensitive case mappings in the Unicode Character Database.
    */
   public fun Expression<StringValue>.uppercase(): Expression<StringValue> =
-    callFn("upcase", this).cast()
+    FunctionCall.of("upcase", this).cast()
 
   /**
    * Returns this string converted to lowercase. Follows the Unicode Default Case Conversion
    * algorithm and the locale-insensitive case mappings in the Unicode Character Database.
    */
   public fun Expression<StringValue>.lowercase(): Expression<StringValue> =
-    callFn("downcase", this).cast()
+    FunctionCall.of("downcase", this).cast()
 
   /** Concatenates this string expression with [other]. */
   @JvmName("concat")
   public operator fun Expression<StringValue>.plus(
     other: Expression<StringValue>
-  ): Expression<StringValue> = callFn("concat", this, other).cast()
+  ): Expression<StringValue> = FunctionCall.of("concat", this, other).cast()
 
   /**
    * Returns the IETF language tag of the locale being used by the provided [collator]. This can be
@@ -698,7 +663,7 @@ public object ExpressionsDsl {
    * successfully loaded.
    */
   public fun resolvedLocale(collator: Expression<CollatorValue>): Expression<StringValue> =
-    callFn("resolved-locale", collator).cast()
+    FunctionCall.of("resolved-locale", collator).cast()
 
   // endregion
 
@@ -737,7 +702,7 @@ public object ExpressionsDsl {
     vararg conditions: Condition<T>,
     fallback: Expression<T>,
   ): Expression<T> =
-    callFn(
+    FunctionCall.of(
         "case",
         *conditions.foldToArgs { (test, output) ->
           add(test)
@@ -791,7 +756,7 @@ public object ExpressionsDsl {
     vararg cases: Case<I, O>,
     fallback: Expression<O>,
   ): Expression<O> =
-    callFn(
+    FunctionCall.of(
         "match",
         input,
         *cases.foldToArgs { (label, output) ->
@@ -799,6 +764,10 @@ public object ExpressionsDsl {
           add(output)
         },
         fallback,
+        isLiteralArg = { i ->
+          // label positions are odd, starting from 1 and not including the fallback
+          i in 1..(cases.size * 2) && i % 2 == 1
+        },
       )
       .cast()
 
@@ -820,26 +789,26 @@ public object ExpressionsDsl {
   public fun <O : ExpressionValue> case(
     label: List<String>,
     output: Expression<O>,
-  ): Case<StringValue, O> = Case(Expression.ofList(label), output)
+  ): Case<StringValue, O> = Case(const(label), output)
 
   /** Create a [Case], see [switch] */
   @JvmName("numbersCase")
   public fun <O : ExpressionValue> case(
     label: List<Number>,
     output: Expression<O>,
-  ): Case<FloatValue, O> = Case(Expression.ofList(label), output)
+  ): Case<FloatValue, O> = Case(const(label), output)
 
   /**
    * Evaluates each expression in [values] in turn until the first non-null value is obtained, and
    * returns that value.
    */
   public fun <T : ExpressionValue> coalesce(vararg values: Expression<T>): Expression<T> =
-    callFn("coalesce", *values).cast()
+    FunctionCall.of("coalesce", *values).cast()
 
   /** Returns whether this expression is equal to [other]. */
   public infix fun Expression<EquatableValue>.eq(
     other: Expression<EquatableValue>
-  ): Expression<BooleanValue> = callFn("==", this, other).cast()
+  ): Expression<BooleanValue> = FunctionCall.of("==", this, other).cast()
 
   /**
    * Returns whether the [left] string expression is equal to the [right] string expression. An
@@ -850,12 +819,12 @@ public object ExpressionsDsl {
     left: Expression<StringValue>,
     right: Expression<StringValue>,
     collator: Expression<CollatorValue>,
-  ): Expression<BooleanValue> = callFn("==", left, right, collator).cast()
+  ): Expression<BooleanValue> = FunctionCall.of("==", left, right, collator).cast()
 
   /** Returns whether this expression is not equal to [other]. */
   public infix fun Expression<EquatableValue>.neq(
     other: Expression<EquatableValue>
-  ): Expression<BooleanValue> = callFn("!=", this, other).cast()
+  ): Expression<BooleanValue> = FunctionCall.of("!=", this, other).cast()
 
   /**
    * Returns whether the [left] string expression is not equal to the [right] string expression. An
@@ -866,7 +835,7 @@ public object ExpressionsDsl {
     left: Expression<StringValue>,
     right: Expression<StringValue>,
     collator: Expression<CollatorValue>,
-  ): Expression<BooleanValue> = callFn("!=", left, right, collator).cast()
+  ): Expression<BooleanValue> = FunctionCall.of("!=", left, right, collator).cast()
 
   /**
    * Returns whether this expression is strictly greater than [other].
@@ -875,7 +844,7 @@ public object ExpressionsDsl {
    */
   public infix fun <T> Expression<ComparableValue<T>>.gt(
     other: Expression<ComparableValue<T>>
-  ): Expression<BooleanValue> = callFn(">", this, other).cast()
+  ): Expression<BooleanValue> = FunctionCall.of(">", this, other).cast()
 
   /**
    * Returns whether the [left] string expression is strictly greater than the [right] string
@@ -888,7 +857,7 @@ public object ExpressionsDsl {
     left: Expression<StringValue>,
     right: Expression<StringValue>,
     collator: Expression<CollatorValue>,
-  ): Expression<BooleanValue> = callFn(">", left, right, collator).cast()
+  ): Expression<BooleanValue> = FunctionCall.of(">", left, right, collator).cast()
 
   /**
    * Returns whether this expression is strictly less than [other].
@@ -897,7 +866,7 @@ public object ExpressionsDsl {
    */
   public infix fun <T> Expression<ComparableValue<T>>.lt(
     other: Expression<ComparableValue<T>>
-  ): Expression<BooleanValue> = callFn("<", this, other).cast()
+  ): Expression<BooleanValue> = FunctionCall.of("<", this, other).cast()
 
   /**
    * Returns whether the [left] string expression is strictly less than the [right] string
@@ -910,7 +879,7 @@ public object ExpressionsDsl {
     left: Expression<StringValue>,
     right: Expression<StringValue>,
     collator: Expression<CollatorValue>,
-  ): Expression<BooleanValue> = callFn("<", left, right, collator).cast()
+  ): Expression<BooleanValue> = FunctionCall.of("<", left, right, collator).cast()
 
   /**
    * Returns whether this expression is greater than or equal to [other].
@@ -919,7 +888,7 @@ public object ExpressionsDsl {
    */
   public infix fun <T> Expression<ComparableValue<T>>.gte(
     other: Expression<ComparableValue<T>>
-  ): Expression<BooleanValue> = callFn(">=", this, other).cast()
+  ): Expression<BooleanValue> = FunctionCall.of(">=", this, other).cast()
 
   /**
    * Returns whether the [left] string expression is greater than or equal to the [right] string
@@ -932,7 +901,7 @@ public object ExpressionsDsl {
     left: Expression<StringValue>,
     right: Expression<StringValue>,
     collator: Expression<CollatorValue>,
-  ): Expression<BooleanValue> = callFn(">=", left, right, collator).cast()
+  ): Expression<BooleanValue> = FunctionCall.of(">=", left, right, collator).cast()
 
   /**
    * Returns whether this string expression is less than or equal to [other].
@@ -941,7 +910,7 @@ public object ExpressionsDsl {
    */
   public infix fun <T> Expression<ComparableValue<T>>.lte(
     other: Expression<ComparableValue<T>>
-  ): Expression<BooleanValue> = callFn("<=", this, other).cast()
+  ): Expression<BooleanValue> = FunctionCall.of("<=", this, other).cast()
 
   /**
    * Returns whether the [left] string expression is less than or equal to the [right] string
@@ -954,11 +923,11 @@ public object ExpressionsDsl {
     left: Expression<StringValue>,
     right: Expression<StringValue>,
     collator: Expression<CollatorValue>,
-  ): Expression<BooleanValue> = callFn("<=", left, right, collator).cast()
+  ): Expression<BooleanValue> = FunctionCall.of("<=", left, right, collator).cast()
 
   /** Returns whether all [expressions] are `true`. */
   public fun all(vararg expressions: Expression<BooleanValue>): Expression<BooleanValue> =
-    callFn("all", *expressions).cast()
+    FunctionCall.of("all", *expressions).cast()
 
   /** Returns whether both this and [other] expressions are `true`. */
   public infix fun Expression<BooleanValue>.and(
@@ -967,7 +936,7 @@ public object ExpressionsDsl {
 
   /** Returns whether any [expressions] are `true`. */
   public fun any(vararg expressions: Expression<BooleanValue>): Expression<BooleanValue> =
-    callFn("any", *expressions).cast()
+    FunctionCall.of("any", *expressions).cast()
 
   /** Returns whether any of this or the [other] expressions are `true`. */
   public infix fun Expression<BooleanValue>.or(
@@ -977,7 +946,7 @@ public object ExpressionsDsl {
   /** Negates this expression. */
   @JvmName("notOperator")
   public operator fun Expression<BooleanValue>.not(): Expression<BooleanValue> =
-    callFn("!", this).cast()
+    FunctionCall.of("!", this).cast()
 
   /**
    * Returns true if the evaluated feature is fully contained inside a boundary of the input
@@ -988,7 +957,7 @@ public object ExpressionsDsl {
    *   intersects the boundary, or a line's endpoint is on the boundary.
    */
   public fun within(geometry: Expression<GeoJsonValue>): Expression<BooleanValue> =
-    callFn("within", geometry).cast()
+    FunctionCall.of("within", geometry).cast()
 
   // endregion
 
@@ -1012,7 +981,7 @@ public object ExpressionsDsl {
     fallback: Expression<T>,
     vararg stops: Pair<Number, Expression<T>>,
   ): Expression<T> =
-    callFn(
+    FunctionCall.of(
         "step",
         input,
         fallback,
@@ -1031,7 +1000,7 @@ public object ExpressionsDsl {
     input: Expression<FloatValue>,
     vararg stops: Pair<Number, Expression<V>>,
   ): Expression<V> =
-    callFn(
+    FunctionCall.of(
         name,
         type,
         input,
@@ -1088,7 +1057,6 @@ public object ExpressionsDsl {
    * linearly from blue to green in zoom levels 5 to 10, which it where it remains until maximum
    * zoom.
    */
-  @JsOnlyApi
   public fun interpolateHcl(
     type: Expression<InterpolationValue>,
     input: Expression<FloatValue>,
@@ -1100,7 +1068,6 @@ public object ExpressionsDsl {
    * ([stops]), given the [input] value. Works like [interpolate], but the interpolation is
    * performed in the [CIELAB color space](https://en.wikipedia.org/wiki/CIELAB_color_space).
    */
-  @JsOnlyApi
   public fun interpolateLab(
     type: Expression<InterpolationValue>,
     input: Expression<FloatValue>,
@@ -1108,7 +1075,7 @@ public object ExpressionsDsl {
   ): Expression<ColorValue> = interpolateImpl("interpolate-lab", type, input, *stops)
 
   /** Interpolates linearly between the pairs of stops. */
-  public fun linear(): Expression<InterpolationValue> = callFn("linear").cast()
+  public fun linear(): Expression<InterpolationValue> = FunctionCall.of("linear").cast()
 
   /**
    * Interpolates exponentially between the stops.
@@ -1118,7 +1085,7 @@ public object ExpressionsDsl {
    *   linearly.
    */
   public fun exponential(base: Expression<FloatValue>): Expression<InterpolationValue> =
-    callFn("exponential", base).cast()
+    FunctionCall.of("exponential", base).cast()
 
   /**
    * Interpolates using the cubic bezier curve defined by the given control points between the pairs
@@ -1129,128 +1096,129 @@ public object ExpressionsDsl {
     y1: Expression<FloatValue>,
     x2: Expression<FloatValue>,
     y2: Expression<FloatValue>,
-  ): Expression<InterpolationValue> = callFn("cubic-bezier", x1, y1, x2, y2).cast()
+  ): Expression<InterpolationValue> = FunctionCall.of("cubic-bezier", x1, y1, x2, y2).cast()
 
   // endregion
 
   // region Math
 
   /** Returns mathematical constant ln(2) = natural logarithm of 2. */
-  public fun ln2(): Expression<FloatValue> = callFn("ln2").cast()
+  public fun ln2(): Expression<FloatValue> = FunctionCall.of("ln2").cast()
 
   /** Returns the mathematical constant π */
-  public fun pi(): Expression<FloatValue> = callFn("pi").cast()
+  public fun pi(): Expression<FloatValue> = FunctionCall.of("pi").cast()
 
   /** Returns the mathematical constant e */
-  public fun e(): Expression<FloatValue> = callFn("e").cast()
+  public fun e(): Expression<FloatValue> = FunctionCall.of("e").cast()
 
   /** Returns the sum of this number expression with [other]. */
   public operator fun <U, V : NumberValue<U>> Expression<V>.plus(
     other: Expression<V>
-  ): Expression<V> = callFn("+", this, other).cast()
+  ): Expression<V> = FunctionCall.of("+", this, other).cast()
 
   /** Returns the product of this number expression with [other]. */
   @JvmName("timesUnitLeft")
   public operator fun <U, V : NumberValue<U>> Expression<V>.times(
     other: Expression<FloatValue>
-  ): Expression<V> = callFn("*", this, other).cast()
+  ): Expression<V> = FunctionCall.of("*", this, other).cast()
 
   /** Returns the product of this number expression with [other]. */
   @JvmName("timesUnitRight")
   public operator fun <U, V : NumberValue<U>> Expression<FloatValue>.times(
     other: Expression<V>
-  ): Expression<V> = callFn("*", this, other).cast()
+  ): Expression<V> = FunctionCall.of("*", this, other).cast()
 
   /** Returns the product of this number expression with [other]. */
   public operator fun Expression<FloatValue>.times(
     other: Expression<FloatValue>
-  ): Expression<FloatValue> = callFn("*", this, other).cast()
+  ): Expression<FloatValue> = FunctionCall.of("*", this, other).cast()
 
   /** Returns the result of subtracting [other] from this number expression. */
   public operator fun <U, V : NumberValue<U>> Expression<V>.minus(
     other: Expression<NumberValue<U>>
-  ): Expression<V> = callFn("-", this, other).cast()
+  ): Expression<V> = FunctionCall.of("-", this, other).cast()
 
   /** Negates this number expression. */
   public operator fun <U, V : NumberValue<U>> Expression<V>.unaryMinus(): Expression<V> =
-    callFn("-", this).cast()
+    FunctionCall.of("-", this).cast()
 
   /** Returns the result of floating point division of this number expression by [divisor]. */
   @JvmName("divUnitBoth")
   public operator fun <U, V : NumberValue<U>> Expression<V>.div(
     divisor: Expression<V>
-  ): Expression<FloatValue> = callFn("/", this, divisor).cast()
+  ): Expression<FloatValue> = FunctionCall.of("/", this, divisor).cast()
 
   /** Returns the result of floating point division of this number expression by [divisor]. */
   @JvmName("divUnitLeftOnly")
   public operator fun <U, V : NumberValue<U>> Expression<V>.div(
     divisor: Expression<FloatValue>
-  ): Expression<V> = callFn("/", this, divisor).cast()
+  ): Expression<V> = FunctionCall.of("/", this, divisor).cast()
 
   /** Returns the result of floating point division of this number expression by [divisor]. */
   public operator fun Expression<FloatValue>.div(
     divisor: Expression<FloatValue>
-  ): Expression<FloatValue> = callFn("/", this, divisor).cast()
+  ): Expression<FloatValue> = FunctionCall.of("/", this, divisor).cast()
 
   /** Returns the remainder after integer division of this number expression by [divisor]. */
   public operator fun <U, V : NumberValue<U>> Expression<V>.rem(
     divisor: Expression<IntValue>
-  ): Expression<V> = callFn("%", this, divisor).cast()
+  ): Expression<V> = FunctionCall.of("%", this, divisor).cast()
 
   /** Returns the result of raising this number expression to the power of [exponent]. */
   public fun Expression<FloatValue>.pow(exponent: Expression<FloatValue>): Expression<FloatValue> =
-    callFn("^", this, exponent).cast()
+    FunctionCall.of("^", this, exponent).cast()
 
   /** Returns the square root of [value]. */
   public fun sqrt(value: Expression<FloatValue>): Expression<FloatValue> =
-    callFn("sqrt", value).cast()
+    FunctionCall.of("sqrt", value).cast()
 
   /** Returns the base-ten logarithm of [value]. */
   public fun log10(value: Expression<FloatValue>): Expression<FloatValue> =
-    callFn("log10", value).cast()
+    FunctionCall.of("log10", value).cast()
 
   /** Returns the natural logarithm of [value]. */
-  public fun ln(value: Expression<FloatValue>): Expression<FloatValue> = callFn("ln", value).cast()
+  public fun ln(value: Expression<FloatValue>): Expression<FloatValue> =
+    FunctionCall.of("ln", value).cast()
 
   /** Returns the base-two logarithm of [value]. */
   public fun log2(value: Expression<FloatValue>): Expression<FloatValue> =
-    callFn("log2", value).cast()
+    FunctionCall.of("log2", value).cast()
 
   /** Returns the sine of [value]. */
   public fun sin(value: Expression<FloatValue>): Expression<FloatValue> =
-    callFn("sin", value).cast()
+    FunctionCall.of("sin", value).cast()
 
   /** Returns the cosine of [value]. */
   public fun cos(value: Expression<FloatValue>): Expression<FloatValue> =
-    callFn("cos", value).cast()
+    FunctionCall.of("cos", value).cast()
 
   /** Returns the tangent of [value]. */
   public fun tan(value: Expression<FloatValue>): Expression<FloatValue> =
-    callFn("tan", value).cast()
+    FunctionCall.of("tan", value).cast()
 
   /** Returns the arcsine of [value]. */
   public fun asin(value: Expression<FloatValue>): Expression<FloatValue> =
-    callFn("asin", value).cast()
+    FunctionCall.of("asin", value).cast()
 
   /** Returns the arccosine of [value]. */
   public fun acos(value: Expression<FloatValue>): Expression<FloatValue> =
-    callFn("acos", value).cast()
+    FunctionCall.of("acos", value).cast()
 
   /** Returns the arctangent of [value]. */
   public fun atan(value: Expression<FloatValue>): Expression<FloatValue> =
-    callFn("atan", value).cast()
+    FunctionCall.of("atan", value).cast()
 
   /** Returns the smallest of all given [numbers]. */
   public fun <U, V : NumberValue<U>> min(vararg numbers: Expression<V>): Expression<V> =
-    callFn("min", *numbers).cast()
+    FunctionCall.of("min", *numbers).cast()
 
   /** Returns the greatest of all given [numbers]. */
   public fun <U, V : NumberValue<U>> max(vararg numbers: Expression<V>): Expression<V> =
-    callFn("max", *numbers).cast()
+    FunctionCall.of("max", *numbers).cast()
 
   /** Returns the absolute value of [value], i.e. always a positive value. */
   public fun <U, V : NumberValue<U>> abs(value: Expression<V>): Expression<V> =
-    callFn("abs", value).cast()
+    FunctionCall.of("abs", value).cast()
 
   /**
    * Rounds [value] to the nearest integer. Halfway values are rounded away from zero.
@@ -1258,19 +1226,19 @@ public object ExpressionsDsl {
    * For example `round(const(-1.5))` evaluates to `-2`.
    */
   public fun round(value: Expression<FloatValue>): Expression<IntValue> =
-    callFn("round", value).cast()
+    FunctionCall.of("round", value).cast()
 
   /** Returns the smallest integer that is greater than or equal to [value]. */
   public fun ceil(value: Expression<FloatValue>): Expression<IntValue> =
-    callFn("ceil", value).cast()
+    FunctionCall.of("ceil", value).cast()
 
   /** Returns the largest integer that is less than or equal to [value]. */
   public fun floor(value: Expression<FloatValue>): Expression<IntValue> =
-    callFn("floor", value).cast()
+    FunctionCall.of("floor", value).cast()
 
   /** Returns the shortest distance in meters between the evaluated feature and [geometry]. */
   public fun distance(geometry: Expression<GeoJsonValue>): Expression<FloatValue> =
-    callFn("distance", geometry).cast()
+    FunctionCall.of("distance", geometry).cast()
 
   // endregion
 
@@ -1281,7 +1249,7 @@ public object ExpressionsDsl {
    * that order.
    */
   public fun Expression<ColorValue>.toRgbaComponents(): Expression<VectorValue<Number>> =
-    callFn("to-rgba", this).cast()
+    FunctionCall.of("to-rgba", this).cast()
 
   /**
    * Creates a color value from [red], [green], and [blue] components, which must range between 0
@@ -1296,9 +1264,9 @@ public object ExpressionsDsl {
     alpha: Expression<FloatValue>? = null,
   ): Expression<ColorValue> =
     if (alpha != null) {
-        callFn("rgba", red, green, blue, alpha)
+        FunctionCall.of("rgba", red, green, blue, alpha)
       } else {
-        callFn("rgb", red, green, blue)
+        FunctionCall.of("rgb", red, green, blue)
       }
       .cast()
 
@@ -1312,17 +1280,17 @@ public object ExpressionsDsl {
      * Returns the value corresponding to the given [key] in the current feature's properties or
      * `null` if it is not present.
      */
-    public fun get(key: Expression<StringValue>): Expression<*> = callFn("get", key)
+    public fun get(key: Expression<StringValue>): Expression<*> = FunctionCall.of("get", key)
 
     /** Tests for the presence of a property value [key] in the current feature's properties. */
     public fun has(key: Expression<StringValue>): Expression<BooleanValue> =
-      callFn("has", key).cast()
+      FunctionCall.of("has", key).cast()
 
     /**
      * Gets the feature properties object. Note that in some cases, it may be more efficient to use
      * [get]`("property_name")` directly.
      */
-    public fun properties(): Expression<MapValue<*>> = callFn("properties").cast()
+    public fun properties(): Expression<MapValue<*>> = FunctionCall.of("properties").cast()
 
     /**
      * **Note: Not supported on native platforms. See
@@ -1341,22 +1309,21 @@ public object ExpressionsDsl {
      * that support data-driven styling.
      */
     // TODO:  document which layer properties support feature state expressions on which platforms
-    @JsOnlyApi
     public fun <T : ExpressionValue> state(key: Expression<StringValue>): Expression<T> =
-      callFn("feature-state", key).cast()
+      FunctionCall.of("feature-state", key).cast()
 
     /** Gets the feature's geometry type. */
-    public fun type(): Expression<GeometryType> = callFn("geometry-type").cast()
+    public fun type(): Expression<GeometryType> = FunctionCall.of("geometry-type").cast()
 
     /** Gets the feature's id, if it has one. */
-    public fun <T : ExpressionValue> id(): Expression<T> = callFn("id").cast()
+    public fun <T : ExpressionValue> id(): Expression<T> = FunctionCall.of("id").cast()
 
     /**
      * Gets the progress along a gradient line. Can only be used in the `gradient` property of a
      * line layer, see [LineLayer][dev.sargunv.maplibrecompose.compose.layer.LineLayer].
      */
     public fun lineProgress(value: Expression<FloatValue>): Expression<FloatValue> =
-      callFn("line-progress", value).cast()
+      FunctionCall.of("line-progress", value).cast()
 
     /**
      * Gets the value of a cluster property accumulated so far. Can only be used in the
@@ -1364,7 +1331,7 @@ public object ExpressionsDsl {
      * [GeoJsonOptions][dev.sargunv.maplibrecompose.core.source.GeoJsonOptions].
      */
     public fun <T : ExpressionValue> accumulated(key: Expression<StringValue>): Expression<T> =
-      callFn("accumulated", key).cast()
+      FunctionCall.of("accumulated", key).cast()
   }
 
   /** Accesses to feature-related data */
@@ -1379,7 +1346,7 @@ public object ExpressionsDsl {
    * input to a top-level [step] or [interpolate] (, [interpolateHcl], [interpolateLab], ...)
    * expression.
    */
-  public fun zoom(): Expression<FloatValue> = callFn("zoom").cast()
+  public fun zoom(): Expression<FloatValue> = FunctionCall.of("zoom").cast()
 
   // endregion
 
@@ -1391,26 +1358,11 @@ public object ExpressionsDsl {
    * expression for the `color` parameter in a
    * [HeatmapLayer][dev.sargunv.maplibrecompose.compose.layer.HeatmapLayer].
    */
-  public fun heatmapDensity(): Expression<FloatValue> = callFn("heatmap-density").cast()
+  public fun heatmapDensity(): Expression<FloatValue> = FunctionCall.of("heatmap-density").cast()
 
   // endregion
 
   // region Utils
-
-  @Suppress("UNCHECKED_CAST")
-  /** Casts this expression to the specified type without any runtime check. Use with caution. */
-  public fun <T : ExpressionValue> Expression<*>.cast(): Expression<T> = this as Expression<T>
-
-  private fun callFn(function: String, vararg args: Expression<*>): Expression<*> =
-    Expression.ofList(
-      buildList {
-        add(function)
-        args.forEach { add(it.value) }
-      }
-    )
-
-  private inline fun buildOptions(block: MutableMap<String, Expression<*>>.() -> Unit) =
-    Expression.ofMap(mutableMapOf<String, Expression<*>>().apply(block).mapValues { it.value })
 
   private inline fun <T> Array<T>.foldToArgs(
     block: MutableList<Expression<*>>.(element: T) -> Unit

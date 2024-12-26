@@ -1,22 +1,21 @@
 package dev.sargunv.maplibrecompose.core.layer
 
 import cocoapods.MapLibre.MLNLineStyleLayer
-import dev.sargunv.maplibrecompose.core.expression.BooleanValue
-import dev.sargunv.maplibrecompose.core.expression.ColorValue
-import dev.sargunv.maplibrecompose.core.expression.DpOffsetValue
-import dev.sargunv.maplibrecompose.core.expression.DpValue
-import dev.sargunv.maplibrecompose.core.expression.EnumValue
-import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.FloatValue
-import dev.sargunv.maplibrecompose.core.expression.ImageValue
-import dev.sargunv.maplibrecompose.core.expression.LineCap
-import dev.sargunv.maplibrecompose.core.expression.LineJoin
-import dev.sargunv.maplibrecompose.core.expression.ResolvedValue
-import dev.sargunv.maplibrecompose.core.expression.TranslateAnchor
-import dev.sargunv.maplibrecompose.core.expression.VectorValue
 import dev.sargunv.maplibrecompose.core.source.Source
 import dev.sargunv.maplibrecompose.core.util.toNSExpression
 import dev.sargunv.maplibrecompose.core.util.toNSPredicate
+import dev.sargunv.maplibrecompose.expression.BooleanValue
+import dev.sargunv.maplibrecompose.expression.ColorValue
+import dev.sargunv.maplibrecompose.expression.CompiledExpression
+import dev.sargunv.maplibrecompose.expression.DpOffsetValue
+import dev.sargunv.maplibrecompose.expression.DpValue
+import dev.sargunv.maplibrecompose.expression.FloatValue
+import dev.sargunv.maplibrecompose.expression.ImageValue
+import dev.sargunv.maplibrecompose.expression.LineCap
+import dev.sargunv.maplibrecompose.expression.LineJoin
+import dev.sargunv.maplibrecompose.expression.NullLiteral
+import dev.sargunv.maplibrecompose.expression.TranslateAnchor
+import dev.sargunv.maplibrecompose.expression.VectorValue
 
 internal actual class LineLayer actual constructor(id: String, source: Source) :
   FeatureLayer(source) {
@@ -29,74 +28,74 @@ internal actual class LineLayer actual constructor(id: String, source: Source) :
       impl.sourceLayerIdentifier = value
     }
 
-  actual override fun setFilter(filter: Expression<BooleanValue>) {
+  actual override fun setFilter(filter: CompiledExpression<BooleanValue>) {
     impl.predicate = filter.toNSPredicate()
   }
 
-  actual fun setLineCap(cap: Expression<EnumValue<LineCap>>) {
+  actual fun setLineCap(cap: CompiledExpression<LineCap>) {
     impl.lineCap = cap.toNSExpression()
   }
 
-  actual fun setLineJoin(join: Expression<EnumValue<LineJoin>>) {
+  actual fun setLineJoin(join: CompiledExpression<LineJoin>) {
     impl.lineJoin = join.toNSExpression()
   }
 
-  actual fun setLineMiterLimit(miterLimit: Expression<FloatValue>) {
+  actual fun setLineMiterLimit(miterLimit: CompiledExpression<FloatValue>) {
     impl.lineMiterLimit = miterLimit.toNSExpression()
   }
 
-  actual fun setLineRoundLimit(roundLimit: Expression<FloatValue>) {
+  actual fun setLineRoundLimit(roundLimit: CompiledExpression<FloatValue>) {
     impl.lineRoundLimit = roundLimit.toNSExpression()
   }
 
-  actual fun setLineSortKey(sortKey: Expression<FloatValue>) {
+  actual fun setLineSortKey(sortKey: CompiledExpression<FloatValue>) {
     impl.lineSortKey = sortKey.toNSExpression()
   }
 
-  actual fun setLineOpacity(opacity: Expression<FloatValue>) {
+  actual fun setLineOpacity(opacity: CompiledExpression<FloatValue>) {
     impl.lineOpacity = opacity.toNSExpression()
   }
 
-  actual fun setLineColor(color: Expression<ColorValue>) {
+  actual fun setLineColor(color: CompiledExpression<ColorValue>) {
     impl.lineColor = color.toNSExpression()
   }
 
-  actual fun setLineTranslate(translate: Expression<DpOffsetValue>) {
+  actual fun setLineTranslate(translate: CompiledExpression<DpOffsetValue>) {
     impl.lineTranslation = translate.toNSExpression()
   }
 
-  actual fun setLineTranslateAnchor(translateAnchor: Expression<EnumValue<TranslateAnchor>>) {
+  actual fun setLineTranslateAnchor(translateAnchor: CompiledExpression<TranslateAnchor>) {
     impl.lineTranslationAnchor = translateAnchor.toNSExpression()
   }
 
-  actual fun setLineWidth(width: Expression<DpValue>) {
+  actual fun setLineWidth(width: CompiledExpression<DpValue>) {
     impl.lineWidth = width.toNSExpression()
   }
 
-  actual fun setLineGapWidth(gapWidth: Expression<DpValue>) {
+  actual fun setLineGapWidth(gapWidth: CompiledExpression<DpValue>) {
     impl.lineGapWidth = gapWidth.toNSExpression()
   }
 
-  actual fun setLineOffset(offset: Expression<DpValue>) {
+  actual fun setLineOffset(offset: CompiledExpression<DpValue>) {
     impl.lineOffset = offset.toNSExpression()
   }
 
-  actual fun setLineBlur(blur: Expression<DpValue>) {
+  actual fun setLineBlur(blur: CompiledExpression<DpValue>) {
     impl.lineBlur = blur.toNSExpression()
   }
 
-  actual fun setLineDasharray(dasharray: Expression<VectorValue<Number>>) {
+  actual fun setLineDasharray(dasharray: CompiledExpression<VectorValue<Number>>) {
     impl.lineDashPattern = dasharray.toNSExpression()
   }
 
-  actual fun setLinePattern(pattern: Expression<ResolvedValue<ImageValue>>) {
+  actual fun setLinePattern(pattern: CompiledExpression<ImageValue>) {
     // TODO: figure out how to unset a pattern in iOS
-    if (pattern.value != null) {
+    if (pattern != NullLiteral) {
       impl.linePattern = pattern.toNSExpression()
     }
   }
 
-  actual fun setLineGradient(gradient: Expression<ColorValue>) {
+  actual fun setLineGradient(gradient: CompiledExpression<ColorValue>) {
     impl.lineGradient = gradient.toNSExpression()
   }
 }

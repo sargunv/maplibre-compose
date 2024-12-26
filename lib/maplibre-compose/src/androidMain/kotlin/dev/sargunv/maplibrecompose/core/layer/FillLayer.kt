@@ -1,16 +1,14 @@
 package dev.sargunv.maplibrecompose.core.layer
 
-import dev.sargunv.maplibrecompose.core.expression.BooleanValue
-import dev.sargunv.maplibrecompose.core.expression.ColorValue
-import dev.sargunv.maplibrecompose.core.expression.DpOffsetValue
-import dev.sargunv.maplibrecompose.core.expression.EnumValue
-import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.FloatValue
-import dev.sargunv.maplibrecompose.core.expression.ImageValue
-import dev.sargunv.maplibrecompose.core.expression.ResolvedValue
-import dev.sargunv.maplibrecompose.core.expression.TranslateAnchor
 import dev.sargunv.maplibrecompose.core.source.Source
 import dev.sargunv.maplibrecompose.core.util.toMLNExpression
+import dev.sargunv.maplibrecompose.expression.BooleanValue
+import dev.sargunv.maplibrecompose.expression.ColorValue
+import dev.sargunv.maplibrecompose.expression.CompiledExpression
+import dev.sargunv.maplibrecompose.expression.DpOffsetValue
+import dev.sargunv.maplibrecompose.expression.FloatValue
+import dev.sargunv.maplibrecompose.expression.ImageValue
+import dev.sargunv.maplibrecompose.expression.TranslateAnchor
 import org.maplibre.android.style.expressions.Expression as MLNExpression
 import org.maplibre.android.style.layers.FillLayer as MLNFillLayer
 import org.maplibre.android.style.layers.PropertyFactory
@@ -21,39 +19,39 @@ internal actual class FillLayer actual constructor(id: String, source: Source) :
 
   actual override var sourceLayer: String by impl::sourceLayer
 
-  actual override fun setFilter(filter: Expression<BooleanValue>) {
+  actual override fun setFilter(filter: CompiledExpression<BooleanValue>) {
     impl.setFilter(filter.toMLNExpression() ?: MLNExpression.literal(true))
   }
 
-  actual fun setFillSortKey(sortKey: Expression<FloatValue>) {
+  actual fun setFillSortKey(sortKey: CompiledExpression<FloatValue>) {
     impl.setProperties(PropertyFactory.fillSortKey(sortKey.toMLNExpression()))
   }
 
-  actual fun setFillAntialias(antialias: Expression<BooleanValue>) {
+  actual fun setFillAntialias(antialias: CompiledExpression<BooleanValue>) {
     impl.setProperties(PropertyFactory.fillAntialias(antialias.toMLNExpression()))
   }
 
-  actual fun setFillOpacity(opacity: Expression<FloatValue>) {
+  actual fun setFillOpacity(opacity: CompiledExpression<FloatValue>) {
     impl.setProperties(PropertyFactory.fillOpacity(opacity.toMLNExpression()))
   }
 
-  actual fun setFillColor(color: Expression<ColorValue>) {
+  actual fun setFillColor(color: CompiledExpression<ColorValue>) {
     impl.setProperties(PropertyFactory.fillColor(color.toMLNExpression()))
   }
 
-  actual fun setFillOutlineColor(outlineColor: Expression<ColorValue>) {
+  actual fun setFillOutlineColor(outlineColor: CompiledExpression<ColorValue>) {
     impl.setProperties(PropertyFactory.fillOutlineColor(outlineColor.toMLNExpression()))
   }
 
-  actual fun setFillTranslate(translate: Expression<DpOffsetValue>) {
+  actual fun setFillTranslate(translate: CompiledExpression<DpOffsetValue>) {
     impl.setProperties(PropertyFactory.fillTranslate(translate.toMLNExpression()))
   }
 
-  actual fun setFillTranslateAnchor(translateAnchor: Expression<EnumValue<TranslateAnchor>>) {
+  actual fun setFillTranslateAnchor(translateAnchor: CompiledExpression<TranslateAnchor>) {
     impl.setProperties(PropertyFactory.fillTranslateAnchor(translateAnchor.toMLNExpression()))
   }
 
-  actual fun setFillPattern(pattern: Expression<ResolvedValue<ImageValue>>) {
+  actual fun setFillPattern(pattern: CompiledExpression<ImageValue>) {
     impl.setProperties(PropertyFactory.fillPattern(pattern.toMLNExpression()))
   }
 }

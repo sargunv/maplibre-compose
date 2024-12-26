@@ -5,19 +5,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import dev.sargunv.maplibrecompose.compose.FeaturesClickHandler
 import dev.sargunv.maplibrecompose.compose.MaplibreComposable
-import dev.sargunv.maplibrecompose.compose.engine.LocalStyleNode
-import dev.sargunv.maplibrecompose.core.expression.BooleanValue
-import dev.sargunv.maplibrecompose.core.expression.ColorValue
-import dev.sargunv.maplibrecompose.core.expression.DpOffsetValue
-import dev.sargunv.maplibrecompose.core.expression.EnumValue
-import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.const
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.nil
-import dev.sargunv.maplibrecompose.core.expression.FloatValue
-import dev.sargunv.maplibrecompose.core.expression.ImageValue
-import dev.sargunv.maplibrecompose.core.expression.TranslateAnchor
 import dev.sargunv.maplibrecompose.core.layer.FillExtrusionLayer
 import dev.sargunv.maplibrecompose.core.source.Source
+import dev.sargunv.maplibrecompose.expression.BooleanValue
+import dev.sargunv.maplibrecompose.expression.ColorValue
+import dev.sargunv.maplibrecompose.expression.DpOffsetValue
+import dev.sargunv.maplibrecompose.expression.Expression
+import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.const
+import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.nil
+import dev.sargunv.maplibrecompose.expression.FloatValue
+import dev.sargunv.maplibrecompose.expression.ImageValue
+import dev.sargunv.maplibrecompose.expression.TranslateAnchor
 
 /**
  * A fill extrusion layer draws polygons from the [sourceLayer] in the given [source] in the given
@@ -33,8 +31,7 @@ import dev.sargunv.maplibrecompose.core.source.Source
  *   this, the layer will be hidden. A value in the range of `[0..24]`.
  * @param filter An expression specifying conditions on source features. Only features that match
  *   the filter are displayed. Zoom expressions in filters are only evaluated at integer zoom
- *   levels. The
- *   [featureState][dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.featureState]
+ *   levels. The [featureState][dev.sargunv.maplibrecompose.expression.ExpressionsDsl.Feature.state]
  *   expression is not supported in filter expressions.
  * @param visible Whether the layer should be displayed.
  * @param translate The geometry's offset relative to the [translateAnchor]. Negative numbers
@@ -72,7 +69,7 @@ public fun FillExtrusionLayer(
   filter: Expression<BooleanValue> = nil(),
   visible: Boolean = true,
   translate: Expression<DpOffsetValue> = const(DpOffset.Zero),
-  translateAnchor: Expression<EnumValue<TranslateAnchor>> = const(TranslateAnchor.Map),
+  translateAnchor: Expression<TranslateAnchor> = const(TranslateAnchor.Map),
   opacity: Expression<FloatValue> = const(1f),
   color: Expression<ColorValue> = const(Color.Black),
   pattern: Expression<ImageValue> = nil(),
@@ -82,8 +79,17 @@ public fun FillExtrusionLayer(
   onClick: FeaturesClickHandler? = null,
   onLongClick: FeaturesClickHandler? = null,
 ) {
-  val node = LocalStyleNode.current
-  val resolvedPattern = node.imageManager.resolveImages(pattern)
+  val compiler = rememberPropertyCompiler()
+
+  val compiledFilter = compiler.invoke(filter)
+  val compiledOpacity = compiler.invoke(opacity)
+  val compiledColor = compiler.invoke(color)
+  val compiledTranslate = compiler.invoke(translate)
+  val compiledTranslateAnchor = compiler.invoke(translateAnchor)
+  val compiledPattern = compiler.invoke(pattern)
+  val compiledHeight = compiler.invoke(height)
+  val compiledBase = compiler.invoke(base)
+  val compiledVerticalGradient = compiler.invoke(verticalGradient)
 
   LayerNode(
     factory = { FillExtrusionLayer(id = id, source = source) },
@@ -91,16 +97,16 @@ public fun FillExtrusionLayer(
       set(sourceLayer) { layer.sourceLayer = it }
       set(minZoom) { layer.minZoom = it }
       set(maxZoom) { layer.maxZoom = it }
-      set(filter) { layer.setFilter(it) }
+      set(compiledFilter) { layer.setFilter(it) }
       set(visible) { layer.visible = it }
-      set(opacity) { layer.setFillExtrusionOpacity(it) }
-      set(color) { layer.setFillExtrusionColor(it) }
-      set(translate) { layer.setFillExtrusionTranslate(it) }
-      set(translateAnchor) { layer.setFillExtrusionTranslateAnchor(it) }
-      set(resolvedPattern) { layer.setFillExtrusionPattern(it) }
-      set(height) { layer.setFillExtrusionHeight(it) }
-      set(base) { layer.setFillExtrusionBase(it) }
-      set(verticalGradient) { layer.setFillExtrusionVerticalGradient(it) }
+      set(compiledOpacity) { layer.setFillExtrusionOpacity(it) }
+      set(compiledColor) { layer.setFillExtrusionColor(it) }
+      set(compiledTranslate) { layer.setFillExtrusionTranslate(it) }
+      set(compiledTranslateAnchor) { layer.setFillExtrusionTranslateAnchor(it) }
+      set(compiledPattern) { layer.setFillExtrusionPattern(it) }
+      set(compiledHeight) { layer.setFillExtrusionHeight(it) }
+      set(compiledBase) { layer.setFillExtrusionBase(it) }
+      set(compiledVerticalGradient) { layer.setFillExtrusionVerticalGradient(it) }
     },
     onClick = onClick,
     onLongClick = onLongClick,

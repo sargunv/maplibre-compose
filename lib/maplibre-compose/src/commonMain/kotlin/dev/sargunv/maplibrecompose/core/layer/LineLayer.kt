@@ -1,54 +1,52 @@
 package dev.sargunv.maplibrecompose.core.layer
 
-import dev.sargunv.maplibrecompose.core.expression.BooleanValue
-import dev.sargunv.maplibrecompose.core.expression.ColorValue
-import dev.sargunv.maplibrecompose.core.expression.DpOffsetValue
-import dev.sargunv.maplibrecompose.core.expression.DpValue
-import dev.sargunv.maplibrecompose.core.expression.EnumValue
-import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.FloatValue
-import dev.sargunv.maplibrecompose.core.expression.ImageValue
-import dev.sargunv.maplibrecompose.core.expression.LineCap
-import dev.sargunv.maplibrecompose.core.expression.LineJoin
-import dev.sargunv.maplibrecompose.core.expression.ResolvedValue
-import dev.sargunv.maplibrecompose.core.expression.TranslateAnchor
-import dev.sargunv.maplibrecompose.core.expression.VectorValue
 import dev.sargunv.maplibrecompose.core.source.Source
+import dev.sargunv.maplibrecompose.expression.BooleanValue
+import dev.sargunv.maplibrecompose.expression.ColorValue
+import dev.sargunv.maplibrecompose.expression.CompiledExpression
+import dev.sargunv.maplibrecompose.expression.DpOffsetValue
+import dev.sargunv.maplibrecompose.expression.DpValue
+import dev.sargunv.maplibrecompose.expression.FloatValue
+import dev.sargunv.maplibrecompose.expression.ImageValue
+import dev.sargunv.maplibrecompose.expression.LineCap
+import dev.sargunv.maplibrecompose.expression.LineJoin
+import dev.sargunv.maplibrecompose.expression.TranslateAnchor
+import dev.sargunv.maplibrecompose.expression.VectorValue
 
 internal expect class LineLayer(id: String, source: Source) : FeatureLayer {
   override var sourceLayer: String
 
-  override fun setFilter(filter: Expression<BooleanValue>)
+  override fun setFilter(filter: CompiledExpression<BooleanValue>)
 
-  fun setLineCap(cap: Expression<EnumValue<LineCap>>)
+  fun setLineCap(cap: CompiledExpression<LineCap>)
 
-  fun setLineJoin(join: Expression<EnumValue<LineJoin>>)
+  fun setLineJoin(join: CompiledExpression<LineJoin>)
 
-  fun setLineMiterLimit(miterLimit: Expression<FloatValue>)
+  fun setLineMiterLimit(miterLimit: CompiledExpression<FloatValue>)
 
-  fun setLineRoundLimit(roundLimit: Expression<FloatValue>)
+  fun setLineRoundLimit(roundLimit: CompiledExpression<FloatValue>)
 
-  fun setLineSortKey(sortKey: Expression<FloatValue>)
+  fun setLineSortKey(sortKey: CompiledExpression<FloatValue>)
 
-  fun setLineOpacity(opacity: Expression<FloatValue>)
+  fun setLineOpacity(opacity: CompiledExpression<FloatValue>)
 
-  fun setLineColor(color: Expression<ColorValue>)
+  fun setLineColor(color: CompiledExpression<ColorValue>)
 
-  fun setLineTranslate(translate: Expression<DpOffsetValue>)
+  fun setLineTranslate(translate: CompiledExpression<DpOffsetValue>)
 
-  fun setLineTranslateAnchor(translateAnchor: Expression<EnumValue<TranslateAnchor>>)
+  fun setLineTranslateAnchor(translateAnchor: CompiledExpression<TranslateAnchor>)
 
-  fun setLineWidth(width: Expression<DpValue>)
+  fun setLineWidth(width: CompiledExpression<DpValue>)
 
-  fun setLineGapWidth(gapWidth: Expression<DpValue>)
+  fun setLineGapWidth(gapWidth: CompiledExpression<DpValue>)
 
-  fun setLineOffset(offset: Expression<DpValue>)
+  fun setLineOffset(offset: CompiledExpression<DpValue>)
 
-  fun setLineBlur(blur: Expression<DpValue>)
+  fun setLineBlur(blur: CompiledExpression<DpValue>)
 
-  fun setLineDasharray(dasharray: Expression<VectorValue<Number>>)
+  fun setLineDasharray(dasharray: CompiledExpression<VectorValue<Number>>)
 
-  fun setLinePattern(pattern: Expression<ResolvedValue<ImageValue>>)
+  fun setLinePattern(pattern: CompiledExpression<ImageValue>)
 
-  fun setLineGradient(gradient: Expression<ColorValue>)
+  fun setLineGradient(gradient: CompiledExpression<ColorValue>)
 }

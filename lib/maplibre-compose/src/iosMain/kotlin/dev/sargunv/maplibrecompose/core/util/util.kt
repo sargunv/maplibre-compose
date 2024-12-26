@@ -1,9 +1,6 @@
 package dev.sargunv.maplibrecompose.core.util
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asSkiaBitmap
 import androidx.compose.ui.unit.DpOffset
@@ -22,8 +19,19 @@ import cocoapods.MapLibre.MLNOrnamentPositionTopRight
 import cocoapods.MapLibre.MLNShape
 import cocoapods.MapLibre.expressionWithMLNJSONObject
 import cocoapods.MapLibre.predicateWithMLNJSONObject
-import dev.sargunv.maplibrecompose.core.expression.BooleanValue
-import dev.sargunv.maplibrecompose.core.expression.Expression
+import dev.sargunv.maplibrecompose.expression.BooleanLiteral
+import dev.sargunv.maplibrecompose.expression.BooleanValue
+import dev.sargunv.maplibrecompose.expression.ColorLiteral
+import dev.sargunv.maplibrecompose.expression.CompiledExpression
+import dev.sargunv.maplibrecompose.expression.CompiledFunctionCall
+import dev.sargunv.maplibrecompose.expression.CompiledListLiteral
+import dev.sargunv.maplibrecompose.expression.CompiledMapLiteral
+import dev.sargunv.maplibrecompose.expression.CompiledOptions
+import dev.sargunv.maplibrecompose.expression.DpPaddingLiteral
+import dev.sargunv.maplibrecompose.expression.FloatLiteral
+import dev.sargunv.maplibrecompose.expression.NullLiteral
+import dev.sargunv.maplibrecompose.expression.OffsetLiteral
+import dev.sargunv.maplibrecompose.expression.StringLiteral
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.GeoJson
@@ -110,25 +118,46 @@ internal fun GeoJson.toMLNShape(): MLNShape {
   )!!
 }
 
-internal fun Expression<*>.toNSExpression(): NSExpression =
-  when (value) {
-    null -> NSExpression.expressionForConstantValue(null)
-    else -> NSExpression.expressionWithMLNJSONObject(normalizeJsonLike(value)!!)
+internal fun CompiledExpression<*>.toNSExpression(): NSExpression =
+  if (this == NullLiteral) NSExpression.expressionForConstantValue(null)
+  else NSExpression.expressionWithMLNJSONObject(normalizeJsonLike(false)!!)
+
+internal fun CompiledExpression<BooleanValue>.toNSPredicate(): NSPredicate? =
+  if (this == NullLiteral) null
+  else NSPredicate.predicateWithMLNJSONObject(normalizeJsonLike(false)!!)
+
+private fun buildLiteralList(inLiteral: Boolean, block: MutableList<Any?>.() -> Unit): List<Any?> {
+  return if (inLiteral) {
+    buildList { block() }
+  } else {
+    buildList {
+      add("literal")
+      add(buildList { block() })
+    }
   }
+}
 
-internal fun Expression<BooleanValue>.toNSPredicate(): NSPredicate? =
-  value?.let { NSPredicate.predicateWithMLNJSONObject(normalizeJsonLike(it)!!) }
+private fun buildLiteralMap(
+  inLiteral: Boolean,
+  block: MutableMap<String, Any?>.() -> Unit,
+): Map<String, *> {
+  return if (inLiteral) {
+    buildMap { block() }
+  } else {
+    buildMap { put("literal", buildMap { block() }) }
+  }
+}
 
-private fun normalizeJsonLike(value: Any?): Any? =
-  when (value) {
-    null -> null
-    is Boolean -> value
-    is Number -> value
-    is String -> value
-    is List<*> -> value.map(::normalizeJsonLike)
-    is Map<*, *> -> value.mapValues { normalizeJsonLike(it.value) }
-    is Offset -> NSValue.valueWithCGVector(CGVectorMake(value.x.toDouble(), value.y.toDouble()))
-    is Color ->
+private fun CompiledExpression<*>.normalizeJsonLike(inLiteral: Boolean): Any? =
+  when (this) {
+    NullLiteral -> null
+    is BooleanLiteral -> value
+    is FloatLiteral -> value
+    is StringLiteral -> value
+    is OffsetLiteral ->
+      NSValue.valueWithCGVector(CGVectorMake(value.x.toDouble(), value.y.toDouble()))
+
+    is ColorLiteral ->
       UIColor.colorWithRed(
         red = value.red.toDouble(),
         green = value.green.toDouble(),
@@ -136,7 +165,7 @@ private fun normalizeJsonLike(value: Any?): Any? =
         alpha = value.alpha.toDouble(),
       )
 
-    is PaddingValues.Absolute ->
+    is DpPaddingLiteral ->
       NSValue.valueWithUIEdgeInsets(
         UIEdgeInsetsMake(
           top = value.calculateTopPadding().value.toDouble(),
@@ -146,7 +175,20 @@ private fun normalizeJsonLike(value: Any?): Any? =
         )
       )
 
-    else -> throw IllegalArgumentException("Unsupported type: ${value::class}")
+    is CompiledFunctionCall ->
+      buildList {
+        add(name)
+        args.forEachIndexed { i, v -> add(v.normalizeJsonLike(inLiteral || isLiteralArg(i))) }
+      }
+
+    is CompiledListLiteral<*> ->
+      buildLiteralList(inLiteral) { value.forEach { add(it.normalizeJsonLike(true)) } }
+
+    is CompiledMapLiteral<*> ->
+      buildLiteralMap(inLiteral) { value.forEach { (k, v) -> put(k, v.normalizeJsonLike(true)) } }
+
+    is CompiledOptions<*> ->
+      buildMap { value.forEach { (k, v) -> put(k, v.normalizeJsonLike(inLiteral)) } }
   }
 
 internal fun Alignment.toMLNOrnamentPosition(layoutDir: LayoutDirection): MLNOrnamentPosition {

@@ -9,9 +9,10 @@ import dev.sargunv.maplibrecompose.core.CameraMoveReason
 import dev.sargunv.maplibrecompose.core.CameraPosition
 import dev.sargunv.maplibrecompose.core.MaplibreMap
 import dev.sargunv.maplibrecompose.core.VisibleRegion
-import dev.sargunv.maplibrecompose.core.expression.BooleanValue
-import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.const
+import dev.sargunv.maplibrecompose.expression.BooleanValue
+import dev.sargunv.maplibrecompose.expression.Expression
+import dev.sargunv.maplibrecompose.expression.ExpressionContext
+import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.const
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
@@ -117,7 +118,8 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
     layerIds: Set<String>? = null,
     predicate: Expression<BooleanValue> = const(true),
   ): List<Feature> {
-    val predicateOrNull = predicate.takeUnless { it == const(true) }
+    val predicateOrNull =
+      predicate.takeUnless { it == const(true) }?.compile(ExpressionContext.None)
     return map?.queryRenderedFeatures(offset, layerIds, predicateOrNull) ?: emptyList()
   }
 
@@ -137,7 +139,8 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
     layerIds: Set<String>? = null,
     predicate: Expression<BooleanValue> = const(true),
   ): List<Feature> {
-    val predicateOrNull = predicate.takeUnless { it == const(true) }
+    val predicateOrNull =
+      predicate.takeUnless { it == const(true) }?.compile(ExpressionContext.None)
     return map?.queryRenderedFeatures(rect, layerIds, predicateOrNull) ?: emptyList()
   }
 
