@@ -18,20 +18,20 @@ import kotlin.jvm.JvmName
  * to `true`, or the [fallback] value otherwise.
  *
  * Example:
- * ```
+ * ```kt
  * switch(
  *   condition(
- *     test = feature.has(const("color1")) and feature.has(const("color2")),
+ *     test = feature.has("color1") and feature.has("color2"),
  *     output = interpolate(
  *       linear(),
  *       zoom(),
- *       1 to feature.get(const("color1")).convertToColor(),
- *       20 to feature.get(const("color2")).convertToColor()
+ *       1 to feature.get("color1").convertToColor(),
+ *       20 to feature.get("color2").convertToColor()
  *     ),
  *   ),
  *   condition(
- *     test = feature.has(const("color")),
- *     output = feature.get(const("color")).convertToColor(),
+ *     test = feature.has("color"),
+ *     output = feature.get("color").convertToColor(),
  *   ),
  *   fallback = const(Color.Red),
  * )
@@ -75,9 +75,9 @@ public fun <T : ExpressionValue> condition(
  * will be the [fallback] value.
  *
  * Example:
- * ```
+ * ```kt
  * switch(
- *   input = feature.get(const("building_type")).asString(),
+ *   input = feature.get("building_type").asString(),
  *   case(
  *     label = "residential",
  *     output = const(Color.Cyan),

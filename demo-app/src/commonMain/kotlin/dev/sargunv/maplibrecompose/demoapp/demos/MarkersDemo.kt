@@ -76,9 +76,9 @@ object MarkersDemo : Demo {
             iconImage = image(marker),
             textField =
               format(
-                span(image(const("railway"))),
-                span(const(" ")),
-                span(get(const("STNCODE")).asString(), textSize = const(1.2f.em)),
+                span(image("railway")),
+                span(" "),
+                span(get("STNCODE").asString(), textSize = const(1.2f.em)),
               ),
             textFont = const(listOf("Noto Sans Regular")),
             textColor = const(MaterialTheme.colorScheme.onBackground),

@@ -14,6 +14,16 @@ public fun Expression<StringValue>.contains(
   substring: Expression<StringValue>
 ): Expression<BooleanValue> = FunctionCall.of("in", substring, this).cast()
 
+/** Returns whether this string contains the [substring]. */
+@JvmName("containsString")
+public fun Expression<StringValue>.contains(substring: String): Expression<BooleanValue> =
+  contains(const(substring))
+
+/** Returns whether this string contains the [substring]. */
+@JvmName("containsString")
+public fun String.contains(substring: Expression<StringValue>): Expression<BooleanValue> =
+  const(this).contains(substring)
+
 /**
  * Returns the first index at which the [substring] is located in this string, or `-1` if it cannot
  * be found. Accepts an optional [startIndex] from where to begin the search.
@@ -32,6 +42,27 @@ public fun Expression<StringValue>.indexOf(
 }
 
 /**
+ * Returns the first index at which the [substring] is located in this string, or `-1` if it cannot
+ * be found. Accepts an optional [startIndex] from where to begin the search.
+ */
+@JvmName("indexOfString")
+public fun String.indexOf(
+  substring: Expression<StringValue>,
+  startIndex: Expression<IntValue>? = null,
+): Expression<IntValue> = const(this).indexOf(substring, startIndex)
+
+/**
+ * Returns the first index at which the [substring] is located in this string, or `-1` if it cannot
+ * be found. Accepts an optional [startIndex] from where to begin the search.
+ */
+@JvmName("indexOfString")
+public fun Expression<StringValue>.indexOf(
+  substring: String,
+  startIndex: Int? = null,
+): Expression<IntValue> =
+  indexOf(substring = const(substring), startIndex = startIndex?.let { const(it) })
+
+/**
  * Returns a substring from this string from the [startIndex] (inclusive) to the end of the string
  * if [endIndex] is not specified or `null`, otherwise to [endIndex] (exclusive).
  *
@@ -48,6 +79,18 @@ public fun Expression<StringValue>.substring(
   }
   return FunctionCall.of("slice", *args.toTypedArray<Expression<*>>()).cast()
 }
+
+/**
+ * Returns a substring from this string from the [startIndex] (inclusive) to the end of the string
+ * if [endIndex] is not specified or `null`, otherwise to [endIndex] (exclusive).
+ *
+ * A UTF-16 surrogate pair counts as a single position.
+ */
+public fun Expression<StringValue>.substring(
+  startIndex: Int,
+  endIndex: Int? = null,
+): Expression<StringValue> =
+  substring(startIndex = const(startIndex), endIndex = endIndex?.let { const(it) })
 
 /**
  * Gets the length of this string.

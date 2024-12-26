@@ -82,7 +82,7 @@ object AnimatedLayerDemo : Demo {
               join = const(LineJoin.Round),
               width =
                 interpolate(
-                  type = exponential(const(1.2f)),
+                  type = exponential(1.2f),
                   input = zoom(),
                   7 to const(1.75.dp),
                   20 to const(22.dp),

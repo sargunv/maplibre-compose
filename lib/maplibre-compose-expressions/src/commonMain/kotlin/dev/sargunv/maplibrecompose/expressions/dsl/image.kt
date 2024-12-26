@@ -35,6 +35,22 @@ public fun image(value: Expression<StringValue>): Expression<ImageValue> =
  * [LineLayer][dev.sargunv.maplibrecompose.compose.layer.LineLayer]) and as a section in the
  * [format] expression.
  *
+ * The image argument will check that the requested image exists in the style and will return either
+ * the resolved image name or `null`, depending on whether or not the image is currently in the
+ * style. This validation process is synchronous and requires the image to have been added to the
+ * style before requesting it in the image argument.
+ */
+public fun image(value: String): Expression<ImageValue> = image(const(value))
+
+/**
+ * Returns an image type for use in `iconImage` (see
+ * [SymbolLayer][dev.sargunv.maplibrecompose.compose.layer.SymbolLayer]), `pattern` entries (see
+ * [BackgroundLayer][dev.sargunv.maplibrecompose.compose.layer.BackgroundLayer],
+ * [FillLayer][dev.sargunv.maplibrecompose.compose.layer.FillLayer],
+ * [FillExtrusionLayer][dev.sargunv.maplibrecompose.compose.layer.FillExtrusionLayer],
+ * [LineLayer][dev.sargunv.maplibrecompose.compose.layer.LineLayer]) and as a section in the
+ * [format] expression.
+ *
  * The [ImageBitmap] will be registered with the style when it's referenced by a layer, and
  * unregistered from the style if it's no longer referenced by any layer. An ID referencing the
  * bitmap will be generated automatically and inserted into the expression.

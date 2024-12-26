@@ -9,13 +9,13 @@ import dev.sargunv.maplibrecompose.expressions.value.NumberValue
 import kotlin.jvm.JvmName
 
 /** Returns mathematical constant ln(2) = natural logarithm of 2. */
-public fun ln2(): Expression<FloatValue> = FunctionCall.of("ln2").cast()
+public val LN_2: Expression<FloatValue> = FunctionCall.of("ln2").cast()
 
 /** Returns the mathematical constant π */
-public fun pi(): Expression<FloatValue> = FunctionCall.of("pi").cast()
+public val PI: Expression<FloatValue> = FunctionCall.of("pi").cast()
 
 /** Returns the mathematical constant e */
-public fun e(): Expression<FloatValue> = FunctionCall.of("e").cast()
+public val E: Expression<FloatValue> = FunctionCall.of("e").cast()
 
 /** Returns the sum of this number expression with [other]. */
 public operator fun <U, V : NumberValue<U>> Expression<V>.plus(

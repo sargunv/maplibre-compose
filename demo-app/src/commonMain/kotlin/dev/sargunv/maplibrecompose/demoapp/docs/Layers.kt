@@ -67,7 +67,7 @@ fun Layers() {
       color = const(Color.Blue),
       width =
         interpolate(
-          type = exponential(const(1.2f)),
+          type = exponential(1.2f),
           input = zoom(),
           5 to const(0.4.dp),
           6 to const(0.7.dp),

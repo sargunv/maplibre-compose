@@ -14,7 +14,7 @@ import dev.sargunv.maplibrecompose.expressions.value.InterpolationValue
  * [input], or the [fallback] if the input is less than the first stop.
  *
  * Example:
- * ```
+ * ```kt
  * step(zoom(), const(0), 10 to const(2.5), 20 to const(10.5))
  * ```
  *
@@ -65,7 +65,7 @@ private fun <T, V : InterpolateableValue<T>> interpolateImpl(
  * Requires the [type] of interpolation to use. Use [linear], [exponential], or [cubicBezier].
  *
  * Example:
- * ```
+ * ```kt
  * interpolate(
  *   exponential(2), zoom(),
  *   16 to const(1),
@@ -91,7 +91,7 @@ public fun <T, V : InterpolateableValue<T>> interpolate(
  * Requires the [type] of interpolation to use. Use [linear], [exponential], or [cubicBezier].
  *
  * Example:
- * ```
+ * ```kt
  * interpolateHcl(
  *   linear(),
  *   zoom(),
@@ -137,6 +137,15 @@ public fun exponential(base: Expression<FloatValue>): Expression<InterpolationVa
   FunctionCall.of("exponential", base).cast()
 
 /**
+ * Interpolates exponentially between the stops.
+ *
+ * @param [base] controls the rate at which the output increases: higher values make the output
+ *   increase more towards the high end of the range. With values close to 1 the output increases
+ *   linearly.
+ */
+public fun exponential(base: Float): Expression<InterpolationValue> = exponential(const(base))
+
+/**
  * Interpolates using the cubic bezier curve defined by the given control points between the pairs
  * of stops.
  */
@@ -146,3 +155,10 @@ public fun cubicBezier(
   x2: Expression<FloatValue>,
   y2: Expression<FloatValue>,
 ): Expression<InterpolationValue> = FunctionCall.of("cubic-bezier", x1, y1, x2, y2).cast()
+
+/**
+ * Interpolates using the cubic bezier curve defined by the given control points between the pairs
+ * of stops.
+ */
+public fun cubicBezier(x1: Float, y1: Float, x2: Float, y2: Float): Expression<InterpolationValue> =
+  cubicBezier(const(x1), const(y1), const(x2), const(y2))

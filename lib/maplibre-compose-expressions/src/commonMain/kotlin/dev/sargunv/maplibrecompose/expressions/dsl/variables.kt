@@ -13,15 +13,12 @@ import kotlin.jvm.JvmInline
  *   x.use() + const(3)
  * }
  * ```
- *
- * Variable names starting with `__` are reserved for internal use by the library.
  */
 public inline fun <V : ExpressionValue, R : ExpressionValue> withVariable(
   name: String,
   value: Expression<V>,
   block: (Variable<V>) -> Expression<R>,
 ): Expression<R> {
-  require(!name.startsWith("__")) { "Variable names starting with '__' are reserved." }
   return Variable<V>(name).let { it.bind(value, block(it)) }
 }
 

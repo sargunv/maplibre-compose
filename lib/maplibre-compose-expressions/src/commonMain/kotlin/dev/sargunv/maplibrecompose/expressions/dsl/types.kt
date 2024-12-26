@@ -155,6 +155,24 @@ public fun collator(
     .cast()
 
 /**
+ * Returns a collator for use in locale-dependent comparison operations. The [caseSensitive] and
+ * [diacriticSensitive] options default to `false`. The [locale] argument specifies the IETF
+ * language tag of the locale to use. If none is provided, the default locale is used. If the
+ * requested locale is not available, the collator will use a system-defined fallback locale. Use
+ * [resolvedLocale] to test the results of locale fallback behavior.
+ */
+public fun collator(
+  caseSensitive: Boolean? = null,
+  diacriticSensitive: Boolean? = null,
+  locale: String? = null,
+): Expression<CollatorValue> =
+  collator(
+    caseSensitive?.let { const(it) },
+    diacriticSensitive?.let { const(it) },
+    locale?.let { const(it) },
+  )
+
+/**
  * Converts this number into a string representation using the provided formatting rules.
  *
  * @param locale BCP 47 language tag for which locale to use
@@ -181,6 +199,27 @@ public fun Expression<NumberValue<*>>.formatToString(
       ),
     )
     .cast()
+
+/**
+ * Converts this number into a string representation using the provided formatting rules.
+ *
+ * @param locale BCP 47 language tag for which locale to use
+ * @param currency an ISO 4217 code to use for currency-style formatting
+ * @param minFractionDigits minimum fractional digits to include
+ * @param maxFractionDigits maximum fractional digits to include
+ */
+public fun Expression<NumberValue<*>>.formatToString(
+  locale: String? = null,
+  currency: String? = null,
+  minFractionDigits: Int? = null,
+  maxFractionDigits: Int? = null,
+): Expression<StringValue> =
+  formatToString(
+    locale?.let { const(it) },
+    currency?.let { const(it) },
+    minFractionDigits?.let { const(it) },
+    maxFractionDigits?.let { const(it) },
+  )
 
 /**
  * Converts this expression to a string.

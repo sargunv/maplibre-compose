@@ -130,4 +130,4 @@ public fun offset(x: TextUnit, y: TextUnit): Expression<TextUnitOffsetValue> =
  * For simplicity, the expression type system does not encode nullability, so the return value of
  * this function is assignable to any kind of expression.
  */
-public fun <T : ExpressionValue> nil(): Expression<T> = NullLiteral.cast()
+public fun nil(): Expression<Nothing> = NullLiteral.cast()
