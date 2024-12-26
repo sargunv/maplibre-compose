@@ -62,6 +62,8 @@ private fun <T, V : InterpolateableValue<T>> interpolateImpl(
  * Produces continuous, smooth results by interpolating between pairs of input and output values
  * ([stops]), given the [input] value.
  *
+ * Requires the [type] of interpolation to use. Use [linear], [exponential], or [cubicBezier].
+ *
  * Example:
  * ```
  * interpolate(
@@ -85,6 +87,8 @@ public fun <T, V : InterpolateableValue<T>> interpolate(
  * Produces continuous, smooth results by interpolating between pairs of input and output values
  * ([stops]), given the [input] value. Works like [interpolate], but the interpolation is performed
  * in the [Hue-Chroma-Luminance color space](https://en.wikipedia.org/wiki/HCL_color_space).
+ *
+ * Requires the [type] of interpolation to use. Use [linear], [exponential], or [cubicBezier].
  *
  * Example:
  * ```
@@ -110,6 +114,8 @@ public fun interpolateHcl(
  * Produces continuous, smooth results by interpolating between pairs of input and output values
  * ([stops]), given the [input] value. Works like [interpolate], but the interpolation is performed
  * in the [CIELAB color space](https://en.wikipedia.org/wiki/CIELAB_color_space).
+ *
+ * Requires the [type] of interpolation to use. Use [linear], [exponential], or [cubicBezier].
  */
 public fun interpolateLab(
   type: Expression<InterpolationValue>,

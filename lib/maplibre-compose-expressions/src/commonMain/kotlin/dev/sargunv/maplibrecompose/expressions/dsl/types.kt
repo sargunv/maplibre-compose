@@ -1,13 +1,9 @@
 package dev.sargunv.maplibrecompose.expressions.dsl
 
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.TextUnitType
-import dev.sargunv.maplibrecompose.expressions.ast.BitmapLiteral
 import dev.sargunv.maplibrecompose.expressions.ast.Expression
 import dev.sargunv.maplibrecompose.expressions.ast.FunctionCall
 import dev.sargunv.maplibrecompose.expressions.ast.Options
-import dev.sargunv.maplibrecompose.expressions.ast.PainterLiteral
 import dev.sargunv.maplibrecompose.expressions.ast.TextUnitCalculation
 import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import dev.sargunv.maplibrecompose.expressions.value.CollatorValue
@@ -19,9 +15,6 @@ import dev.sargunv.maplibrecompose.expressions.value.EnumValue
 import dev.sargunv.maplibrecompose.expressions.value.ExpressionType
 import dev.sargunv.maplibrecompose.expressions.value.FloatOffsetValue
 import dev.sargunv.maplibrecompose.expressions.value.FloatValue
-import dev.sargunv.maplibrecompose.expressions.value.FormattableValue
-import dev.sargunv.maplibrecompose.expressions.value.FormattedValue
-import dev.sargunv.maplibrecompose.expressions.value.ImageValue
 import dev.sargunv.maplibrecompose.expressions.value.IntValue
 import dev.sargunv.maplibrecompose.expressions.value.ListValue
 import dev.sargunv.maplibrecompose.expressions.value.MapValue
@@ -160,118 +153,6 @@ public fun collator(
       ),
     )
     .cast()
-
-/**
- * Returns a formatted string for displaying mixed-format text in the `textField` property (see
- * [SymbolLayer][dev.sargunv.maplibrecompose.compose.layer.SymbolLayer]). The input may contain a
- * string literal or expression, including an [image] expression.
- *
- * Example:
- * ```
- * format(
- *   span(
- *     feature.get("name").asString().substring(const(0), const(1)).uppercase(),
- *     textScale = const(1.5f),
- *   ),
- *   span(feature.get("name").asString().substring(const(1)))
- * )
- * ```
- *
- * Capitalizes the first letter of the features' property "name" and formats it to be extra-large,
- * the rest of the name is written normally.
- */
-public fun format(vararg spans: FormatSpan): Expression<FormattedValue> =
-  FunctionCall.of(
-      "format",
-      *spans.foldToArgs { span ->
-        add(span.value)
-        add(span.options)
-      },
-    )
-    .cast()
-
-/** Configures a span of text in a [format] expression. */
-public fun span(
-  value: Expression<StringValue>,
-  textFont: Expression<StringValue>? = null,
-  textColor: Expression<StringValue>? = null,
-  textSize: Expression<TextUnitValue>? = null,
-): FormatSpan =
-  FormatSpan(value = value, textFont = textFont, textColor = textColor, textSize = textSize)
-
-/** Configures an image in a [format] expression. */
-public fun span(value: Expression<FormattableValue>): FormatSpan = FormatSpan(value = value)
-
-/** Represents a component of a [format] expression. See [span]. */
-public data class FormatSpan
-internal constructor(
-  val value: Expression<FormattableValue>,
-  val textFont: Expression<StringValue>? = null,
-  val textColor: Expression<StringValue>? = null,
-  val textSize: Expression<TextUnitValue>? = null,
-) {
-  internal val options
-    get() =
-      Options.build(
-        fun MutableMap<String, Expression<*>>.() {
-          textFont?.let { put("text-font", it) }
-          textColor?.let { put("text-color", it) }
-          textSize?.let { put("font-scale", it) }
-        }
-      )
-}
-
-/**
- * Returns an image type for use in `iconImage` (see
- * [SymbolLayer][dev.sargunv.maplibrecompose.compose.layer.SymbolLayer]), `pattern` entries (see
- * [BackgroundLayer][dev.sargunv.maplibrecompose.compose.layer.BackgroundLayer],
- * [FillLayer][dev.sargunv.maplibrecompose.compose.layer.FillLayer],
- * [FillExtrusionLayer][dev.sargunv.maplibrecompose.compose.layer.FillExtrusionLayer],
- * [LineLayer][dev.sargunv.maplibrecompose.compose.layer.LineLayer]) and as a section in the
- * [format] expression.
- *
- * If set, the image argument will check that the requested image exists in the style and will
- * return either the resolved image name or `null`, depending on whether or not the image is
- * currently in the style. This validation process is synchronous and requires the image to have
- * been added to the style before requesting it in the image argument.
- */
-public fun image(value: Expression<StringValue>): Expression<ImageValue> =
-  FunctionCall.of("image", value).cast()
-
-/**
- * Returns an image type for use in `iconImage` (see
- * [SymbolLayer][dev.sargunv.maplibrecompose.compose.layer.SymbolLayer]), `pattern` entries (see
- * [BackgroundLayer][dev.sargunv.maplibrecompose.compose.layer.BackgroundLayer],
- * [FillLayer][dev.sargunv.maplibrecompose.compose.layer.FillLayer],
- * [FillExtrusionLayer][dev.sargunv.maplibrecompose.compose.layer.FillExtrusionLayer],
- * [LineLayer][dev.sargunv.maplibrecompose.compose.layer.LineLayer]) and as a section in the
- * [format] expression.
- *
- * The [ImageBitmap] will be registered with the style when it's referenced by a layer, and
- * unregistered from the style if it's no longer referenced by any layer. An ID referencing the
- * bitmap will be generated automatically and inserted into the expression.
- */
-public fun image(value: ImageBitmap): Expression<ImageValue> =
-  FunctionCall.of("image", BitmapLiteral.of(value)).cast()
-
-/**
- * Returns an image type for use in `iconImage` (see
- * [SymbolLayer][dev.sargunv.maplibrecompose.compose.layer.SymbolLayer]), `pattern` entries (see
- * [BackgroundLayer][dev.sargunv.maplibrecompose.compose.layer.BackgroundLayer],
- * [FillLayer][dev.sargunv.maplibrecompose.compose.layer.FillLayer],
- * [FillExtrusionLayer][dev.sargunv.maplibrecompose.compose.layer.FillExtrusionLayer],
- * [LineLayer][dev.sargunv.maplibrecompose.compose.layer.LineLayer]) and as a section in the
- * [format] expression.
- *
- * The [Painter] will be drawn to an [ImageBitmap] and registered with the style when it's
- * referenced by a layer, and unregistered from the style if it's no longer referenced by any layer.
- * An ID referencing the bitmap will be generated automatically and inserted into the expression.
- *
- * The bitmap will be created with the intrinsic size of the painter, or 16x16 DP if the painter
- * does not have an intrinsic size.
- */
-public fun image(value: Painter): Expression<ImageValue> =
-  FunctionCall.of("image", PainterLiteral.of(value)).cast()
 
 /**
  * Converts this number into a string representation using the provided formatting rules.
