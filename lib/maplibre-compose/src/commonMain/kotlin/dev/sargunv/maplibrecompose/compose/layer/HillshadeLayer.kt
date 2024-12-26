@@ -50,14 +50,14 @@ public fun HillshadeLayer(
   illuminationAnchor: Expression<IlluminationAnchor> = const(IlluminationAnchor.Viewport),
   exaggeration: Expression<FloatValue> = const(0.5f),
 ) {
-  val compiler = rememberPropertyCompiler()
+  val compile = rememberPropertyCompiler()
 
-  val compiledShadowColor = compiler.invoke(shadowColor)
-  val compiledHighlightColor = compiler.invoke(highlightColor)
-  val compiledAccentColor = compiler.invoke(accentColor)
-  val compiledIlluminationDirection = compiler.invoke(illuminationDirection)
-  val compiledIlluminationAnchor = compiler.invoke(illuminationAnchor)
-  val compiledExaggeration = compiler.invoke(exaggeration)
+  val compiledShadowColor = compile(shadowColor)
+  val compiledHighlightColor = compile(highlightColor)
+  val compiledAccentColor = compile(accentColor)
+  val compiledIlluminationDirection = compile(illuminationDirection)
+  val compiledIlluminationAnchor = compile(illuminationAnchor)
+  val compiledExaggeration = compile(exaggeration)
 
   LayerNode(
     factory = { HillshadeLayer(id = id, source = source) },

@@ -62,14 +62,14 @@ public fun HeatmapLayer(
   onClick: FeaturesClickHandler? = null,
   onLongClick: FeaturesClickHandler? = null,
 ) {
-  val compiler = rememberPropertyCompiler()
+  val compile = rememberPropertyCompiler()
 
-  val compiledFilter = compiler.invoke(filter)
-  val compiledColor = compiler.invoke(color)
-  val compiledOpacity = compiler.invoke(opacity)
-  val compiledRadius = compiler.invoke(radius)
-  val compiledWeight = compiler.invoke(weight)
-  val compiledIntensity = compiler.invoke(intensity)
+  val compiledFilter = compile(filter)
+  val compiledColor = compile(color)
+  val compiledOpacity = compile(opacity)
+  val compiledRadius = compile(radius)
+  val compiledWeight = compile(weight)
+  val compiledIntensity = compile(intensity)
 
   LayerNode(
     factory = { HeatmapLayer(id = id, source = source) },

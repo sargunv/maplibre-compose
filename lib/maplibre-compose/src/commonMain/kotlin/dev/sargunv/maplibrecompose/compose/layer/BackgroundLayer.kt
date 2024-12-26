@@ -40,11 +40,11 @@ public fun BackgroundLayer(
   color: Expression<ColorValue> = const(Color.Black),
   pattern: Expression<ImageValue> = nil(),
 ) {
-  val compiler = rememberPropertyCompiler()
+  val compile = rememberPropertyCompiler()
 
-  val compiledOpacity = compiler.invoke(opacity)
-  val compiledColor = compiler.invoke(color)
-  val compiledPattern = compiler.invoke(pattern)
+  val compiledOpacity = compile(opacity)
+  val compiledColor = compile(color)
+  val compiledPattern = compile(pattern)
 
   LayerNode(
     factory = { BackgroundLayer(id = id) },

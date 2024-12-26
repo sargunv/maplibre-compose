@@ -82,21 +82,21 @@ public fun CircleLayer(
   onClick: FeaturesClickHandler? = null,
   onLongClick: FeaturesClickHandler? = null,
 ) {
-  val compiler = rememberPropertyCompiler()
+  val compile = rememberPropertyCompiler()
 
-  val compiledFilter = compiler.invoke(filter)
-  val compiledSortKey = compiler.invoke(sortKey)
-  val compiledTranslate = compiler.invoke(translate)
-  val compiledTranslateAnchor = compiler.invoke(translateAnchor)
-  val compiledOpacity = compiler.invoke(opacity)
-  val compiledColor = compiler.invoke(color)
-  val compiledBlur = compiler.invoke(blur)
-  val compiledRadius = compiler.invoke(radius)
-  val compiledStrokeOpacity = compiler.invoke(strokeOpacity)
-  val compiledStrokeColor = compiler.invoke(strokeColor)
-  val compiledStrokeWidth = compiler.invoke(strokeWidth)
-  val compiledPitchScale = compiler.invoke(pitchScale)
-  val compiledPitchAlignment = compiler.invoke(pitchAlignment)
+  val compiledFilter = compile(filter)
+  val compiledSortKey = compile(sortKey)
+  val compiledTranslate = compile(translate)
+  val compiledTranslateAnchor = compile(translateAnchor)
+  val compiledOpacity = compile(opacity)
+  val compiledColor = compile(color)
+  val compiledBlur = compile(blur)
+  val compiledRadius = compile(radius)
+  val compiledStrokeOpacity = compile(strokeOpacity)
+  val compiledStrokeColor = compile(strokeColor)
+  val compiledStrokeWidth = compile(strokeWidth)
+  val compiledPitchScale = compile(pitchScale)
+  val compiledPitchAlignment = compile(pitchAlignment)
 
   LayerNode(
     factory = { CircleLayer(id = id, source = source) },

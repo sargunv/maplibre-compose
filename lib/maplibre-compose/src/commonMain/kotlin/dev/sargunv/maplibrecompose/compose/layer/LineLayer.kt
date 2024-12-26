@@ -110,25 +110,25 @@ public fun LineLayer(
   onClick: FeaturesClickHandler? = null,
   onLongClick: FeaturesClickHandler? = null,
 ) {
-  val compiler = rememberPropertyCompiler()
+  val compile = rememberPropertyCompiler()
 
-  val compiledFilter = compiler.invoke(filter)
-  val compiledSortKey = compiler.invoke(sortKey)
-  val compiledTranslate = compiler.invoke(translate)
-  val compiledTranslateAnchor = compiler.invoke(translateAnchor)
-  val compiledOpacity = compiler.invoke(opacity)
-  val compiledColor = compiler.invoke(color)
-  val compiledDasharray = compiler.invoke(dasharray)
-  val compiledPattern = compiler.invoke(pattern)
-  val compiledGradient = compiler.invoke(gradient)
-  val compiledBlur = compiler.invoke(blur)
-  val compiledWidth = compiler.invoke(width)
-  val compiledGapWidth = compiler.invoke(gapWidth)
-  val compiledOffset = compiler.invoke(offset)
-  val compiledCap = compiler.invoke(cap)
-  val compiledJoin = compiler.invoke(join)
-  val compiledMiterLimit = compiler.invoke(miterLimit)
-  val compiledRoundLimit = compiler.invoke(roundLimit)
+  val compiledFilter = compile(filter)
+  val compiledSortKey = compile(sortKey)
+  val compiledTranslate = compile(translate)
+  val compiledTranslateAnchor = compile(translateAnchor)
+  val compiledOpacity = compile(opacity)
+  val compiledColor = compile(color)
+  val compiledDasharray = compile(dasharray)
+  val compiledPattern = compile(pattern)
+  val compiledGradient = compile(gradient)
+  val compiledBlur = compile(blur)
+  val compiledWidth = compile(width)
+  val compiledGapWidth = compile(gapWidth)
+  val compiledOffset = compile(offset)
+  val compiledCap = compile(cap)
+  val compiledJoin = compile(join)
+  val compiledMiterLimit = compile(miterLimit)
+  val compiledRoundLimit = compile(roundLimit)
 
   LayerNode(
     factory = { LineLayer(id = id, source = source) },

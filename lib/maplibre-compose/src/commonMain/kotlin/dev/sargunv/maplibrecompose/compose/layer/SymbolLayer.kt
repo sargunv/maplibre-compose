@@ -16,7 +16,6 @@ import dev.sargunv.maplibrecompose.expression.ZeroPadding
 import dev.sargunv.maplibrecompose.expression.ast.Expression
 import dev.sargunv.maplibrecompose.expression.dsl.const
 import dev.sargunv.maplibrecompose.expression.dsl.div
-import dev.sargunv.maplibrecompose.expression.dsl.dp
 import dev.sargunv.maplibrecompose.expression.dsl.nil
 import dev.sargunv.maplibrecompose.expression.dsl.offset
 import dev.sargunv.maplibrecompose.expression.dsl.times
@@ -475,74 +474,75 @@ public fun SymbolLayer(
 ) {
   // used for scaling textSize from sp (api) to dp (core)
   // needs changes after https://github.com/maplibre/maplibre-native/issues/3057
-  val dpPerSp = LocalDensity.current.fontScale
-  val textSizeCompiler = rememberPropertyCompiler(emScale = const(16f), spScale = const(1f))
-  val textSizeSp = textSizeCompiler.invoke(textSize).cast<FloatValue>()
-  val textSizeDp = remember(textSizeSp, dpPerSp) { textSizeSp * const(dpPerSp).dp }
+  val dpPerSp = LocalDensity.current.fontScale.dp
+  val compileTextSize = rememberPropertyCompiler(emScale = const(16f), spScale = const(1f))
+  val textSizeSp = compileTextSize(textSize.cast<FloatValue>())
+  val textSizeDp = remember(textSizeSp, dpPerSp) { textSizeSp * const(dpPerSp) }
 
-  val emCompiler = rememberPropertyCompiler(emScale = const(1f), spScale = const(1f) / textSizeSp)
+  // compiles TextUnit as EMs
+  val compile = rememberPropertyCompiler(emScale = const(1f), spScale = const(1f) / textSizeSp)
 
-  val compiledFilter = emCompiler.invoke(filter)
-  val compiledSortKey = emCompiler.invoke(sortKey)
-  val compiledSpacing = emCompiler.invoke(spacing)
-  val compiledAvoidEdges = emCompiler.invoke(avoidEdges)
-  val compiledZOrder = emCompiler.invoke(zOrder)
-  val compiledPlacement = emCompiler.invoke(placement)
+  val compiledFilter = compile(filter)
+  val compiledSortKey = compile(sortKey)
+  val compiledSpacing = compile(spacing)
+  val compiledAvoidEdges = compile(avoidEdges)
+  val compiledZOrder = compile(zOrder)
+  val compiledPlacement = compile(placement)
 
-  val compiledIconImage = emCompiler.invoke(iconImage)
-  val compiledIconOpacity = emCompiler.invoke(iconOpacity)
-  val compiledIconColor = emCompiler.invoke(iconColor)
-  val compiledIconHaloColor = emCompiler.invoke(iconHaloColor)
-  val compiledIconHaloWidth = emCompiler.invoke(iconHaloWidth)
-  val compiledIconHaloBlur = emCompiler.invoke(iconHaloBlur)
-  val compiledIconSize = emCompiler.invoke(iconSize)
-  val compiledIconRotationAlignment = emCompiler.invoke(iconRotationAlignment)
-  val compiledIconPitchAlignment = emCompiler.invoke(iconPitchAlignment)
-  val compiledIconTextFit = emCompiler.invoke(iconTextFit)
-  val compiledIconTextFitPadding = emCompiler.invoke(iconTextFitPadding)
-  val compiledIconKeepUpright = emCompiler.invoke(iconKeepUpright)
-  val compiledIconRotate = emCompiler.invoke(iconRotate)
-  val compiledIconAnchor = emCompiler.invoke(iconAnchor)
-  val compiledIconOffset = emCompiler.invoke(iconOffset)
-  val compiledIconPadding = emCompiler.invoke(iconPadding)
-  val compiledIconAllowOverlap = emCompiler.invoke(iconAllowOverlap)
-  val compiledIconOverlap = emCompiler.invoke(iconOverlap)
-  val compiledIconIgnorePlacement = emCompiler.invoke(iconIgnorePlacement)
-  val compiledIconOptional = emCompiler.invoke(iconOptional)
-  val compiledIconTranslate = emCompiler.invoke(iconTranslate)
-  val compiledIconTranslateAnchor = emCompiler.invoke(iconTranslateAnchor)
+  val compiledIconImage = compile(iconImage)
+  val compiledIconOpacity = compile(iconOpacity)
+  val compiledIconColor = compile(iconColor)
+  val compiledIconHaloColor = compile(iconHaloColor)
+  val compiledIconHaloWidth = compile(iconHaloWidth)
+  val compiledIconHaloBlur = compile(iconHaloBlur)
+  val compiledIconSize = compile(iconSize)
+  val compiledIconRotationAlignment = compile(iconRotationAlignment)
+  val compiledIconPitchAlignment = compile(iconPitchAlignment)
+  val compiledIconTextFit = compile(iconTextFit)
+  val compiledIconTextFitPadding = compile(iconTextFitPadding)
+  val compiledIconKeepUpright = compile(iconKeepUpright)
+  val compiledIconRotate = compile(iconRotate)
+  val compiledIconAnchor = compile(iconAnchor)
+  val compiledIconOffset = compile(iconOffset)
+  val compiledIconPadding = compile(iconPadding)
+  val compiledIconAllowOverlap = compile(iconAllowOverlap)
+  val compiledIconOverlap = compile(iconOverlap)
+  val compiledIconIgnorePlacement = compile(iconIgnorePlacement)
+  val compiledIconOptional = compile(iconOptional)
+  val compiledIconTranslate = compile(iconTranslate)
+  val compiledIconTranslateAnchor = compile(iconTranslateAnchor)
 
-  val compiledTextField = emCompiler.invoke(textField)
-  val compiledTextOpacity = emCompiler.invoke(textOpacity)
-  val compiledTextColor = emCompiler.invoke(textColor)
-  val compiledTextHaloColor = emCompiler.invoke(textHaloColor)
-  val compiledTextHaloWidth = emCompiler.invoke(textHaloWidth)
-  val compiledTextHaloBlur = emCompiler.invoke(textHaloBlur)
-  val compiledTextFont = emCompiler.invoke(textFont)
-  val compiledTextSize = emCompiler.invoke(textSizeDp)
-  val compiledTextTransform = emCompiler.invoke(textTransform)
-  val compiledTextLetterSpacing = emCompiler.invoke(textLetterSpacing)
-  val compiledTextRotationAlignment = emCompiler.invoke(textRotationAlignment)
-  val compiledTextPitchAlignment = emCompiler.invoke(textPitchAlignment)
-  val compiledTextMaxAngle = emCompiler.invoke(textMaxAngle)
-  val compiledTextMaxWidth = emCompiler.invoke(textMaxWidth)
-  val compiledTextLineHeight = emCompiler.invoke(textLineHeight)
-  val compiledTextJustify = emCompiler.invoke(textJustify)
-  val compiledTextWritingMode = emCompiler.invoke(textWritingMode)
-  val compiledTextKeepUpright = emCompiler.invoke(textKeepUpright)
-  val compiledTextRotate = emCompiler.invoke(textRotate)
-  val compiledTextAnchor = emCompiler.invoke(textAnchor)
-  val compiledTextOffset = emCompiler.invoke(textOffset)
-  val compiledTextVariableAnchor = emCompiler.invoke(textVariableAnchor)
-  val compiledTextRadialOffset = emCompiler.invoke(textRadialOffset)
-  val compiledTextVariableAnchorOffset = emCompiler.invoke(textVariableAnchorOffset)
-  val compiledTextPadding = emCompiler.invoke(textPadding)
-  val compiledTextAllowOverlap = emCompiler.invoke(textAllowOverlap)
-  val compiledTextOverlap = emCompiler.invoke(textOverlap)
-  val compiledTextIgnorePlacement = emCompiler.invoke(textIgnorePlacement)
-  val compiledTextOptional = emCompiler.invoke(textOptional)
-  val compiledTextTranslate = emCompiler.invoke(textTranslate)
-  val compiledTextTranslateAnchor = emCompiler.invoke(textTranslateAnchor)
+  val compiledTextField = compile(textField)
+  val compiledTextOpacity = compile(textOpacity)
+  val compiledTextColor = compile(textColor)
+  val compiledTextHaloColor = compile(textHaloColor)
+  val compiledTextHaloWidth = compile(textHaloWidth)
+  val compiledTextHaloBlur = compile(textHaloBlur)
+  val compiledTextFont = compile(textFont)
+  val compiledTextSizeDp = compile(textSizeDp)
+  val compiledTextTransform = compile(textTransform)
+  val compiledTextLetterSpacing = compile(textLetterSpacing)
+  val compiledTextRotationAlignment = compile(textRotationAlignment)
+  val compiledTextPitchAlignment = compile(textPitchAlignment)
+  val compiledTextMaxAngle = compile(textMaxAngle)
+  val compiledTextMaxWidth = compile(textMaxWidth)
+  val compiledTextLineHeight = compile(textLineHeight)
+  val compiledTextJustify = compile(textJustify)
+  val compiledTextWritingMode = compile(textWritingMode)
+  val compiledTextKeepUpright = compile(textKeepUpright)
+  val compiledTextRotate = compile(textRotate)
+  val compiledTextAnchor = compile(textAnchor)
+  val compiledTextOffset = compile(textOffset)
+  val compiledTextVariableAnchor = compile(textVariableAnchor)
+  val compiledTextRadialOffset = compile(textRadialOffset)
+  val compiledTextVariableAnchorOffset = compile(textVariableAnchorOffset)
+  val compiledTextPadding = compile(textPadding)
+  val compiledTextAllowOverlap = compile(textAllowOverlap)
+  val compiledTextOverlap = compile(textOverlap)
+  val compiledTextIgnorePlacement = compile(textIgnorePlacement)
+  val compiledTextOptional = compile(textOptional)
+  val compiledTextTranslate = compile(textTranslate)
+  val compiledTextTranslateAnchor = compile(textTranslateAnchor)
 
   LayerNode(
     factory = { SymbolLayer(id = id, source = source) },
@@ -585,7 +585,7 @@ public fun SymbolLayer(
       set(compiledTextRotationAlignment) { layer.setTextRotationAlignment(it) }
       set(compiledTextField) { layer.setTextField(it) }
       set(compiledTextFont) { layer.setTextFont(it) }
-      set(compiledTextSize) { layer.setTextSize(it) }
+      set(compiledTextSizeDp) { layer.setTextSize(it) }
       set(compiledTextMaxWidth.cast<FloatValue>()) { layer.setTextMaxWidth(it) }
       set(compiledTextLineHeight.cast<FloatValue>()) { layer.setTextLineHeight(it) }
       set(compiledTextLetterSpacing.cast<FloatValue>()) { layer.setTextLetterSpacing(it) }

@@ -79,17 +79,17 @@ public fun FillExtrusionLayer(
   onClick: FeaturesClickHandler? = null,
   onLongClick: FeaturesClickHandler? = null,
 ) {
-  val compiler = rememberPropertyCompiler()
+  val compile = rememberPropertyCompiler()
 
-  val compiledFilter = compiler.invoke(filter)
-  val compiledOpacity = compiler.invoke(opacity)
-  val compiledColor = compiler.invoke(color)
-  val compiledTranslate = compiler.invoke(translate)
-  val compiledTranslateAnchor = compiler.invoke(translateAnchor)
-  val compiledPattern = compiler.invoke(pattern)
-  val compiledHeight = compiler.invoke(height)
-  val compiledBase = compiler.invoke(base)
-  val compiledVerticalGradient = compiler.invoke(verticalGradient)
+  val compiledFilter = compile(filter)
+  val compiledOpacity = compile(opacity)
+  val compiledColor = compile(color)
+  val compiledTranslate = compile(translate)
+  val compiledTranslateAnchor = compile(translateAnchor)
+  val compiledPattern = compile(pattern)
+  val compiledHeight = compile(height)
+  val compiledBase = compile(base)
+  val compiledVerticalGradient = compile(verticalGradient)
 
   LayerNode(
     factory = { FillExtrusionLayer(id = id, source = source) },

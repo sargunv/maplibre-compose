@@ -78,17 +78,17 @@ public fun FillLayer(
   onClick: FeaturesClickHandler? = null,
   onLongClick: FeaturesClickHandler? = null,
 ) {
-  val compiler = rememberPropertyCompiler()
+  val compile = rememberPropertyCompiler()
 
-  val compiledFilter = compiler.invoke(filter)
-  val compiledSortKey = compiler.invoke(sortKey)
-  val compiledTranslate = compiler.invoke(translate)
-  val compiledAntialias = compiler.invoke(antialias)
-  val compiledOpacity = compiler.invoke(opacity)
-  val compiledColor = compiler.invoke(color)
-  val compiledPattern = compiler.invoke(pattern)
-  val compiledTranslateAnchor = compiler.invoke(translateAnchor)
-  val compiledOutlineColor = compiler.invoke(outlineColor)
+  val compiledFilter = compile(filter)
+  val compiledSortKey = compile(sortKey)
+  val compiledTranslate = compile(translate)
+  val compiledAntialias = compile(antialias)
+  val compiledOpacity = compile(opacity)
+  val compiledColor = compile(color)
+  val compiledPattern = compile(pattern)
+  val compiledTranslateAnchor = compile(translateAnchor)
+  val compiledOutlineColor = compile(outlineColor)
 
   LayerNode(
     factory = { FillLayer(id = id, source = source) },

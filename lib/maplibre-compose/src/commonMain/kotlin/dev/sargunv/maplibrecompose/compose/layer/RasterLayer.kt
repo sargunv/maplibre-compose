@@ -52,16 +52,16 @@ public fun RasterLayer(
   resampling: Expression<RasterResampling> = const(RasterResampling.Linear),
   fadeDuration: Expression<MillisecondsValue> = const(300.milliseconds),
 ) {
-  val compiler = rememberPropertyCompiler()
+  val compile = rememberPropertyCompiler()
 
-  val compiledOpacity = compiler.invoke(opacity)
-  val compiledHueRotate = compiler.invoke(hueRotate)
-  val compiledBrightnessMin = compiler.invoke(brightnessMin)
-  val compiledBrightnessMax = compiler.invoke(brightnessMax)
-  val compiledSaturation = compiler.invoke(saturation)
-  val compiledContrast = compiler.invoke(contrast)
-  val compiledResampling = compiler.invoke(resampling)
-  val compiledFadeDuration = compiler.invoke(fadeDuration)
+  val compiledOpacity = compile(opacity)
+  val compiledHueRotate = compile(hueRotate)
+  val compiledBrightnessMin = compile(brightnessMin)
+  val compiledBrightnessMax = compile(brightnessMax)
+  val compiledSaturation = compile(saturation)
+  val compiledContrast = compile(contrast)
+  val compiledResampling = compile(resampling)
+  val compiledFadeDuration = compile(fadeDuration)
 
   LayerNode(
     factory = { RasterLayer(id = id, source = source) },
