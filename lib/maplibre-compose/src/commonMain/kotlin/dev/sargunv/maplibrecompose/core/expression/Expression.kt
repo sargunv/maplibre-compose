@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.painter.Painter
 
 /** Wraps a JSON-like value that represents an expression, typically used for styling map layers. */
 public data class Expression<@Suppress("unused") out T : ExpressionValue>
@@ -90,6 +91,8 @@ private constructor(
     fun ofPadding(padding: PaddingValues.Absolute) =
       if (padding == ZeroPadding) ofZeroPadding else Expression(padding)
 
-    fun ofBitmap(value: ImageBitmap): Expression<ImageValue> = Expression(listOf("image", value))
+    fun ofBitmap(bitmap: ImageBitmap): Expression<ImageValue> = Expression(listOf("image", bitmap))
+
+    fun ofPainter(painter: Painter): Expression<ImageValue> = Expression(listOf("image", painter))
   }
 }

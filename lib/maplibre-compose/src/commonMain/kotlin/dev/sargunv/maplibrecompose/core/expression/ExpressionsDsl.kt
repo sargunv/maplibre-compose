@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.TextUnit
@@ -447,6 +448,25 @@ public object ExpressionsDsl {
    * bitmap will be generated automatically and inserted into the expression.
    */
   public fun image(value: ImageBitmap): Expression<ImageValue> = Expression.ofBitmap(value)
+
+  /**
+   * Returns an image type for use in `iconImage` (see
+   * [SymbolLayer][dev.sargunv.maplibrecompose.compose.layer.SymbolLayer]), `pattern` entries (see
+   * [BackgroundLayer][dev.sargunv.maplibrecompose.compose.layer.BackgroundLayer],
+   * [FillLayer][dev.sargunv.maplibrecompose.compose.layer.FillLayer],
+   * [FillExtrusionLayer][dev.sargunv.maplibrecompose.compose.layer.FillExtrusionLayer],
+   * [LineLayer][dev.sargunv.maplibrecompose.compose.layer.LineLayer]) and as a section in the
+   * [format] expression.
+   *
+   * The [Painter] will be drawn to an [ImageBitmap] and registered with the style when it's
+   * referenced by a layer, and unregistered from the style if it's no longer referenced by any
+   * layer. An ID referencing the bitmap will be generated automatically and inserted into the
+   * expression.
+   *
+   * The bitmap will be created with the intrinsic size of the painter, or 16x16 DP if the painter
+   * does not have an intrinsic size.
+   */
+  public fun image(value: Painter): Expression<ImageValue> = Expression.ofPainter(value)
 
   /**
    * Converts this number into a string representation using the provided formatting rules.
