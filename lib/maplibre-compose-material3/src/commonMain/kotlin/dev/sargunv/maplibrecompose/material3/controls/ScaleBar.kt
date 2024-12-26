@@ -25,6 +25,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
@@ -43,6 +44,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastMaxBy
 import dev.sargunv.maplibrecompose.compose.CameraState
 import dev.sargunv.maplibrecompose.material3.generated.Res
 import dev.sargunv.maplibrecompose.material3.generated.feet_symbol
@@ -75,6 +77,17 @@ public object ScaleBarDefaults {
 }
 
 /**
+ * Which unit(s) to show on the scale bar.
+ * @param metric if true, shows scale in meters and kilometers
+ * @param imperial if true, shows scale in feet and miles
+ */
+public data class ScaleBarUnits(val metric: Boolean, val imperial: Boolean) {
+  public companion object {
+    public val Default: ScaleBarUnits = ScaleBarUnits(metric = true, imperial = true)
+  }
+}
+
+/**
  * A scale bar composable that shows the current scale of the map in feet and meters when zoomed in
  * to the map, changing to miles and kilometers, respectively, when zooming out.
  */
@@ -82,6 +95,7 @@ public object ScaleBarDefaults {
 public fun ScaleBar(
   cameraState: CameraState,
   modifier: Modifier = Modifier,
+  units: ScaleBarUnits = ScaleBarUnits.Default,
   width: Dp = ScaleBarDefaults.width,
   height: Dp = ScaleBarDefaults.height,
   colors: ScaleBarColors = ScaleBarDefaults.colors(),
@@ -93,6 +107,18 @@ public fun ScaleBar(
       modifier = Modifier.fillMaxSize(),
       onDraw = {
         horizontalLineWidthMeters = cameraState.metersPerDpAtTarget * size.width.toDp().value
+
+        val maxBarWidthInMeters = cameraState.metersPerDpAtTarget * size.width.toDp().value
+        val stops = METRIC_STOPS
+
+        var stop = stops.first()
+        for (i in stops.indices) {
+          if (stops[i].first <= maxBarWidthInMeters) stop = stops[i]
+          else break
+        }
+        val barWidthInDp = stop.first / cameraState.metersPerDpAtTarget
+        val bars = stop.second
+
 
         val start =
           when (layoutDirection) {
@@ -163,18 +189,18 @@ public fun ScaleBar(
     ) {
       var metricUnits = stringResource(Res.string.meters_symbol)
       var metricDistance = horizontalLineWidthMeters
-      if (horizontalLineWidthMeters > METERS_IN_KILOMETER) {
+      if (horizontalLineWidthMeters > 1000) {
         // Switch from meters to kilometers as unit
         metricUnits = stringResource(Res.string.kilometers_symbol)
-        metricDistance /= METERS_IN_KILOMETER.toInt()
+        metricDistance /= 1000
       }
 
       var imperialUnits = stringResource(Res.string.feet_symbol)
-      var imperialDistance = horizontalLineWidthMeters.toFeet()
+      var imperialDistance = horizontalLineWidthMeters / METERS_IN_FEET
       if (imperialDistance > FEET_IN_MILE) {
         // Switch from ft to miles as unit
         imperialUnits = stringResource(Res.string.miles_symbol)
-        imperialDistance = imperialDistance.toMiles()
+        imperialDistance /= FEET_IN_MILE
       }
 
       TextWithHalo(
@@ -201,6 +227,7 @@ public fun ScaleBar(
 public fun DisappearingScaleBar(
   cameraState: CameraState,
   modifier: Modifier = Modifier,
+  units: ScaleBarUnits = ScaleBarUnits.Default,
   width: Dp = ScaleBarDefaults.width,
   height: Dp = ScaleBarDefaults.height,
   colors: ScaleBarColors = ScaleBarDefaults.colors(),
@@ -224,30 +251,90 @@ public fun DisappearingScaleBar(
     enter = enterTransition,
     exit = exitTransition,
   ) {
-    ScaleBar(width = width, height = height, cameraState = cameraState, colors = colors)
+    ScaleBar(
+      cameraState = cameraState,
+      units = units,
+      width = width,
+      height = height,
+      colors = colors
+    )
   }
 }
 
-/**
- * Converts [this] value in meters to the corresponding value in feet
- *
- * @return [this] meters value converted to feet
- */
-private fun Double.toFeet(): Double {
-  return this * CENTIMETERS_IN_METER / CENTIMETERS_IN_INCH / INCHES_IN_FOOT
-}
+private const val METERS_IN_FEET: Double = 0.3048
+private const val FEET_IN_MILE: Int = 5280
 
-/**
- * Converts [this] value in feet to the corresponding value in miles
- *
- * @return [this] feet value converted to miles
- */
-private fun Double.toMiles(): Double {
-  return this / FEET_IN_MILE
-}
+/** list of meters to number of bars */
+private val METRIC_STOPS: List<Int> = listOf(
+  1,
+  2,
+  5,
+  10,
+  20,
+  50,
+  100,
+  200,
+  300,
+  500,
+  1000,
+  2000,
+  5000,
+  10000,
+  20000,
+  50000,
+  100000,
+  200000,
+  500000,
+  1000000,
+  2000000,
+  5000000,
+  10000000,
+  20000000,
+  40000000,
+)
 
-private const val CENTIMETERS_IN_METER: Double = 100.0
-private const val METERS_IN_KILOMETER: Double = 1000.0
-private const val CENTIMETERS_IN_INCH: Double = 2.54
-private const val INCHES_IN_FOOT: Double = 12.0
-private const val FEET_IN_MILE: Double = 5280.0
+/** list of feet to number of bars */
+private val IMPERIAL_STOPS: List<Pair<Int, Int>> = listOf(
+  4 to 2,
+  6 to 2,
+  10 to 2,
+  20 to 2,
+  30 to 2,
+  50 to 2,
+  75 to 3,
+  100 to 2,
+  200 to 2,
+  300 to 3,
+  400 to 2,
+  600 to 3,
+  800 to 2,
+  1000 to 2,
+  FEET_IN_MILE/4 to 2,
+  FEET_IN_MILE/2 to 2,
+  FEET_IN_MILE to 2,
+  2 * FEET_IN_MILE to 2,
+  3 * FEET_IN_MILE to 3,
+  4 * FEET_IN_MILE to 2,
+  8 * FEET_IN_MILE to 2,
+  12 * FEET_IN_MILE to 2,
+  15 * FEET_IN_MILE to 3,
+  20 * FEET_IN_MILE to 2,
+  30 * FEET_IN_MILE to 3,
+  40 * FEET_IN_MILE to 2,
+  80 * FEET_IN_MILE to 2,
+  120 * FEET_IN_MILE to 2,
+  200 * FEET_IN_MILE to 2,
+  300 * FEET_IN_MILE to 3,
+  400 * FEET_IN_MILE to 2,
+
+  600 * FEET_IN_MILE to 3,
+  1000 * FEET_IN_MILE to 2,
+  1500 * FEET_IN_MILE to 3,
+  2000 * FEET_IN_MILE to 2,
+  3000 * FEET_IN_MILE to 2,
+  4000 * FEET_IN_MILE to 2,
+  5000 * FEET_IN_MILE to 2,
+  6000 * FEET_IN_MILE to 3,
+  8000 * FEET_IN_MILE to 2,
+  10000 * FEET_IN_MILE to 2,
+)
