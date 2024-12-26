@@ -19,18 +19,18 @@ import dev.sargunv.maplibrecompose.expression.dsl.offset
 import kotlin.time.Duration
 
 /**
- * Represents a value that an [Expression] can resolve to. These types are never actually
+ * Represents a value that an [Expression] can resolve to. Many of these types are never actually
  * instantiated at runtime; they're only used as type parameters to hint at the type of an
- * [Expression]
+ * [Expression].
  */
 public sealed interface ExpressionValue
 
-/** Represents an [Expression] that resolves to a true or false value. See [const]. */
+/** Represents an [ExpressionValue] that resolves to a true or false value. See [const]. */
 public sealed interface BooleanValue : ExpressionValue, EquatableValue
 
 /**
- * Represents an [Expression] that resolves to a numeric quantity. Corresponds to numbers in the
- * JSON style spec. Use [const] to create a literal [NumberValue].
+ * Represents an [ExpressionValue] that resolves to a numeric quantity. Corresponds to numbers in
+ * the JSON style spec. Use [const] to create a literal [NumberValue].
  *
  * @param U the unit type of the number. For dimensionless quantities, use [Number].
  */
@@ -41,29 +41,33 @@ public sealed interface NumberValue<U> :
   ComparableValue<NumberValue<U>>,
   EquatableValue
 
-/** Represents an [Expression] that resolves to a dimensionless quantity. See [const]. */
+/** Represents an [ExpressionValue] that resolves to a dimensionless quantity. See [const]. */
 public typealias FloatValue = NumberValue<Number>
 
-/** Represents an [Expression] that resolves to an integer dimensionless quantity. See [const]. */
+/**
+ * Represents an [ExpressionValue] that resolves to an integer dimensionless quantity. See [const].
+ */
 public sealed interface IntValue : NumberValue<Number>
 
-/** Represents an [Expression] that resolves to device-independent pixels ([Dp]). See [const]. */
+/**
+ * Represents an [ExpressionValue] that resolves to device-independent pixels ([Dp]). See [const].
+ */
 public typealias DpValue = NumberValue<Dp>
 
 /**
- * Represents an [Expression] that resolves to scalable pixels or em ([TextUnit]). See [const].
+ * Represents an [ExpressionValue] that resolves to scalable pixels or em ([TextUnit]). See [const].
  *
  * Which unit it resolves to is determined by the style property it's used in.
  */
 public typealias TextUnitValue = NumberValue<TextUnit>
 
 /**
- * Represents an [Expression] that resolves to an amount of time with millisecond precision
+ * Represents an [ExpressionValue] that resolves to an amount of time with millisecond precision
  * ([Duration]). See [const].
  */
 public typealias MillisecondsValue = NumberValue<Duration>
 
-/** Represents an [Expression] that resolves to a string value. See [const]. */
+/** Represents an [ExpressionValue] that resolves to a string value. See [const]. */
 public sealed interface StringValue :
   ExpressionValue,
   MatchableValue,
@@ -73,32 +77,32 @@ public sealed interface StringValue :
   FormattedValue
 
 /**
- * Represents an [Expression] that resolves to an enum string. See [const].
+ * Represents an [ExpressionValue] that resolves to an enum string. See [const].
  *
  * @param T The [EnumValue] descendent type that this value represents.
  */
 public sealed interface EnumValue<out T> : StringValue {
-  /** The string expression representing this enum value. You probably don't need this. */
+  /** The string expression representing this enum value. */
   public val literal: StringLiteral
 }
 
-/** Represents an [Expression] that resolves to a [Color] value. See [const]. */
+/** Represents an [ExpressionValue] that resolves to a [Color] value. See [const]. */
 public sealed interface ColorValue : ExpressionValue, InterpolateableValue<ColorValue>
 
 /**
- * Represents an [Expression] that resolves to a map value (corresponds to a JSON object). See
+ * Represents an [ExpressionValue] that resolves to a map value (corresponds to a JSON object). See
  * [const].
  */
 public sealed interface MapValue<@Suppress("unused") out T : ExpressionValue> : ExpressionValue
 
 /**
- * Represents an [Expression] that resolves to a list value (corresponds to a JSON array). See
+ * Represents an [ExpressionValue] that resolves to a list value (corresponds to a JSON array). See
  * [const].
  */
 public sealed interface ListValue<out T : ExpressionValue> : ExpressionValue
 
 /**
- * Represents an [Expression] that resolves to a list value (corresponds to a JSON array) of
+ * Represents an [ExpressionValue] that resolves to a list value (corresponds to a JSON array) of
  * alternating types.
  */
 public sealed interface AlternatingListValue<
@@ -109,7 +113,7 @@ public sealed interface AlternatingListValue<
 > : ListValue<ExpressionValue>
 
 /**
- * Represents an [Expression] that resolves to an alternating list of [SymbolAnchor] and
+ * Represents an [ExpressionValue] that resolves to an alternating list of [SymbolAnchor] and
  * [FloatOffsetValue].
  *
  * See [SymbolLayer][dev.sargunv.maplibrecompose.compose.layer.SymbolLayer].
@@ -118,7 +122,7 @@ public typealias TextVariableAnchorOffsetValue =
   AlternatingListValue<SymbolAnchor, FloatOffsetValue>
 
 /**
- * Represents an [Expression] that resolves to a list of numbers.
+ * Represents an [ExpressionValue] that resolves to a list of numbers.
  *
  * @param U the unit type of the number. For dimensionless quantities, use [Number].
  */
@@ -126,53 +130,53 @@ public sealed interface VectorValue<U> :
   ListValue<NumberValue<U>>, InterpolateableValue<VectorValue<U>>
 
 /**
- * Represents an [Expression] that reoslves to a 2D vector in some unit.
+ * Represents an [ExpressionValue] that reoslves to a 2D vector in some unit.
  *
  * @param U the unit type of the offset. For dimensionless quantities, use [Number].
  */
 public sealed interface OffsetValue<U> : VectorValue<U>
 
 /**
- * Represents an [Expression] that resolves to a 2D floating point offset without a particular unit.
- * ([Offset]). See [offset].
+ * Represents an [ExpressionValue] that resolves to a 2D floating point offset without a particular
+ * unit. ([Offset]). See [offset].
  */
 public typealias FloatOffsetValue = OffsetValue<Number>
 
 /**
- * Represents an [Expression] that resolves to a 2D floating point offset in device-independent
+ * Represents an [ExpressionValue] that resolves to a 2D floating point offset in device-independent
  * pixels ([DpOffset]). See [offset].
  */
 public typealias DpOffsetValue = OffsetValue<Dp>
 
 /**
- * Represents an [Expression] that resolves to a 2D floating point offset in scalable pixels or em
- * ([TextUnit]). See [offset].
+ * Represents an [ExpressionValue] that resolves to a 2D floating point offset in scalable pixels or
+ * em ([TextUnit]). See [offset].
  */
 public typealias TextUnitOffsetValue = OffsetValue<TextUnit>
 
 /**
- * Represents an [Expression] that resolves to an absolute (layout direction unaware) padding
+ * Represents an [ExpressionValue] that resolves to an absolute (layout direction unaware) padding
  * applied along the edges inside a box ([PaddingValues.Absolute]). See [const].
  */
 public sealed interface DpPaddingValue : VectorValue<Dp>
 
 /**
- * Represents an [Expression] that resolves to a collator object for use in locale-dependent
+ * Represents an [ExpressionValue] that resolves to a collator object for use in locale-dependent
  * comparison operations. See [collator].
  */
 public sealed interface CollatorValue : ExpressionValue
 
-/** Represents an [Expression] that resolves to a formatted string. See [format]. */
+/** Represents an [ExpressionValue] that resolves to a formatted string. See [format]. */
 public sealed interface FormattedValue : ExpressionValue
 
-/** Represents an [Expression] that resolves to a geometry object. */
+/** Represents an [ExpressionValue] that resolves to a geometry object. */
 public sealed interface GeoJsonValue : ExpressionValue
 
-/** Represents an [Expression] that resolves to an image. See [image] */
+/** Represents an [ExpressionValue] that resolves to an image. See [image] */
 public sealed interface ImageValue : ExpressionValue, FormattableValue
 
 /**
- * Represents an [Expression] that resolves to an interpolation type. See [linear], [exponential],
- * and [cubicBezier].
+ * Represents an [ExpressionValue] that resolves to an interpolation type. See [linear],
+ * [exponential], and [cubicBezier].
  */
 public sealed interface InterpolationValue : ExpressionValue
