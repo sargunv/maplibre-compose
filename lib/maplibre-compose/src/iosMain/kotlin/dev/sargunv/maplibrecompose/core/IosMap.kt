@@ -51,8 +51,8 @@ import dev.sargunv.maplibrecompose.core.util.toFeature
 import dev.sargunv.maplibrecompose.core.util.toMLNOrnamentPosition
 import dev.sargunv.maplibrecompose.core.util.toNSPredicate
 import dev.sargunv.maplibrecompose.core.util.toPosition
-import dev.sargunv.maplibrecompose.expression.BooleanValue
-import dev.sargunv.maplibrecompose.expression.CompiledExpression
+import dev.sargunv.maplibrecompose.expression.ast.CompiledExpression
+import dev.sargunv.maplibrecompose.expression.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position

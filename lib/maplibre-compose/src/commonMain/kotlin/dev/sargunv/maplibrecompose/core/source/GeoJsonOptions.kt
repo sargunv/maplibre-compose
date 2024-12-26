@@ -1,7 +1,7 @@
 package dev.sargunv.maplibrecompose.core.source
 
 import androidx.compose.runtime.Immutable
-import dev.sargunv.maplibrecompose.expression.Expression
+import dev.sargunv.maplibrecompose.expression.ast.Expression
 
 /**
  * @param minZoom Minimum zoom level at which to create vector tiles (lower means more field of view

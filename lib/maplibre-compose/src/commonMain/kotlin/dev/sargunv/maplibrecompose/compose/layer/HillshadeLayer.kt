@@ -5,11 +5,11 @@ import androidx.compose.ui.graphics.Color
 import dev.sargunv.maplibrecompose.compose.MaplibreComposable
 import dev.sargunv.maplibrecompose.core.layer.HillshadeLayer
 import dev.sargunv.maplibrecompose.core.source.Source
-import dev.sargunv.maplibrecompose.expression.ColorValue
-import dev.sargunv.maplibrecompose.expression.Expression
-import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.const
-import dev.sargunv.maplibrecompose.expression.FloatValue
-import dev.sargunv.maplibrecompose.expression.IlluminationAnchor
+import dev.sargunv.maplibrecompose.expression.ast.Expression
+import dev.sargunv.maplibrecompose.expression.dsl.const
+import dev.sargunv.maplibrecompose.expression.value.ColorValue
+import dev.sargunv.maplibrecompose.expression.value.FloatValue
+import dev.sargunv.maplibrecompose.expression.value.IlluminationAnchor
 
 /**
  * Client-side hillshading visualization based on DEM data. The implementation supports Mapbox

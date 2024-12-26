@@ -12,14 +12,14 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.TextUnitType
 import dev.sargunv.maplibrecompose.compose.engine.LocalStyleNode
 import dev.sargunv.maplibrecompose.compose.engine.StyleNode
-import dev.sargunv.maplibrecompose.expression.BitmapLiteral
-import dev.sargunv.maplibrecompose.expression.CompiledExpression
-import dev.sargunv.maplibrecompose.expression.Expression
 import dev.sargunv.maplibrecompose.expression.ExpressionContext
-import dev.sargunv.maplibrecompose.expression.ExpressionValue
-import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.const
-import dev.sargunv.maplibrecompose.expression.FloatValue
-import dev.sargunv.maplibrecompose.expression.PainterLiteral
+import dev.sargunv.maplibrecompose.expression.ast.BitmapLiteral
+import dev.sargunv.maplibrecompose.expression.ast.CompiledExpression
+import dev.sargunv.maplibrecompose.expression.ast.Expression
+import dev.sargunv.maplibrecompose.expression.ast.PainterLiteral
+import dev.sargunv.maplibrecompose.expression.dsl.const
+import dev.sargunv.maplibrecompose.expression.value.ExpressionValue
+import dev.sargunv.maplibrecompose.expression.value.FloatValue
 
 internal class LayerPropertyCompiler(
   private val styleNode: StyleNode,

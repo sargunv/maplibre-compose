@@ -2,8 +2,8 @@ package dev.sargunv.maplibrecompose.core
 
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpRect
-import dev.sargunv.maplibrecompose.expression.BooleanValue
-import dev.sargunv.maplibrecompose.expression.CompiledExpression
+import dev.sargunv.maplibrecompose.expression.ast.CompiledExpression
+import dev.sargunv.maplibrecompose.expression.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position

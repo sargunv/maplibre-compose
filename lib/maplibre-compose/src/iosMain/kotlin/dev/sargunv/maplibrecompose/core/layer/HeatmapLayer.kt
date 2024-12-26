@@ -4,11 +4,11 @@ import cocoapods.MapLibre.MLNHeatmapStyleLayer
 import dev.sargunv.maplibrecompose.core.source.Source
 import dev.sargunv.maplibrecompose.core.util.toNSExpression
 import dev.sargunv.maplibrecompose.core.util.toNSPredicate
-import dev.sargunv.maplibrecompose.expression.BooleanValue
-import dev.sargunv.maplibrecompose.expression.ColorValue
-import dev.sargunv.maplibrecompose.expression.CompiledExpression
-import dev.sargunv.maplibrecompose.expression.DpValue
-import dev.sargunv.maplibrecompose.expression.FloatValue
+import dev.sargunv.maplibrecompose.expression.ast.CompiledExpression
+import dev.sargunv.maplibrecompose.expression.value.BooleanValue
+import dev.sargunv.maplibrecompose.expression.value.ColorValue
+import dev.sargunv.maplibrecompose.expression.value.DpValue
+import dev.sargunv.maplibrecompose.expression.value.FloatValue
 
 internal actual class HeatmapLayer actual constructor(id: String, source: Source) :
   FeatureLayer(source) {

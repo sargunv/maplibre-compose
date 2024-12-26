@@ -4,18 +4,18 @@ import cocoapods.MapLibre.MLNLineStyleLayer
 import dev.sargunv.maplibrecompose.core.source.Source
 import dev.sargunv.maplibrecompose.core.util.toNSExpression
 import dev.sargunv.maplibrecompose.core.util.toNSPredicate
-import dev.sargunv.maplibrecompose.expression.BooleanValue
-import dev.sargunv.maplibrecompose.expression.ColorValue
-import dev.sargunv.maplibrecompose.expression.CompiledExpression
-import dev.sargunv.maplibrecompose.expression.DpOffsetValue
-import dev.sargunv.maplibrecompose.expression.DpValue
-import dev.sargunv.maplibrecompose.expression.FloatValue
-import dev.sargunv.maplibrecompose.expression.ImageValue
-import dev.sargunv.maplibrecompose.expression.LineCap
-import dev.sargunv.maplibrecompose.expression.LineJoin
-import dev.sargunv.maplibrecompose.expression.NullLiteral
-import dev.sargunv.maplibrecompose.expression.TranslateAnchor
-import dev.sargunv.maplibrecompose.expression.VectorValue
+import dev.sargunv.maplibrecompose.expression.ast.CompiledExpression
+import dev.sargunv.maplibrecompose.expression.ast.NullLiteral
+import dev.sargunv.maplibrecompose.expression.value.BooleanValue
+import dev.sargunv.maplibrecompose.expression.value.ColorValue
+import dev.sargunv.maplibrecompose.expression.value.DpOffsetValue
+import dev.sargunv.maplibrecompose.expression.value.DpValue
+import dev.sargunv.maplibrecompose.expression.value.FloatValue
+import dev.sargunv.maplibrecompose.expression.value.ImageValue
+import dev.sargunv.maplibrecompose.expression.value.LineCap
+import dev.sargunv.maplibrecompose.expression.value.LineJoin
+import dev.sargunv.maplibrecompose.expression.value.TranslateAnchor
+import dev.sargunv.maplibrecompose.expression.value.VectorValue
 
 internal actual class LineLayer actual constructor(id: String, source: Source) :
   FeatureLayer(source) {

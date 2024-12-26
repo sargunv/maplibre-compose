@@ -2,6 +2,8 @@ package dev.sargunv.maplibrecompose.expression
 
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
+import dev.sargunv.maplibrecompose.expression.ast.Expression
+import dev.sargunv.maplibrecompose.expression.value.FloatValue
 
 public interface ExpressionContext {
   /** The scale factor to convert EMs to the desired unit */

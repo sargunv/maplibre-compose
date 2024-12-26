@@ -3,7 +3,7 @@ package dev.sargunv.maplibrecompose.core.source
 import dev.sargunv.maplibrecompose.core.util.correctedAndroidUri
 import dev.sargunv.maplibrecompose.core.util.toMLNExpression
 import dev.sargunv.maplibrecompose.expression.ExpressionContext
-import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.const
+import dev.sargunv.maplibrecompose.expression.dsl.const
 import io.github.dellisd.spatialk.geojson.GeoJson
 import org.maplibre.android.style.sources.GeoJsonOptions as MLNGeoJsonOptions
 import org.maplibre.android.style.sources.GeoJsonSource as MLNGeoJsonSource

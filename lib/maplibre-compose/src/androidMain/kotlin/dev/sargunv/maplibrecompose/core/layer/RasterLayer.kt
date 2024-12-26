@@ -2,10 +2,10 @@ package dev.sargunv.maplibrecompose.core.layer
 
 import dev.sargunv.maplibrecompose.core.source.Source
 import dev.sargunv.maplibrecompose.core.util.toMLNExpression
-import dev.sargunv.maplibrecompose.expression.CompiledExpression
-import dev.sargunv.maplibrecompose.expression.FloatValue
-import dev.sargunv.maplibrecompose.expression.MillisecondsValue
-import dev.sargunv.maplibrecompose.expression.RasterResampling
+import dev.sargunv.maplibrecompose.expression.ast.CompiledExpression
+import dev.sargunv.maplibrecompose.expression.value.FloatValue
+import dev.sargunv.maplibrecompose.expression.value.MillisecondsValue
+import dev.sargunv.maplibrecompose.expression.value.RasterResampling
 import org.maplibre.android.style.layers.PropertyFactory
 import org.maplibre.android.style.layers.RasterLayer as MLNRasterLayer
 

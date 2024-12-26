@@ -8,19 +8,19 @@ import dev.sargunv.maplibrecompose.compose.FeaturesClickHandler
 import dev.sargunv.maplibrecompose.compose.MaplibreComposable
 import dev.sargunv.maplibrecompose.core.layer.LineLayer
 import dev.sargunv.maplibrecompose.core.source.Source
-import dev.sargunv.maplibrecompose.expression.BooleanValue
-import dev.sargunv.maplibrecompose.expression.ColorValue
-import dev.sargunv.maplibrecompose.expression.DpOffsetValue
-import dev.sargunv.maplibrecompose.expression.DpValue
-import dev.sargunv.maplibrecompose.expression.Expression
-import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.const
-import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.nil
-import dev.sargunv.maplibrecompose.expression.FloatValue
-import dev.sargunv.maplibrecompose.expression.ImageValue
-import dev.sargunv.maplibrecompose.expression.LineCap
-import dev.sargunv.maplibrecompose.expression.LineJoin
-import dev.sargunv.maplibrecompose.expression.TranslateAnchor
-import dev.sargunv.maplibrecompose.expression.VectorValue
+import dev.sargunv.maplibrecompose.expression.ast.Expression
+import dev.sargunv.maplibrecompose.expression.dsl.const
+import dev.sargunv.maplibrecompose.expression.dsl.nil
+import dev.sargunv.maplibrecompose.expression.value.BooleanValue
+import dev.sargunv.maplibrecompose.expression.value.ColorValue
+import dev.sargunv.maplibrecompose.expression.value.DpOffsetValue
+import dev.sargunv.maplibrecompose.expression.value.DpValue
+import dev.sargunv.maplibrecompose.expression.value.FloatValue
+import dev.sargunv.maplibrecompose.expression.value.ImageValue
+import dev.sargunv.maplibrecompose.expression.value.LineCap
+import dev.sargunv.maplibrecompose.expression.value.LineJoin
+import dev.sargunv.maplibrecompose.expression.value.TranslateAnchor
+import dev.sargunv.maplibrecompose.expression.value.VectorValue
 
 /**
  * A line layer draws polylines and polygons from the [sourceLayer] in the given [source] in the
@@ -36,8 +36,8 @@ import dev.sargunv.maplibrecompose.expression.VectorValue
  *   this, the layer will be hidden. A value in the range of `[0..24]`.
  * @param filter An expression specifying conditions on source features. Only features that match
  *   the filter are displayed. Zoom expressions in filters are only evaluated at integer zoom
- *   levels. The [featureState][dev.sargunv.maplibrecompose.expression.ExpressionsDsl.Feature.state]
- *   expression is not supported in filter expressions.
+ *   levels. The [featureState][dev.sargunv.maplibrecompose.expression.dsl.Feature.state] expression
+ *   is not supported in filter expressions.
  * @param visible Whether the layer should be displayed.
  * @param sortKey Sorts features within this layer in ascending order based on this value. Features
  *   with a higher sort key will appear above features with a lower sort key.

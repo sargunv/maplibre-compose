@@ -2,10 +2,10 @@ package dev.sargunv.maplibrecompose.core.layer
 
 import dev.sargunv.maplibrecompose.core.source.Source
 import dev.sargunv.maplibrecompose.core.util.toMLNExpression
-import dev.sargunv.maplibrecompose.expression.ColorValue
-import dev.sargunv.maplibrecompose.expression.CompiledExpression
-import dev.sargunv.maplibrecompose.expression.FloatValue
-import dev.sargunv.maplibrecompose.expression.IlluminationAnchor
+import dev.sargunv.maplibrecompose.expression.ast.CompiledExpression
+import dev.sargunv.maplibrecompose.expression.value.ColorValue
+import dev.sargunv.maplibrecompose.expression.value.FloatValue
+import dev.sargunv.maplibrecompose.expression.value.IlluminationAnchor
 import org.maplibre.android.style.layers.HillshadeLayer as MLNHillshadeLayer
 import org.maplibre.android.style.layers.PropertyFactory
 

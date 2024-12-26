@@ -1,219 +1,11 @@
-package dev.sargunv.maplibrecompose.expression
+package dev.sargunv.maplibrecompose.expression.value
 
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.TextUnit
-import kotlin.time.Duration
+import dev.sargunv.maplibrecompose.expression.ast.StringLiteral
+import dev.sargunv.maplibrecompose.expression.dsl.Feature
+import dev.sargunv.maplibrecompose.expression.dsl.type
 
-// TODO move to package value
-
-/**
- * Represents a value that an [Expression] can resolve to. These types are never actually
- * instantiated at runtime; they're only used as type parameters to hint at the type of an
- * [Expression]
- */
-public sealed interface ExpressionValue
-
-/**
- * Represents an [Expression] that resolves to a true or false value. See [ExpressionsDsl.const].
- */
-public sealed interface BooleanValue : ExpressionValue, EquatableValue
-
-/**
- * Represents an [Expression] that resolves to a numeric quantity. Corresponds to numbers in the
- * JSON style spec. Use [ExpressionsDsl.const] to create a literal [NumberValue].
- *
- * @param U the unit type of the number. For dimensionless quantities, use [Number].
- */
-public sealed interface NumberValue<U> :
-  ExpressionValue,
-  MatchableValue,
-  InterpolateableValue<U>,
-  ComparableValue<NumberValue<U>>,
-  EquatableValue
-
-/**
- * Represents an [Expression] that resolves to a dimensionless quantity. See [ExpressionsDsl.const].
- */
-public typealias FloatValue = NumberValue<Number>
-
-/**
- * Represents an [Expression] that resolves to an integer dimensionless quantity. See
- * [ExpressionsDsl.const].
- */
-public sealed interface IntValue : NumberValue<Number>
-
-/**
- * Represents an [Expression] that resolves to device-independent pixels ([Dp]). See
- * [ExpressionsDsl.const].
- */
-public typealias DpValue = NumberValue<Dp>
-
-/**
- * Represents an [Expression] that resolves to scalable pixels or em ([TextUnit]). See
- * [ExpressionsDsl.const].
- *
- * Which unit it resolves to is determined by the style property it's used in.
- */
-public typealias TextUnitValue = NumberValue<TextUnit>
-
-/**
- * Represents an [Expression] that resolves to an amount of time with millisecond precision
- * ([Duration]). See [ExpressionsDsl.const].
- */
-public typealias MillisecondsValue = NumberValue<Duration>
-
-/** Represents an [Expression] that resolves to a string value. See [ExpressionsDsl.const]. */
-public sealed interface StringValue :
-  ExpressionValue,
-  MatchableValue,
-  ComparableValue<StringValue>,
-  EquatableValue,
-  FormattableValue,
-  FormattedValue
-
-/**
- * Represents an [Expression] that resolves to an enum string. See [ExpressionsDsl.const].
- *
- * @param T The [EnumValue] descendent type that this value represents.
- */
-public sealed interface EnumValue<out T> : StringValue {
-  /** The string expression representing this enum value. You probably don't need this. */
-  public val stringConst: StringLiteral
-}
-
-/** Represents an [Expression] that resolves to a [Color] value. See [ExpressionsDsl.const]. */
-public sealed interface ColorValue : ExpressionValue, InterpolateableValue<ColorValue>
-
-/**
- * Represents an [Expression] that resolves to a map value (corresponds to a JSON object). See
- * [ExpressionsDsl.const].
- */
-public sealed interface MapValue<out T : ExpressionValue> : ExpressionValue
-
-/**
- * Represents an [Expression] that resolves to a list value (corresponds to a JSON array). See
- * [ExpressionsDsl.const].
- */
-public sealed interface ListValue<out T : ExpressionValue> : ExpressionValue
-
-/**
- * Represents an [Expression] that resolves to a list value (corresponds to a JSON array) of
- * alternating types.
- */
-public sealed interface AlternatingListValue<out T1 : ExpressionValue, out T2 : ExpressionValue> :
-  ListValue<ExpressionValue>
-
-/**
- * Represents an [Expression] that resolves to an alternating list of [SymbolAnchor] and
- * [FloatOffsetValue].
- *
- * See [SymbolLayer][dev.sargunv.maplibrecompose.compose.layer.SymbolLayer].
- */
-public typealias TextVariableAnchorOffsetValue =
-  AlternatingListValue<SymbolAnchor, FloatOffsetValue>
-
-/**
- * Represents an [Expression] that resolves to a list of numbers.
- *
- * @param U the unit type of the number. For dimensionless quantities, use [Number].
- */
-public sealed interface VectorValue<U> :
-  ListValue<NumberValue<U>>, InterpolateableValue<VectorValue<U>>
-
-/**
- * Represents an [Expression] that reoslves to a 2D vector in some unit.
- *
- * @param U the unit type of the offset. For dimensionless quantities, use [Number].
- */
-public sealed interface OffsetValue<U> : VectorValue<U>
-
-/**
- * Represents an [Expression] that resolves to a 2D floating point offset without a particular unit.
- * ([Offset]). See [ExpressionsDsl.offset].
- */
-public typealias FloatOffsetValue = OffsetValue<Number>
-
-/**
- * Represents an [Expression] that resolves to a 2D floating point offset in device-independent
- * pixels ([DpOffset]). See [ExpressionsDsl.offset].
- */
-public typealias DpOffsetValue = OffsetValue<Dp>
-
-/**
- * Represents an [Expression] that resolves to a 2D floating point offset in scalable pixels or em
- * ([TextUnit]). See [ExpressionsDsl.offset].
- */
-public typealias TextUnitOffsetValue = OffsetValue<TextUnit>
-
-/**
- * Represents an [Expression] that resolves to an absolute (layout direction unaware) padding
- * applied along the edges inside a box ([PaddingValues.Absolute]). See [ExpressionsDsl.const].
- */
-public sealed interface DpPaddingValue : VectorValue<Dp>
-
-/**
- * Represents an [Expression] that resolves to a collator object for use in locale-dependent
- * comparison operations. See [ExpressionsDsl.collator].
- */
-public sealed interface CollatorValue : ExpressionValue
-
-/** Represents an [Expression] that resolves to a formatted string. See [ExpressionsDsl.format]. */
-public sealed interface FormattedValue : ExpressionValue
-
-/** Represents an [Expression] that resolves to a geometry object. */
-public sealed interface GeoJsonValue : ExpressionValue
-
-/** Represents an [Expression] that resolves to an image. See [ExpressionsDsl.image] */
-public sealed interface ImageValue : ExpressionValue, FormattableValue
-
-/**
- * Represents an [Expression] that resolves to an interpolation type. See [ExpressionsDsl.linear],
- * [ExpressionsDsl.exponential], and [ExpressionsDsl.cubicBezier].
- */
-public sealed interface InterpolationValue : ExpressionValue
-
-/**
- * Represents and [Expression] that resolves to a value that can be an input to
- * [ExpressionsDsl.format].
- */
-public sealed interface FormattableValue : ExpressionValue
-
-/**
- * Represents an [Expression] that resolves to a value that can be compared for equality. See
- * [ExpressionsDsl.eq] and [ExpressionsDsl.neq].
- */
-public sealed interface EquatableValue : ExpressionValue
-
-/**
- * Union type for an [Expression] that resolves to a value that can be matched. See
- * [ExpressionsDsl.switch].
- */
-public sealed interface MatchableValue : ExpressionValue
-
-/**
- * Union type for an [Expression] that resolves to a value that can be ordered with other values of
- * its type. See [ExpressionsDsl.gt], [ExpressionsDsl.lt], [ExpressionsDsl.gte], and
- * [ExpressionsDsl.lte].
- *
- * @param T the type of the value that can be compared against for ordering.
- */
-public sealed interface ComparableValue<T> : ExpressionValue
-
-/**
- * Union type for an [Expression] that resolves to a value that can be interpolated. See
- * [ExpressionsDsl.interpolate].
- *
- * @param T the type of values that can be interpolated between.
- */
-public sealed interface InterpolateableValue<T> : ExpressionValue
-
-/** The type of value resolved from an expression, as returned by [ExpressionsDsl.type]. */
-public enum class ExpressionType(override val stringConst: StringLiteral) :
-  EnumValue<ExpressionType> {
+/** The type of value resolved from an expression, as returned by [type]. */
+public enum class ExpressionType(override val literal: StringLiteral) : EnumValue<ExpressionType> {
   Number(StringLiteral.of("number")),
   String(StringLiteral.of("string")),
   Object(StringLiteral.of("object")),
@@ -222,8 +14,8 @@ public enum class ExpressionType(override val stringConst: StringLiteral) :
   Array(StringLiteral.of("array")),
 }
 
-/** Type of a GeoJson feature, as returned by [ExpressionsDsl.Feature.type]. */
-public enum class GeometryType(override val stringConst: StringLiteral) : EnumValue<GeometryType> {
+/** Type of a GeoJson feature, as returned by [Feature.type]. */
+public enum class GeometryType(override val literal: StringLiteral) : EnumValue<GeometryType> {
   Point(StringLiteral.of("Point")),
   LineString(StringLiteral.of("LineString")),
   Polygon(StringLiteral.of("Polygon")),
@@ -233,7 +25,7 @@ public enum class GeometryType(override val stringConst: StringLiteral) : EnumVa
 }
 
 /** Frame of reference for offsetting geometry. */
-public enum class TranslateAnchor(override val stringConst: StringLiteral) :
+public enum class TranslateAnchor(override val literal: StringLiteral) :
   EnumValue<TranslateAnchor> {
   /** Offset is relative to the map */
   Map(StringLiteral.of("map")),
@@ -243,7 +35,7 @@ public enum class TranslateAnchor(override val stringConst: StringLiteral) :
 }
 
 /** Scaling behavior of circles when the map is pitched. */
-public enum class CirclePitchScale(override val stringConst: StringLiteral) :
+public enum class CirclePitchScale(override val literal: StringLiteral) :
   EnumValue<CirclePitchScale> {
   /**
    * Circles are scaled according to their apparent distance to the camera, i.e. as if they are on
@@ -256,7 +48,7 @@ public enum class CirclePitchScale(override val stringConst: StringLiteral) :
 }
 
 /** Orientation of circles when the map is pitched. */
-public enum class CirclePitchAlignment(override val stringConst: StringLiteral) :
+public enum class CirclePitchAlignment(override val literal: StringLiteral) :
   EnumValue<CirclePitchAlignment> {
   /** Circles are aligned to the plane of the map, i.e. flat on top of the map. */
   Map(StringLiteral.of("map")),
@@ -266,7 +58,7 @@ public enum class CirclePitchAlignment(override val stringConst: StringLiteral) 
 }
 
 /** Direction of light source when map is rotated. */
-public enum class IlluminationAnchor(override val stringConst: StringLiteral) :
+public enum class IlluminationAnchor(override val literal: StringLiteral) :
   EnumValue<IlluminationAnchor> {
 
   /** The hillshade illumination is relative to the north direction. */
@@ -277,7 +69,7 @@ public enum class IlluminationAnchor(override val stringConst: StringLiteral) :
 }
 
 /** Display of joined lines */
-public enum class LineJoin(override val stringConst: StringLiteral) : EnumValue<LineJoin> {
+public enum class LineJoin(override val literal: StringLiteral) : EnumValue<LineJoin> {
   /**
    * A join with a squared-off end which is drawn beyond the endpoint of the line at a distance of
    * one-half of the line's width.
@@ -298,7 +90,7 @@ public enum class LineJoin(override val stringConst: StringLiteral) : EnumValue<
 }
 
 /** Display of line endings */
-public enum class LineCap(override val stringConst: StringLiteral) : EnumValue<LineCap> {
+public enum class LineCap(override val literal: StringLiteral) : EnumValue<LineCap> {
   /** A cap with a squared-off end which is drawn to the exact endpoint of the line. */
   Butt(StringLiteral.of("butt")),
 
@@ -319,7 +111,7 @@ public enum class LineCap(override val stringConst: StringLiteral) : EnumValue<L
  * The resampling/interpolation method to use for overscaling, also known as texture magnification
  * filter
  */
-public enum class RasterResampling(override val stringConst: StringLiteral) :
+public enum class RasterResampling(override val literal: StringLiteral) :
   EnumValue<RasterResampling> {
   /**
    * (Bi)linear filtering interpolates pixel values using the weighted average of the four closest
@@ -335,7 +127,7 @@ public enum class RasterResampling(override val stringConst: StringLiteral) :
 }
 
 /** Symbol placement relative to its geometry. */
-public enum class SymbolPlacement(override val stringConst: StringLiteral) :
+public enum class SymbolPlacement(override val literal: StringLiteral) :
   EnumValue<SymbolPlacement> {
   /** The label is placed at the point where the geometry is located. */
   Point(StringLiteral.of("point")),
@@ -359,7 +151,7 @@ public enum class SymbolPlacement(override val stringConst: StringLiteral) :
  * appear in the data source or by their y-position relative to the viewport. To control the order
  * and prioritization of symbols otherwise, use `sortKey`.
  */
-public enum class SymbolZOrder(override val stringConst: StringLiteral) : EnumValue<SymbolZOrder> {
+public enum class SymbolZOrder(override val literal: StringLiteral) : EnumValue<SymbolZOrder> {
   /**
    * Sorts symbols by `sortKey` if set. Otherwise, sorts symbols by their y-position relative to the
    * viewport if `iconAllowOverlap` or `textAllowOverlap` is set to `true` or `iconIgnorePlacement`
@@ -382,7 +174,7 @@ public enum class SymbolZOrder(override val stringConst: StringLiteral) : EnumVa
 }
 
 /** Part of the icon/text placed closest to the anchor. */
-public enum class SymbolAnchor(override val stringConst: StringLiteral) : EnumValue<SymbolAnchor> {
+public enum class SymbolAnchor(override val literal: StringLiteral) : EnumValue<SymbolAnchor> {
   /** The center of the icon is placed closest to the anchor. */
   Center(StringLiteral.of("center")),
 
@@ -412,8 +204,7 @@ public enum class SymbolAnchor(override val stringConst: StringLiteral) : EnumVa
 }
 
 /** Controls whether to show an icon/text when it overlaps other symbols on the map. */
-public enum class SymbolOverlap(override val stringConst: StringLiteral) :
-  EnumValue<SymbolOverlap> {
+public enum class SymbolOverlap(override val literal: StringLiteral) : EnumValue<SymbolOverlap> {
   /** The icon/text will be hidden if it collides with any other previously drawn symbol. */
   Never(StringLiteral.of("never")),
 
@@ -430,7 +221,7 @@ public enum class SymbolOverlap(override val stringConst: StringLiteral) :
 }
 
 /** In combination with [SymbolPlacement], determines the rotation behavior of icons. */
-public enum class IconRotationAlignment(override val stringConst: StringLiteral) :
+public enum class IconRotationAlignment(override val literal: StringLiteral) :
   EnumValue<IconRotationAlignment> {
   /**
    * For [SymbolPlacement.Point], aligns icons east-west. Otherwise, aligns icon x-axes with the
@@ -452,7 +243,7 @@ public enum class IconRotationAlignment(override val stringConst: StringLiteral)
 }
 
 /** Scales the icon to fit around the associated text. */
-public enum class IconTextFit(override val stringConst: StringLiteral) : EnumValue<IconTextFit> {
+public enum class IconTextFit(override val literal: StringLiteral) : EnumValue<IconTextFit> {
   /** The icon is displayed at its intrinsic aspect ratio. */
   None(StringLiteral.of("none")),
 
@@ -467,7 +258,7 @@ public enum class IconTextFit(override val stringConst: StringLiteral) : EnumVal
 }
 
 /** Orientation of icon when map is pitched. */
-public enum class IconPitchAlignment(override val stringConst: StringLiteral) :
+public enum class IconPitchAlignment(override val literal: StringLiteral) :
   EnumValue<IconPitchAlignment> {
   /** The icon is aligned to the plane of the map. */
   Map(StringLiteral.of("map")),
@@ -480,7 +271,7 @@ public enum class IconPitchAlignment(override val stringConst: StringLiteral) :
 }
 
 /** Orientation of text when map is pitched. */
-public enum class TextPitchAlignment(override val stringConst: StringLiteral) :
+public enum class TextPitchAlignment(override val literal: StringLiteral) :
   EnumValue<TextPitchAlignment> {
   /** The text is aligned to the plane of the map. */
   Map(StringLiteral.of("map")),
@@ -496,7 +287,7 @@ public enum class TextPitchAlignment(override val stringConst: StringLiteral) :
  * In combination with [SymbolPlacement], determines the rotation behavior of the individual glyphs
  * forming the text.
  */
-public enum class TextRotationAlignment(override val stringConst: StringLiteral) :
+public enum class TextRotationAlignment(override val literal: StringLiteral) :
   EnumValue<TextRotationAlignment> {
   /**
    * For [SymbolPlacement.Point], aligns text east-west. Otherwise, aligns text x-axes with the
@@ -527,7 +318,7 @@ public enum class TextRotationAlignment(override val stringConst: StringLiteral)
 }
 
 /** How the text will be laid out. */
-public enum class TextWritingMode(override val stringConst: StringLiteral) :
+public enum class TextWritingMode(override val literal: StringLiteral) :
   EnumValue<TextWritingMode> {
   /**
    * If a text's language supports horizontal writing mode, symbols with point placement would be
@@ -543,7 +334,7 @@ public enum class TextWritingMode(override val stringConst: StringLiteral) :
 }
 
 /** Text justification options. */
-public enum class TextJustify(override val stringConst: StringLiteral) : EnumValue<TextJustify> {
+public enum class TextJustify(override val literal: StringLiteral) : EnumValue<TextJustify> {
   /** The text is aligned towards the anchor position. */
   Auto(StringLiteral.of("auto")),
 
@@ -558,8 +349,7 @@ public enum class TextJustify(override val stringConst: StringLiteral) : EnumVal
 }
 
 /** Specifies how to capitalize text, similar to the CSS text-transform property. */
-public enum class TextTransform(override val stringConst: StringLiteral) :
-  EnumValue<TextTransform> {
+public enum class TextTransform(override val literal: StringLiteral) : EnumValue<TextTransform> {
   /** The text is not altered. */
   None(StringLiteral.of("none")),
 

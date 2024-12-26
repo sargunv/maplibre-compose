@@ -4,12 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import dev.sargunv.maplibrecompose.compose.MaplibreComposable
 import dev.sargunv.maplibrecompose.core.layer.BackgroundLayer
-import dev.sargunv.maplibrecompose.expression.ColorValue
-import dev.sargunv.maplibrecompose.expression.Expression
-import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.const
-import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.nil
-import dev.sargunv.maplibrecompose.expression.FloatValue
-import dev.sargunv.maplibrecompose.expression.ImageValue
+import dev.sargunv.maplibrecompose.expression.ast.Expression
+import dev.sargunv.maplibrecompose.expression.dsl.const
+import dev.sargunv.maplibrecompose.expression.dsl.nil
+import dev.sargunv.maplibrecompose.expression.value.ColorValue
+import dev.sargunv.maplibrecompose.expression.value.FloatValue
+import dev.sargunv.maplibrecompose.expression.value.ImageValue
 
 /**
  * The background layer just draws the map background, by default, plain black.

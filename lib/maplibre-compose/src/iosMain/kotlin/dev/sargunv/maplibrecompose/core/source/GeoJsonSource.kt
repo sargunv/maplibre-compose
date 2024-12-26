@@ -13,7 +13,7 @@ import cocoapods.MapLibre.MLNShapeSourceOptionSimplificationTolerance
 import dev.sargunv.maplibrecompose.core.util.toMLNShape
 import dev.sargunv.maplibrecompose.core.util.toNSExpression
 import dev.sargunv.maplibrecompose.expression.ExpressionContext
-import dev.sargunv.maplibrecompose.expression.FunctionCall
+import dev.sargunv.maplibrecompose.expression.ast.FunctionCall
 import io.github.dellisd.spatialk.geojson.GeoJson
 import platform.Foundation.NSNumber
 import platform.Foundation.NSURL

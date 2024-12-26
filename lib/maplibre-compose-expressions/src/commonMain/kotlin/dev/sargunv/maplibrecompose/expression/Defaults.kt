@@ -3,12 +3,14 @@ package dev.sargunv.maplibrecompose.expression
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.const
-import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.heatmapDensity
-import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.interpolate
-import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.linear
-
-// helpers for default expression values
+import dev.sargunv.maplibrecompose.expression.ast.Expression
+import dev.sargunv.maplibrecompose.expression.dsl.const
+import dev.sargunv.maplibrecompose.expression.dsl.heatmapDensity
+import dev.sargunv.maplibrecompose.expression.dsl.interpolate
+import dev.sargunv.maplibrecompose.expression.dsl.linear
+import dev.sargunv.maplibrecompose.expression.value.ColorValue
+import dev.sargunv.maplibrecompose.expression.value.ListValue
+import dev.sargunv.maplibrecompose.expression.value.StringValue
 
 public val ZeroPadding: PaddingValues.Absolute = PaddingValues.Absolute(0.dp)
 

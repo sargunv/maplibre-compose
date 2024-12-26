@@ -40,8 +40,8 @@ import dev.sargunv.maplibrecompose.demoapp.DemoMapControls
 import dev.sargunv.maplibrecompose.demoapp.DemoOrnamentSettings
 import dev.sargunv.maplibrecompose.demoapp.DemoScaffold
 import dev.sargunv.maplibrecompose.demoapp.PositionVectorConverter
-import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.const
-import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.offset
+import dev.sargunv.maplibrecompose.expression.dsl.const
+import dev.sargunv.maplibrecompose.expression.dsl.offset
 import io.github.dellisd.spatialk.geojson.Point
 import io.github.dellisd.spatialk.geojson.Position
 import kotlin.math.roundToInt

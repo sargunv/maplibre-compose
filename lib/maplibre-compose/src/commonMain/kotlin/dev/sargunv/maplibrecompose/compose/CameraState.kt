@@ -9,10 +9,10 @@ import dev.sargunv.maplibrecompose.core.CameraMoveReason
 import dev.sargunv.maplibrecompose.core.CameraPosition
 import dev.sargunv.maplibrecompose.core.MaplibreMap
 import dev.sargunv.maplibrecompose.core.VisibleRegion
-import dev.sargunv.maplibrecompose.expression.BooleanValue
-import dev.sargunv.maplibrecompose.expression.Expression
 import dev.sargunv.maplibrecompose.expression.ExpressionContext
-import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.const
+import dev.sargunv.maplibrecompose.expression.ast.Expression
+import dev.sargunv.maplibrecompose.expression.dsl.const
+import dev.sargunv.maplibrecompose.expression.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position

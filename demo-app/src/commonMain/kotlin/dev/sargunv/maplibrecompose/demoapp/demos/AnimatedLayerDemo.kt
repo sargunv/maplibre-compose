@@ -24,12 +24,12 @@ import dev.sargunv.maplibrecompose.demoapp.DemoMapControls
 import dev.sargunv.maplibrecompose.demoapp.DemoOrnamentSettings
 import dev.sargunv.maplibrecompose.demoapp.DemoScaffold
 import dev.sargunv.maplibrecompose.demoapp.generated.Res
-import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.const
-import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.exponential
-import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.interpolate
-import dev.sargunv.maplibrecompose.expression.ExpressionsDsl.zoom
-import dev.sargunv.maplibrecompose.expression.LineCap
-import dev.sargunv.maplibrecompose.expression.LineJoin
+import dev.sargunv.maplibrecompose.expression.dsl.const
+import dev.sargunv.maplibrecompose.expression.dsl.exponential
+import dev.sargunv.maplibrecompose.expression.dsl.interpolate
+import dev.sargunv.maplibrecompose.expression.dsl.zoom
+import dev.sargunv.maplibrecompose.expression.value.LineCap
+import dev.sargunv.maplibrecompose.expression.value.LineJoin
 import io.github.dellisd.spatialk.geojson.Position
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
