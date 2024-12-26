@@ -179,7 +179,7 @@ public data class PainterLiteral private constructor(override val value: Painter
  * An [Expression] representing a [TextUnit] value in EM or SP, which may be transformed into
  * multiplication function call to convert to the needed units upon compilation.
  */
-public data class TextUnitExpression
+public data class TextUnitCalculation
 private constructor(val value: Expression<FloatValue>, val type: TextUnitType) :
   Expression<TextUnitValue> {
   override fun compile(context: ExpressionContext): CompiledExpression<TextUnitValue> {
@@ -198,14 +198,14 @@ private constructor(val value: Expression<FloatValue>, val type: TextUnitType) :
   }
 
   public companion object {
-    public fun of(value: TextUnit): TextUnitExpression {
+    public fun of(value: TextUnit): TextUnitCalculation {
       require(value.type != TextUnitType.Unspecified) { "TextUnit type must be specified" }
-      return TextUnitExpression(FloatLiteral.of(value.value), value.type)
+      return TextUnitCalculation(FloatLiteral.of(value.value), value.type)
     }
 
-    public fun of(value: Expression<FloatValue>, type: TextUnitType): TextUnitExpression {
+    public fun of(value: Expression<FloatValue>, type: TextUnitType): TextUnitCalculation {
       require(type != TextUnitType.Unspecified) { "TextUnit type must be specified" }
-      return TextUnitExpression(value, type)
+      return TextUnitCalculation(value, type)
     }
   }
 }
@@ -214,7 +214,7 @@ private constructor(val value: Expression<FloatValue>, val type: TextUnitType) :
  * An [Expression] representing a [TextUnitOffsetValue] in EM or SP, which may be transformed into
  * an interpolation function call to convert to the needed units upon compilation.
  */
-public data class TextUnitOffsetExpression private constructor(val x: TextUnit, val y: TextUnit) :
+public data class TextUnitOffsetCalculation private constructor(val x: TextUnit, val y: TextUnit) :
   Expression<TextUnitOffsetValue> {
   override fun compile(context: ExpressionContext): CompiledExpression<TextUnitOffsetValue> {
     val scale =
@@ -241,10 +241,10 @@ public data class TextUnitOffsetExpression private constructor(val x: TextUnit, 
   override fun visit(block: (Expression<*>) -> Unit): Unit = block(this)
 
   public companion object {
-    public fun of(x: TextUnit, y: TextUnit): TextUnitOffsetExpression {
+    public fun of(x: TextUnit, y: TextUnit): TextUnitOffsetCalculation {
       require(x.isSpecified && y.isSpecified) { "TextUnit type must be specified" }
       require(x.type == y.type) { "X and Y text units must have the same type" }
-      return TextUnitOffsetExpression(x, y)
+      return TextUnitOffsetCalculation(x, y)
     }
   }
 }

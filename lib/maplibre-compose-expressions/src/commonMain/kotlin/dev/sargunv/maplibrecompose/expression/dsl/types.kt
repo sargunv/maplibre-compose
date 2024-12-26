@@ -8,7 +8,7 @@ import dev.sargunv.maplibrecompose.expression.ast.Expression
 import dev.sargunv.maplibrecompose.expression.ast.FunctionCall
 import dev.sargunv.maplibrecompose.expression.ast.Options
 import dev.sargunv.maplibrecompose.expression.ast.PainterLiteral
-import dev.sargunv.maplibrecompose.expression.ast.TextUnitExpression
+import dev.sargunv.maplibrecompose.expression.ast.TextUnitCalculation
 import dev.sargunv.maplibrecompose.expression.value.BooleanValue
 import dev.sargunv.maplibrecompose.expression.value.CollatorValue
 import dev.sargunv.maplibrecompose.expression.value.ColorValue
@@ -365,8 +365,8 @@ public val Expression<FloatValue>.seconds: Expression<MillisecondsValue>
 
 /** Converts a numeric [Expression] to an [TextUnitValue] expression in SP. */
 public val Expression<FloatValue>.sp: Expression<TextUnitValue>
-  get() = TextUnitExpression.of(this, TextUnitType.Sp)
+  get() = TextUnitCalculation.of(this, TextUnitType.Sp)
 
 /** Converts a numeric [Expression] to an [TextUnitValue] expression in EM */
 public val Expression<FloatValue>.em: Expression<TextUnitValue>
-  get() = TextUnitExpression.of(this, TextUnitType.Em)
+  get() = TextUnitCalculation.of(this, TextUnitType.Em)

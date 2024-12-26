@@ -22,8 +22,8 @@ import dev.sargunv.maplibrecompose.expression.ast.MillisecondsLiteral
 import dev.sargunv.maplibrecompose.expression.ast.NullLiteral
 import dev.sargunv.maplibrecompose.expression.ast.OffsetLiteral
 import dev.sargunv.maplibrecompose.expression.ast.StringLiteral
-import dev.sargunv.maplibrecompose.expression.ast.TextUnitExpression
-import dev.sargunv.maplibrecompose.expression.ast.TextUnitOffsetExpression
+import dev.sargunv.maplibrecompose.expression.ast.TextUnitCalculation
+import dev.sargunv.maplibrecompose.expression.ast.TextUnitOffsetCalculation
 import dev.sargunv.maplibrecompose.expression.value.EnumValue
 import dev.sargunv.maplibrecompose.expression.value.ExpressionValue
 import dev.sargunv.maplibrecompose.expression.value.StringValue
@@ -53,7 +53,7 @@ public fun const(dp: Dp): DpLiteral = DpLiteral.of(dp)
  * Creates a literal expression for a specified [TextUnit] value in SP or EM. It can be provided in
  * either unit, and will resolve to one at runtime depending on the property it is used in.
  */
-public fun const(textUnit: TextUnit): TextUnitExpression = TextUnitExpression.of(textUnit)
+public fun const(textUnit: TextUnit): TextUnitCalculation = TextUnitCalculation.of(textUnit)
 
 /**
  * Creates a literal expression for a [Duration] value.
@@ -122,7 +122,7 @@ public fun offset(x: Dp, y: Dp): DpOffsetLiteral = DpOffsetLiteral.of(DpOffset(x
  * Both [x] and [y] must have the same [TextUnitType].
  */
 public fun offset(x: TextUnit, y: TextUnit): Expression<TextUnitOffsetValue> =
-  TextUnitOffsetExpression.of(x, y)
+  TextUnitOffsetCalculation.of(x, y)
 
 /**
  * Creates a literal expression for a `null` value.
