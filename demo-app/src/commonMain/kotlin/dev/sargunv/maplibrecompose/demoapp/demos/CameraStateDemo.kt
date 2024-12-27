@@ -47,8 +47,6 @@ object CameraStateDemo : Demo {
             cameraState = cameraState,
             styleState = styleState,
             ornamentSettings = DemoOrnamentSettings(),
-            zoomRange = 5f..10f,
-            pitchRange = 0f..20f,
           )
           DemoMapControls(cameraState, styleState)
         }
