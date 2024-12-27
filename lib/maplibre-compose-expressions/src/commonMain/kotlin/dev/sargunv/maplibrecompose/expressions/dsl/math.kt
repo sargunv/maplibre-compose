@@ -74,6 +74,10 @@ public operator fun <U, V : NumberValue<U>> Expression<V>.rem(
 public fun Expression<FloatValue>.pow(exponent: Expression<FloatValue>): Expression<FloatValue> =
   FunctionCall.of("^", this, exponent).cast()
 
+/** Returns the result of raising this number expression to the power of [exponent]. */
+public fun Expression<FloatValue>.pow(exponent: Float): Expression<FloatValue> =
+  FunctionCall.of("^", this, const(exponent)).cast()
+
 /** Returns the square root of [value]. */
 public fun sqrt(value: Expression<FloatValue>): Expression<FloatValue> =
   FunctionCall.of("sqrt", value).cast()
