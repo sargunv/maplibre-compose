@@ -1,1 +1,2 @@
 demo-app/src/commonMain/composeResources/files/* linguist-vendored
+kotlin-js-store/yarn.lock linguist-vendored
