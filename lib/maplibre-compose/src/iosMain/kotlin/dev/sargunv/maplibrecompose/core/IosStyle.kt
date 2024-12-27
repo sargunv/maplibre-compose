@@ -13,8 +13,8 @@ import dev.sargunv.maplibrecompose.core.util.toUIImage
 internal class IosStyle(style: MLNStyle, private val getScale: () -> Float) : Style {
   private var impl: MLNStyle = style
 
-  override fun addImage(id: String, image: ImageBitmap) {
-    impl.setImage(image.toUIImage(getScale()), forName = id)
+  override fun addImage(id: String, image: ImageBitmap, sdf: Boolean) {
+    impl.setImage(image.toUIImage(getScale(), sdf), forName = id)
   }
 
   override fun removeImage(id: String) {

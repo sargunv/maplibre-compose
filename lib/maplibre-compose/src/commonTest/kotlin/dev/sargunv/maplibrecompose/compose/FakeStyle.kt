@@ -15,7 +15,7 @@ internal class FakeStyle(
   private val layerList = layers.toMutableList()
   private val layerMap = layers.associateBy { it.id }.toMutableMap()
 
-  override fun addImage(id: String, image: ImageBitmap) {
+  override fun addImage(id: String, image: ImageBitmap, sdf: Boolean) {
     if (id in imageMap) error("Image ID '${id}' already exists in style")
     imageMap[id] = image
   }

@@ -1,9 +1,9 @@
 package dev.sargunv.maplibrecompose.expressions
 
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.painter.Painter
+import dev.sargunv.maplibrecompose.expressions.ast.BitmapLiteral
 import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
 import dev.sargunv.maplibrecompose.expressions.ast.Expression
+import dev.sargunv.maplibrecompose.expressions.ast.PainterLiteral
 import dev.sargunv.maplibrecompose.expressions.value.FloatValue
 
 /**
@@ -21,10 +21,10 @@ public interface ExpressionContext {
   public val spScale: Expression<FloatValue>
 
   /** @return the resolved identifier for the [bitmap]. */
-  public fun resolveBitmap(bitmap: ImageBitmap): String
+  public fun resolveBitmap(bitmap: BitmapLiteral): String
 
   /** @return the resolved identifier for the [painter]. */
-  public fun resolvePainter(painter: Painter): String
+  public fun resolvePainter(painter: PainterLiteral): String
 
   /** A context where no complex types can be resolved. */
   public object None : ExpressionContext {
@@ -34,10 +34,10 @@ public interface ExpressionContext {
     override val spScale: Expression<FloatValue>
       get() = error("TextUnit not allowed in this context")
 
-    override fun resolveBitmap(bitmap: ImageBitmap): String =
+    override fun resolveBitmap(bitmap: BitmapLiteral): String =
       error("Bitmap not allowed in this context")
 
-    override fun resolvePainter(painter: Painter): String =
+    override fun resolvePainter(painter: PainterLiteral): String =
       error("Painter not allowed in this context")
   }
 }

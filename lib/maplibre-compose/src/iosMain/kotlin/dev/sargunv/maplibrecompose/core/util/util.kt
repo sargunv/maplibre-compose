@@ -62,6 +62,7 @@ import platform.Foundation.dataWithBytes
 import platform.UIKit.UIColor
 import platform.UIKit.UIEdgeInsetsMake
 import platform.UIKit.UIImage
+import platform.UIKit.UIImageRenderingMode
 import platform.UIKit.valueWithCGVector
 import platform.UIKit.valueWithUIEdgeInsets
 
@@ -201,9 +202,12 @@ internal fun Alignment.toMLNOrnamentPosition(layoutDir: LayoutDirection): MLNOrn
   }
 }
 
-internal fun ImageBitmap.toUIImage(scale: Float): UIImage {
-  return UIImage(
-    data = Image.makeFromBitmap(this.asSkiaBitmap()).encodeToData()!!.bytes.toNSData(),
-    scale = scale.toDouble(),
-  )
-}
+internal fun ImageBitmap.toUIImage(scale: Float, sdf: Boolean) =
+  UIImage(
+      data = Image.makeFromBitmap(this.asSkiaBitmap()).encodeToData()!!.bytes.toNSData(),
+      scale = scale.toDouble(),
+    )
+    .imageWithRenderingMode(
+      if (sdf) UIImageRenderingMode.UIImageRenderingModeAlwaysTemplate
+      else UIImageRenderingMode.UIImageRenderingModeAutomatic
+    )

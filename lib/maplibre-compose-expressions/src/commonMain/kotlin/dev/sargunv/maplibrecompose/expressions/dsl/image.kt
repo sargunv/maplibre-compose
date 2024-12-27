@@ -2,6 +2,7 @@ package dev.sargunv.maplibrecompose.expressions.dsl
 
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.unit.DpSize
 import dev.sargunv.maplibrecompose.expressions.ast.BitmapLiteral
 import dev.sargunv.maplibrecompose.expressions.ast.Expression
 import dev.sargunv.maplibrecompose.expressions.ast.FunctionCall
@@ -55,8 +56,8 @@ public fun image(value: String): Expression<ImageValue> = image(const(value))
  * unregistered from the style if it's no longer referenced by any layer. An ID referencing the
  * bitmap will be generated automatically and inserted into the expression.
  */
-public fun image(value: ImageBitmap): Expression<ImageValue> =
-  FunctionCall.of("image", BitmapLiteral.of(value)).cast()
+public fun image(value: ImageBitmap, sdf: Boolean = false): Expression<ImageValue> =
+  FunctionCall.of("image", BitmapLiteral.of(value, sdf)).cast()
 
 /**
  * Returns an image type for use in `iconImage` (see
@@ -71,8 +72,11 @@ public fun image(value: ImageBitmap): Expression<ImageValue> =
  * referenced by a layer, and unregistered from the style if it's no longer referenced by any layer.
  * An ID referencing the bitmap will be generated automatically and inserted into the expression.
  *
- * The bitmap will be created with the intrinsic size of the painter, or 16x16 DP if the painter
- * does not have an intrinsic size.
+ * The bitmap will be created with the provided [size], or the intrinsic size of the painter if not
+ * provided, or 16x16 DP if the painter has no intrinsic size.
  */
-public fun image(value: Painter): Expression<ImageValue> =
-  FunctionCall.of("image", PainterLiteral.of(value)).cast()
+public fun image(
+  value: Painter,
+  size: DpSize? = null,
+  sdf: Boolean = false,
+): Expression<ImageValue> = FunctionCall.of("image", PainterLiteral.of(value, size, sdf)).cast()
