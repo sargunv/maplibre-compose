@@ -26,6 +26,8 @@ import kotlin.math.roundToInt
  * @param modifier The modifier to be applied to the layout.
  * @param styleUri The URI of the map style specification JSON to use, see
  *   [MapLibre Style](https://maplibre.org/maplibre-style-spec/).
+ * @param zoomRange The allowable bounds for the camera zoom level.
+ * @param pitchRange The allowable bounds for the camera pitch.
  * @param gestureSettings Defines which user map gestures are enabled.
  * @param ornamentSettings Defines which additional UI elements are displayed on top of the map.
  * @param cameraState The camera state specifies what position of the map is rendered, at what zoom,
@@ -83,6 +85,8 @@ import kotlin.math.roundToInt
 public fun MaplibreMap(
   modifier: Modifier = Modifier,
   styleUri: String = "https://demotiles.maplibre.org/style.json",
+  zoomRange: ClosedRange<Float> = 0f..20f,
+  pitchRange: ClosedRange<Float> = 0f..60f,
   gestureSettings: GestureSettings = GestureSettings.AllEnabled,
   ornamentSettings: OrnamentSettings = OrnamentSettings.AllEnabled,
   cameraState: CameraState = rememberCameraState(),
@@ -165,6 +169,10 @@ public fun MaplibreMap(
       cameraState.map = map
       map.onFpsChanged = onFrame
       map.isDebugEnabled = isDebugEnabled
+      map.minZoom = zoomRange.start.toDouble()
+      map.maxZoom = zoomRange.endInclusive.toDouble()
+      map.minPitch = pitchRange.start.toDouble()
+      map.maxPitch = pitchRange.endInclusive.toDouble()
       map.setGestureSettings(gestureSettings)
       map.setOrnamentSettings(ornamentSettings)
       map.setMaximumFps(maximumFps)

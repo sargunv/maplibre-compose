@@ -188,6 +188,30 @@ internal class AndroidMap(
 
   override var onFpsChanged: (Double) -> Unit = { _ -> }
 
+  override var minPitch
+    get() = map.minPitch
+    set(value) {
+      map.setMinPitchPreference(value)
+    }
+
+  override var maxPitch
+    get() = map.maxPitch
+    set(value) {
+      map.setMaxPitchPreference(value)
+    }
+
+  override var minZoom
+    get() = map.minZoomLevel
+    set(value) {
+      map.setMinZoomPreference(value)
+    }
+
+  override var maxZoom
+    get() = map.maxZoomLevel
+    set(value) {
+      map.setMaxZoomPreference(value)
+    }
+
   override val visibleBoundingBox: BoundingBox
     get() = map.projection.visibleRegion.latLngBounds.toBoundingBox()
 

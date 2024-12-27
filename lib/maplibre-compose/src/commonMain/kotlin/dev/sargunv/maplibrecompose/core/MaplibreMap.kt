@@ -11,8 +11,19 @@ import kotlin.time.Duration
 
 internal interface MaplibreMap {
   var styleUri: String
+
   var isDebugEnabled: Boolean
+
   var cameraPosition: CameraPosition
+
+  var maxZoom: Double
+
+  var minZoom: Double
+
+  var maxPitch: Double
+
+  var minPitch: Double
+
   var onFpsChanged: (Double) -> Unit
 
   val visibleBoundingBox: BoundingBox

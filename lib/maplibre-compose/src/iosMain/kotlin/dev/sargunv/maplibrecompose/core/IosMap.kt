@@ -259,6 +259,30 @@ internal class IosMap(
         else 0uL
     }
 
+  override var minPitch
+    get() = mapView.minimumPitch
+    set(value) {
+      mapView.minimumPitch = value
+    }
+
+  override var maxPitch
+    get() = mapView.maximumPitch
+    set(value) {
+      mapView.maximumPitch = value
+    }
+
+  override var minZoom
+    get() = mapView.minimumZoomLevel
+    set(value) {
+      mapView.minimumZoomLevel = value
+    }
+
+  override var maxZoom
+    get() = mapView.maximumZoomLevel
+    set(value) {
+      mapView.maximumZoomLevel = value
+    }
+
   override val visibleBoundingBox: BoundingBox
     get() = mapView.visibleCoordinateBounds.toBoundingBox()
 
