@@ -14,13 +14,17 @@ mavenPublishing {
 
 kotlin {
   js(IR) {
-    browser { webpackTask { output.libraryTarget = "commonjs2" } }
-    useCommonJs()
+    browser {}
+    useEsModules()
     binaries.executable()
+    generateTypeScriptDefinitions()
   }
 
   sourceSets {
-    commonMain.dependencies { implementation(npm("maplibre-gl", "4.7.1")) }
+    commonMain.dependencies {
+      implementation(kotlin("stdlib-js"))
+      implementation(npm("maplibre-gl", "4.7.1"))
+    }
 
     commonTest.dependencies {
       implementation(kotlin("test"))
