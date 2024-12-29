@@ -33,3 +33,14 @@ kotlin {
     }
   }
 }
+
+val jsBrowserDistribution by
+  configurations.registering {
+    isCanBeConsumed = true
+    isCanBeResolved = false
+  }
+
+artifacts.add(
+  jsBrowserDistribution.name,
+  tasks.named("jsBrowserDistribution").map { it.outputs.files.files.single() },
+)

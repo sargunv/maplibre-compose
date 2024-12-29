@@ -26,6 +26,21 @@ mavenPublishing {
   }
 }
 
+val jvmAssets: Configuration by
+  configurations.creating {
+    isCanBeConsumed = false
+    isCanBeResolved = true
+  }
+
+dependencies { jvmAssets(project(":lib:kotlin-maplibre-js", "jsBrowserDistribution")) }
+
+val copyJvmAssets by
+  tasks.registering(Copy::class) {
+    from(jvmAssets)
+    eachFile { path = "assets/${path}" }
+    into(project.layout.buildDirectory.dir(jvmAssets.name))
+  }
+
 kotlin {
   androidTarget {
     compilerOptions { jvmTarget.set(JvmTarget.JVM_11) }
@@ -62,7 +77,13 @@ kotlin {
       implementation(libs.maplibre.android.scalebar)
     }
 
-    desktopMain.dependencies { implementation(libs.webview) }
+    desktopMain.apply {
+      dependencies {
+        implementation(compose.desktop.common)
+        implementation(libs.webview)
+      }
+      resources.srcDir(copyJvmAssets)
+    }
 
     commonTest.dependencies {
       implementation(kotlin("test"))
