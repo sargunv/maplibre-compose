@@ -7,20 +7,12 @@ import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -41,7 +33,6 @@ import dev.sargunv.maplibrecompose.material3.generated.feet_symbol
 import dev.sargunv.maplibrecompose.material3.generated.kilometers_symbol
 import dev.sargunv.maplibrecompose.material3.generated.meters_symbol
 import dev.sargunv.maplibrecompose.material3.generated.miles_symbol
-import kotlin.math.roundToInt
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
@@ -107,25 +98,27 @@ public fun ScaleBar(
 
   Canvas(modifier.size(width, totalHeight)) {
     var y = 0f
-    val lines = mutableListOf<Pair<Offset, Offset>>()
+    val polylines = mutableListOf<List<Offset>>()
     val metersPerPx = cameraState.metersPerDpAtTarget.dp.toPx()
 
     if (measure.isImperial()) {
       val barLength = metersStop * METERS_IN_FEET / metersPerPx
-      lines.add(Offset(0f, 0f) to Offset(barLength.toFloat(), 0f))
+      polylines.add(listOf(Offset(0f, 0f), Offset(barLength.toFloat(), 0f)))
       // todo vertical lines
     }
 
     if (measure.isMetric()) {
       val barLength = feetStop / metersPerPx
-      lines.add(Offset(0f, 0f) to Offset(barLength, 0f))
+      polylines.add(listOf(Offset(0f, 0f), Offset(barLength.toFloat(), 0f)))
       // todo vertical lines
     }
 
-    drawLinesWithHalo(
+    // TODO use blend mode instead of having strict order of draw instructions in Canvas?
+
+    drawPolylinesWithHalo(
       color = color,
       haloColor = haloColor,
-      lines = lines,
+      polylines = polylines,
       strokeWidth = strokeWidth.toPx(),
       haloWidth = haloStrokeWidth.toPx(),
       cap = StrokeCap.Round,
@@ -205,56 +198,6 @@ public fun DisappearingScaleBar(
 
 private const val METERS_IN_FEET: Double = 0.3048
 private const val FEET_IN_MILE: Int = 5280
-
-private fun DrawScope.drawLinesWithHalo(
-  color: Color,
-  haloColor: Color,
-  lines: List<Pair<Offset, Offset>>,
-  strokeWidth: Float = Stroke.HairlineWidth,
-  haloWidth: Float = Stroke.HairlineWidth,
-  cap: StrokeCap = Stroke.DefaultCap
-) {
-  for ((start, end) in lines) {
-    drawLine(
-      color = haloColor,
-      start = start,
-      end = end,
-      strokeWidth = strokeWidth + haloWidth * 2,
-      cap = cap,
-    )
-  }
-  for ((start, end) in lines) {
-    drawLine(
-      color = color,
-      start = start,
-      end = end,
-      strokeWidth = strokeWidth,
-      cap = cap,
-    )
-  }
-}
-
-private fun DrawScope.drawTextWithHalo(
-  textLayoutResult: TextLayoutResult,
-  topLeft: Offset = Offset.Zero,
-  color: Color = Color.Unspecified,
-  haloColor: Color = Color.Unspecified,
-  haloWidth: Float = 0f,
-) {
-  // * 2 because the stroke is painted half outside and half inside of the text shape
-  val stroke = Stroke(width = haloWidth * 2, cap = StrokeCap.Round, join = StrokeJoin.Round)
-  drawText(
-    textLayoutResult = textLayoutResult,
-    color = haloColor,
-    topLeft = topLeft,
-    drawStyle = stroke
-  )
-  drawText(
-    textLayoutResult = textLayoutResult,
-    color = color,
-    topLeft = topLeft,
-  )
-}
 
 /**
  * find the largest stop in the list of stops (sorted in ascending order) that is below or equal
