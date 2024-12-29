@@ -30,8 +30,7 @@ internal actual fun ComposableMapView(
 
   LaunchedEffect(mapHtml) {
     if (mapHtml != null) return@LaunchedEffect
-    val js = Res.readBytes("files/kotlin-maplibre-js.js").toString(Charsets.UTF_8)
-    mapHtml = makeHtml(js)
+    mapHtml = Res.readBytes("files/maplibre-compose-webview.html").toString(Charsets.UTF_8)
   }
 
   mapHtml?.let { html ->
@@ -43,31 +42,8 @@ internal actual fun ComposableMapView(
     LaunchedEffect(state.isLoading, styleUri) {
       if (!state.isLoading) {
         // TODO: prevent script injection
-        navigator.evaluateJavaScript("globalThis['kotlin-maplibre-js'].setStyle('$styleUri')")
+        navigator.evaluateJavaScript("globalThis['maplibre-compose-webview'].setStyle('$styleUri')")
       }
     }
   }
 }
-
-internal fun makeHtml(js: String) =
-  """
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <title>Map</title>
-    <meta charset='utf-8'>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css'/>
-    <style>
-      body { margin: 0; padding: 0; }
-      html, body { height: 100%; }
-    </style>
-  </head>
-  <body>
-  <script>
-    $js
-  </script>
-  </body>
-  </html>
-"""
-    .trimIndent()

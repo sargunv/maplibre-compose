@@ -13,12 +13,7 @@ mavenPublishing {
 }
 
 kotlin {
-  js(IR) {
-    browser {}
-    useEsModules()
-    binaries.executable()
-    generateTypeScriptDefinitions()
-  }
+  js(IR) { browser {} }
 
   sourceSets {
     commonMain.dependencies {
@@ -33,14 +28,3 @@ kotlin {
     }
   }
 }
-
-val jsBrowserDistribution by
-  configurations.registering {
-    isCanBeConsumed = true
-    isCanBeResolved = false
-  }
-
-artifacts.add(
-  jsBrowserDistribution.name,
-  tasks.named("jsBrowserDistribution").map { it.outputs.files.files.single() },
-)

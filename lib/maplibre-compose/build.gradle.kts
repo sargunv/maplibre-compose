@@ -26,19 +26,23 @@ mavenPublishing {
   }
 }
 
-val jvmAssets: Configuration by
+val desktopResources: Configuration by
   configurations.creating {
     isCanBeConsumed = false
     isCanBeResolved = true
   }
 
-dependencies { jvmAssets(project(":lib:kotlin-maplibre-js", "jsBrowserDistribution")) }
+dependencies {
+  desktopResources(
+    project(path = ":lib:maplibre-compose-webview", configuration = "jsBrowserDistribution")
+  )
+}
 
-val copyJvmAssets by
+val copyDesktopResources by
   tasks.registering(Copy::class) {
-    from(jvmAssets)
+    from(desktopResources)
     eachFile { path = "files/${path}" }
-    into(project.layout.buildDirectory.dir(jvmAssets.name))
+    into(project.layout.buildDirectory.dir(desktopResources.name))
   }
 
 kotlin {
@@ -108,6 +112,8 @@ compose.resources {
   customDirectory(
     sourceSetName = "desktopMain",
     directoryProvider =
-      layout.dir(copyJvmAssets.map { it.destinationDir.relativeTo(layout.projectDirectory.asFile) }),
+      //    layout.dir(copyDesktopResources.map {
+      // it.destinationDir.relativeTo(layout.projectDirectory.asFile) }),
+      layout.dir(copyDesktopResources.map { it.destinationDir }),
   )
 }
