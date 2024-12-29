@@ -8,12 +8,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import dev.datlag.kcef.KCEF
+import dev.sargunv.maplibrecompose.core.CustomCefAppHandler
 import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
-public fun KcefDownloader(loading: @Composable () -> Unit = {}, content: @Composable () -> Unit) {
+public fun KcefProvider(loading: @Composable () -> Unit = {}, content: @Composable () -> Unit) {
   var initialized by remember { mutableStateOf(false) }
 
   LaunchedEffect(Unit) {
@@ -21,6 +22,7 @@ public fun KcefDownloader(loading: @Composable () -> Unit = {}, content: @Compos
       KCEF.init({
         // TODO https://github.com/harawata/appdirs
         installDir(File("kcef-bundle"))
+        appHandler(CustomCefAppHandler)
       })
     }
     initialized = true

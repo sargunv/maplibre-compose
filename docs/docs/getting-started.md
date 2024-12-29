@@ -130,7 +130,7 @@ compose.desktop {
 }
 ```
 
-Wrap your app with `KcefDownloader` to download KCEF on first lanch, and
+Wrap your app with `KcefProvider` to download KCEF on first lanch, and
 `MaplibreContext` to provide the library with context about the window your app
 is running in:
 

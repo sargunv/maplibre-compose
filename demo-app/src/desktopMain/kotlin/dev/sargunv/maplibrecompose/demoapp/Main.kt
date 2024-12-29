@@ -6,8 +6,8 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.window.singleWindowApplication
-import dev.sargunv.maplibrecompose.compose.KcefDownloader
-import dev.sargunv.maplibrecompose.compose.MaplibreContext
+import dev.sargunv.maplibrecompose.compose.KcefProvider
+import dev.sargunv.maplibrecompose.compose.MaplibreContextProvider
 
 // TODO This should enable support for blending Compose over Swing views
 // but it's just crashing on launch
@@ -17,9 +17,9 @@ import dev.sargunv.maplibrecompose.compose.MaplibreContext
 // -8<- [start:main]
 fun main() {
   singleWindowApplication {
-    KcefDownloader(
+    KcefProvider(
       loading = { Text("Performing first time setup ...") },
-      content = { MaplibreContext { DemoApp() } },
+      content = { MaplibreContextProvider { DemoApp() } },
     )
   }
 }
