@@ -13,5 +13,4 @@ public external class Maplibre public constructor(options: MapOptions) {
 /** [MapOptions](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/MapOptions/) */
 public sealed external interface MapOptions {
   public var container: HTMLElement
-  public var style: String
 }

@@ -11,8 +11,7 @@ internal fun main() {
   val container = document.createElement("div") as HTMLDivElement
   container.setAttribute("style", "width: 100%; height: 100vh;")
   document.body!!.appendChild(container)
-  map =
-    Maplibre(MapOptions(container = container, style = "https://demotiles.maplibre.org/style.json"))
+  map = Maplibre(MapOptions(container = container))
 }
 
 @JsExport

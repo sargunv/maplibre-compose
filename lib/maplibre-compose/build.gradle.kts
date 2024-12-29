@@ -37,7 +37,7 @@ dependencies { jvmAssets(project(":lib:kotlin-maplibre-js", "jsBrowserDistributi
 val copyJvmAssets by
   tasks.registering(Copy::class) {
     from(jvmAssets)
-    eachFile { path = "assets/${path}" }
+    eachFile { path = "files/${path}" }
     into(project.layout.buildDirectory.dir(jvmAssets.name))
   }
 
@@ -67,6 +67,7 @@ kotlin {
 
     commonMain.dependencies {
       implementation(compose.foundation)
+      implementation(compose.components.resources)
       api(libs.kermit)
       api(libs.spatialk.geojson)
       api(project(":lib:maplibre-compose-expressions"))
@@ -82,7 +83,6 @@ kotlin {
         implementation(compose.desktop.common)
         implementation(libs.webview)
       }
-      resources.srcDir(copyJvmAssets)
     }
 
     commonTest.dependencies {
@@ -100,4 +100,14 @@ kotlin {
       implementation(libs.androidx.composeUi.testManifest)
     }
   }
+}
+
+compose.resources {
+  packageOfResClass = "dev.sargunv.maplibrecompose.generated"
+
+  customDirectory(
+    sourceSetName = "desktopMain",
+    directoryProvider =
+      layout.dir(copyJvmAssets.map { it.destinationDir.relativeTo(layout.projectDirectory.asFile) }),
+  )
 }
