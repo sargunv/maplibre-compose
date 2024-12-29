@@ -130,14 +130,13 @@ compose.desktop {
 }
 ```
 
-Wrap your app with the `MaplibreContext` composable:
+Wrap your app with `KcefDownloader` to download KCEF on first lanch, and
+`MaplibreContext` to provide the library with context about the window your app
+is running in:
 
 ```kotlin title="Main.kt"
 -8<- "demo-app/src/desktopMain/kotlin/dev/sargunv/maplibrecompose/demoapp/Main.kt:main"
 ```
-
-When the app first launches, KCEF will be downloaded in the background before
-your UI is visible.
 
 ## Display your first map
 

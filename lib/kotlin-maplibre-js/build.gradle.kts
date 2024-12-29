@@ -18,7 +18,7 @@ kotlin {
   sourceSets {
     commonMain.dependencies {
       implementation(kotlin("stdlib-js"))
-      implementation(npm("maplibre-gl", "4.7.1"))
+      implementation(npm("maplibre-gl", libs.versions.maplibre.js.get()))
     }
 
     commonTest.dependencies {

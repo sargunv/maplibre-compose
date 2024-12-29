@@ -9,7 +9,10 @@ ktor = "3.0.3"
 maplibre-android-sdk = "11.7.1"
 maplibre-android-plugins = "3.0.2"
 maplibre-ios = "6.9.0"
+maplibre-js = "4.7.1"
 spatialk = "0.3.0"
+webpack-html = "5.6.3"
+webpack-htmlInlineScript = "3.2.1"
 
 gradle-android = "8.7.3"
 gradle-compose = "1.7.3"
@@ -19,6 +22,8 @@ gradle-kotlin = "2.1.0"
 gradle-mavenPublish = "0.30.0"
 gradle-mkdocs = "4.0.1"
 gradle-spotless = "7.0.0.BETA4"
+
+tool-prettier = "3.4.2"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }

@@ -16,8 +16,10 @@ kotlin {
       implementation(kotlin("stdlib-js"))
       implementation(project(":lib:kotlin-maplibre-js"))
 
-      implementation(devNpm("html-webpack-plugin", "5.6.3"))
-      implementation(devNpm("html-inline-script-webpack-plugin", "3.2.1"))
+      implementation(devNpm("html-webpack-plugin", libs.versions.webpack.html.get()))
+      implementation(
+        devNpm("html-inline-script-webpack-plugin", libs.versions.webpack.htmlInlineScript.get())
+      )
     }
 
     commonTest.dependencies {

@@ -7,7 +7,6 @@ import androidx.compose.ui.window.FrameWindowScope
 public fun FrameWindowScope.MaplibreContext(content: @Composable () -> Unit) {
   // TODO provide this somehow to getSystemRefreshRate
   println("refreshRate: ${this.window.graphicsConfiguration.device.displayMode.refreshRate}")
-
-  // TODO maybe this should be in some app-level context instead of window-level
-  KcefDownloader { content() }
+  // TODO also load webview html here so we only load it once
+  content()
 }

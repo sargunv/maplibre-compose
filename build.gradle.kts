@@ -65,11 +65,11 @@ spotless {
   }
   format("markdown") {
     target("**/*.md")
-    prettier().config(mapOf("proseWrap" to "always"))
+    prettier(libs.versions.tool.prettier.get()).config(mapOf("proseWrap" to "always"))
   }
   yaml {
     target("**/*.yml", "**/*.yaml")
-    prettier()
+    prettier(libs.versions.tool.prettier.get())
   }
 }
 
