@@ -76,3 +76,10 @@ internal class FrameRateState(private val spinner: String = "◐◓◑◒") {
 }
 
 @Composable expect fun getDefaultColorScheme(isDark: Boolean = false): ColorScheme
+
+expect object Platform {
+  val supportsBlending: Boolean
+  val supportsFps: Boolean
+  val supportsCamera: Boolean
+  val supportsLayers: Boolean
+}

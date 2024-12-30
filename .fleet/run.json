@@ -25,6 +25,14 @@
       ]
     },
     {
+      "name": "Js-App",
+      "type": "gradle",
+      "workingDir": "$PROJECT_DIR$",
+      "tasks": [
+        ":demo-app:jsRun"
+      ]
+    },
+    {
       "name": "Reformat",
       "type": "gradle",
       "workingDir": "$PROJECT_DIR$",

@@ -30,3 +30,10 @@ fun main() {
 actual fun getDefaultColorScheme(isDark: Boolean): ColorScheme {
   return if (isDark) darkColorScheme() else lightColorScheme()
 }
+
+actual object Platform {
+  actual val supportsBlending = false
+  actual val supportsFps = false
+  actual val supportsCamera = false
+  actual val supportsLayers = false
+}

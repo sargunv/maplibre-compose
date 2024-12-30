@@ -6,7 +6,6 @@ plugins {
 kotlin {
   js(IR) {
     browser { webpackTask {} }
-
     useEsModules()
     binaries.executable()
     generateTypeScriptDefinitions()

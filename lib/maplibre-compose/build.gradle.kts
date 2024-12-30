@@ -55,6 +55,7 @@ kotlin {
   iosSimulatorArm64()
   iosX64()
   jvm("desktop")
+  js(IR) { browser() }
 
   cocoapods {
     noPodspec()

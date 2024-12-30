@@ -13,3 +13,10 @@ fun MainViewController() = ComposeUIViewController { DemoApp() }
 actual fun getDefaultColorScheme(isDark: Boolean): ColorScheme {
   return if (isDark) darkColorScheme() else lightColorScheme()
 }
+
+actual object Platform {
+  actual val supportsBlending = true
+  actual val supportsFps = true
+  actual val supportsCamera = true
+  actual val supportsLayers = true
+}
