@@ -60,7 +60,7 @@ internal fun DesktopMapView(
 
   if (state.isLoading) return
 
-  val map = remember(state) { WebviewMap(WebviewBridge(state.nativeWebView, "WebviewBridge")) }
+  val map = remember(state) { WebviewMap(WebviewBridge(state.nativeWebView, "WebviewMapBridge")) }
 
   LaunchedEffect(map) { map.init() }
 

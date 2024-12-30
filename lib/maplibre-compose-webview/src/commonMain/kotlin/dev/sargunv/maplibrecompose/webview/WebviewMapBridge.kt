@@ -14,7 +14,7 @@ import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
 
 @JsExport
-object WebviewBridge {
+object WebviewMapBridge {
   private var container: HTMLDivElement? = null
   private lateinit var map: Maplibre
   private lateinit var navigationControl: NavigationControl
@@ -91,5 +91,41 @@ object WebviewBridge {
 
   fun removeAttributionControl() {
     map.removeControl(attributionControl)
+  }
+
+  fun setTiltGesturesEnabled(enabled: Boolean) {
+    if (enabled) map.touchPitch.enable() else map.touchPitch.disable()
+  }
+
+  fun setZoomGesturesEnabled(enabled: Boolean) {
+    if (enabled) {
+      map.doubleClickZoom.enable()
+      map.scrollZoom.enable()
+      map.touchZoomRotate.enable()
+    } else {
+      map.doubleClickZoom.disable()
+      map.scrollZoom.disable()
+      map.touchZoomRotate.disable()
+    }
+  }
+
+  fun setRotateGesturesEnabled(enabled: Boolean) {
+    if (enabled) {
+      map.dragRotate.enable()
+      map.keyboard.enableRotation()
+      map.touchZoomRotate.enableRotation()
+    } else {
+      map.dragRotate.disable()
+      map.keyboard.enableRotation()
+      map.touchZoomRotate.enableRotation()
+    }
+  }
+
+  fun setScrollGesturesEnabled(enabled: Boolean) {
+    if (enabled) map.dragPan.enable() else map.dragPan.disable()
+  }
+
+  fun setKeyboardGesturesEnabled(enabled: Boolean) {
+    if (enabled) map.keyboard.enable() else map.keyboard.disable()
   }
 }

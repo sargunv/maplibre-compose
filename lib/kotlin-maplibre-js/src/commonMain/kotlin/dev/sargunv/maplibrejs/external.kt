@@ -14,6 +14,14 @@ public external class Maplibre public constructor(options: MapOptions) {
   public var showTileBoundaries: Boolean
   public val version: String
 
+  public val doubleClickZoom: DoubleClickZoomHandler
+  public val dragPan: DragPanHandler
+  public val dragRotate: DragRotateHandler
+  public val keyboard: KeyboardHandler
+  public val scrollZoom: ScrollZoomHandler
+  public val touchPitch: TwoFingersTouchPitchHandler
+  public val touchZoomRotate: TwoFingersTouchZoomRotateHandler
+
   public fun setStyle(style: String)
 
   public fun remove()
@@ -49,6 +57,101 @@ public external class Maplibre public constructor(options: MapOptions) {
   public fun addControl(control: IControl, position: String)
 
   public fun removeControl(control: IControl)
+}
+
+/**
+ * [DoubleClickZoomHandler](https://maplibre.org/maplibre-gl-js/docs/API/classes/DoubleClickZoomHandler/)
+ */
+public external class DoubleClickZoomHandler {
+  public fun disable()
+
+  public fun enable()
+
+  public fun isEnabled(): Boolean
+
+  public fun isActive(): Boolean
+}
+
+/** [DragPanHandler](https://maplibre.org/maplibre-gl-js/docs/API/classes/DragPanHandler/) */
+public external class DragPanHandler {
+  public fun disable()
+
+  public fun enable()
+
+  public fun isEnabled(): Boolean
+
+  public fun isActive(): Boolean
+}
+
+/** [DragRotateHandler](https://maplibre.org/maplibre-gl-js/docs/API/classes/DragRotateHandler/) */
+public external class DragRotateHandler {
+  public fun disable()
+
+  public fun enable()
+
+  public fun isEnabled(): Boolean
+
+  public fun isActive(): Boolean
+}
+
+/** [KeyboardHandler](https://maplibre.org/maplibre-gl-js/docs/API/classes/KeyboardHandler/) */
+public external class KeyboardHandler {
+  public fun disable()
+
+  public fun disableRotation()
+
+  public fun enable()
+
+  public fun enableRotation()
+
+  public fun isEnabled(): Boolean
+
+  public fun isActive(): Boolean
+}
+
+/** [ScrollZoomHandler](https://maplibre.org/maplibre-gl-js/docs/API/classes/ScrollZoomHandler/) */
+public external class ScrollZoomHandler {
+  public fun disable()
+
+  public fun enable()
+
+  public fun isEnabled(): Boolean
+
+  public fun isActive(): Boolean
+
+  public fun setWheelZoomRate(wheelZoomRate: Double)
+
+  public fun setZoomRate(zoomRate: Double)
+}
+
+/**
+ * [TwoFingersTouchPitchHandler](https://maplibre.org/maplibre-gl-js/docs/API/classes/TwoFingersTouchPitchHandler/)
+ */
+public external class TwoFingersTouchPitchHandler {
+  public fun disable()
+
+  public fun enable()
+
+  public fun isEnabled(): Boolean
+
+  public fun isActive(): Boolean
+}
+
+/**
+ * [TwoFingersTouchZoomRotateHandler](https://maplibre.org/maplibre-gl-js/docs/API/classes/TwoFingersTouchZoomRotateHandler/)
+ */
+public external class TwoFingersTouchZoomRotateHandler {
+  public fun disable()
+
+  public fun disableRotation()
+
+  public fun enable()
+
+  public fun enableRotation()
+
+  public fun isEnabled(): Boolean
+
+  public fun isActive(): Boolean
 }
 
 /** [LogoControl](https://maplibre.org/maplibre-gl-js/docs/API/classes/LogoControl/) */
