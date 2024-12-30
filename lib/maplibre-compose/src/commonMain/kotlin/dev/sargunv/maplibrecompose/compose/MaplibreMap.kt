@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpOffset
@@ -20,6 +21,7 @@ import dev.sargunv.maplibrecompose.core.Style
 import dev.sargunv.maplibrecompose.core.util.PlatformUtils
 import io.github.dellisd.spatialk.geojson.Position
 import kotlin.math.roundToInt
+import kotlinx.coroutines.launch
 
 /**
  * Displays a MapLibre based map.
@@ -110,6 +112,7 @@ public fun MaplibreMap(
     remember(cameraState, styleState, styleComposition) {
       object : MaplibreMap.Callbacks {
         override fun onStyleChanged(map: MaplibreMap, style: Style?) {
+          println("onStyleChanged!!")
           map as StandardMaplibreMap
           styleState.attach(style)
           rememberedStyle = style
@@ -174,13 +177,15 @@ public fun MaplibreMap(
       }
     }
 
+  val scope = rememberCoroutineScope()
+
   ComposableMapView(
     modifier = modifier.fillMaxSize(),
     styleUri = styleUri,
     update = { map ->
-      cameraState.map = map
       when (map) {
         is StandardMaplibreMap -> {
+          cameraState.map = map
           map.setDebugEnabled(isDebugEnabled)
           map.setMinZoom(zoomRange.start.toDouble())
           map.setMaxZoom(zoomRange.endInclusive.toDouble())
@@ -191,16 +196,17 @@ public fun MaplibreMap(
           map.setMaximumFps(maximumFps)
         }
 
-        else -> {
-          map.asyncSetDebugEnabled(isDebugEnabled)
-          map.asyncSetMinZoom(zoomRange.start.toDouble())
-          map.asyncSetMaxZoom(zoomRange.endInclusive.toDouble())
-          map.asyncSetMinPitch(pitchRange.start.toDouble())
-          map.asyncSetMaxPitch(pitchRange.endInclusive.toDouble())
-          map.asyncSetGestureSettings(gestureSettings)
-          map.asyncSetOrnamentSettings(ornamentSettings)
-          map.asyngSetMaximumFps(maximumFps)
-        }
+        else ->
+          scope.launch {
+            map.asyncSetDebugEnabled(isDebugEnabled)
+            map.asyncSetMinZoom(zoomRange.start.toDouble())
+            map.asyncSetMaxZoom(zoomRange.endInclusive.toDouble())
+            map.asyncSetMinPitch(pitchRange.start.toDouble())
+            map.asyncSetMaxPitch(pitchRange.endInclusive.toDouble())
+            map.asyncSetGestureSettings(gestureSettings)
+            map.asyncSetOrnamentSettings(ornamentSettings)
+            map.asyngSetMaximumFps(maximumFps)
+          }
       }
     },
     onReset = {

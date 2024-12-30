@@ -21,7 +21,6 @@ import co.touchlab.kermit.Logger
 import cocoapods.MapLibre.MLNMapView
 import dev.sargunv.maplibrecompose.core.IosMap
 import dev.sargunv.maplibrecompose.core.MaplibreMap
-import kotlinx.coroutines.runBlocking
 import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGSizeMake
 import platform.Foundation.NSURL
@@ -30,7 +29,7 @@ import platform.Foundation.NSURL
 internal actual fun ComposableMapView(
   modifier: Modifier,
   styleUri: String,
-  update: suspend (map: MaplibreMap) -> Unit,
+  update: (map: MaplibreMap) -> Unit,
   onReset: () -> Unit,
   logger: Logger?,
   callbacks: MaplibreMap.Callbacks,
@@ -38,7 +37,7 @@ internal actual fun ComposableMapView(
   IosMapView(
     modifier = modifier,
     styleUri = styleUri,
-    update = { runBlocking { update(it) } },
+    update = update,
     onReset = onReset,
     logger = logger,
     callbacks = callbacks,
@@ -100,7 +99,7 @@ internal fun IosMapView(
         map.callbacks = callbacks
         map.logger = logger
         map.setStyleUri(styleUri)
-        runBlocking { update(map) }
+        update(map)
       },
       onReset = {
         currentOnReset()

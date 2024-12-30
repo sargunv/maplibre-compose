@@ -8,6 +8,7 @@ import androidx.compose.ui.unit.DpRect
 import dev.sargunv.maplibrecompose.core.CameraMoveReason
 import dev.sargunv.maplibrecompose.core.CameraPosition
 import dev.sargunv.maplibrecompose.core.MaplibreMap
+import dev.sargunv.maplibrecompose.core.StandardMaplibreMap
 import dev.sargunv.maplibrecompose.core.VisibleRegion
 import dev.sargunv.maplibrecompose.expressions.ExpressionContext
 import dev.sargunv.maplibrecompose.expressions.ast.Expression
@@ -19,7 +20,6 @@ import io.github.dellisd.spatialk.geojson.Position
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.runBlocking
 
 /** Remember a new [CameraState] in the initial state as given in [firstPosition]. */
 @Composable
@@ -32,7 +32,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
   internal var map: MaplibreMap? = null
     set(map) {
       if (map != null && map !== field) {
-        runBlocking { map.asyncSetCameraPosition(position) }
+        (map as StandardMaplibreMap).setCameraPosition(position)
         mapAttachSignal.trySend(map)
       }
       field = map
@@ -49,7 +49,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
   public var position: CameraPosition
     get() = positionState.value
     set(value) {
-      runBlocking { map?.asyncSetCameraPosition(value) }
+      maybeMap { it.setCameraPosition(value) }
       positionState.value = value
     }
 
@@ -75,11 +75,15 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
     map.animateCameraPosition(finalPosition, duration)
   }
 
-  private fun requireMap(): MaplibreMap {
+  private fun requireMap(): StandardMaplibreMap {
     check(map != null) {
       "Map requested before it was initialized; try calling awaitInitialization() first"
     }
-    return map!!
+    return map as? StandardMaplibreMap ?: error("Desktop not supported yet")
+  }
+
+  private fun <T> maybeMap(block: (StandardMaplibreMap) -> T): T? {
+    return map?.let { block(it as? StandardMaplibreMap ?: error("Desktop not supported yet")) }
   }
 
   /**
@@ -89,7 +93,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
    * @throws IllegalStateException if the map is not initialized yet. See [awaitInitialized].
    */
   public fun screenLocationFromPosition(position: Position): DpOffset {
-    return runBlocking { requireMap().asyncGetScreenLocationFromPos(position) }
+    return requireMap().screenLocationFromPosition(position)
   }
 
   /**
@@ -99,7 +103,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
    * @throws IllegalStateException if the map is not initialized yet. See [awaitInitialized].
    */
   public fun positionFromScreenLocation(offset: DpOffset): Position {
-    return runBlocking { requireMap().asyncGetPosFromScreenLocation(offset) }
+    return requireMap().positionFromScreenLocation(offset)
   }
 
   /**
@@ -121,9 +125,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
   ): List<Feature> {
     val predicateOrNull =
       predicate.takeUnless { it == const(true) }?.compile(ExpressionContext.None)
-    return runBlocking {
-      map?.asyncQueryRenderedFeatures(offset, layerIds, predicateOrNull) ?: emptyList()
-    }
+    return maybeMap { it.queryRenderedFeatures(offset, layerIds, predicateOrNull) } ?: emptyList()
   }
 
   /**
@@ -144,9 +146,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
   ): List<Feature> {
     val predicateOrNull =
       predicate.takeUnless { it == const(true) }?.compile(ExpressionContext.None)
-    return runBlocking {
-      map?.asyncQueryRenderedFeatures(rect, layerIds, predicateOrNull) ?: emptyList()
-    }
+    return maybeMap { it.queryRenderedFeatures(rect, layerIds, predicateOrNull) } ?: emptyList()
   }
 
   /**
@@ -160,7 +160,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
    */
   public fun queryVisibleBoundingBox(): BoundingBox {
     // TODO at some point, this should be refactored to State, just like the camera position
-    return runBlocking { requireMap().asyncGetVisibleBoundingBox() }
+    return requireMap().getVisibleBoundingBox()
   }
 
   /**
@@ -172,6 +172,6 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
    */
   public fun queryVisibleRegion(): VisibleRegion {
     // TODO at some point, this should be refactored to State, just like the camera position
-    return runBlocking { requireMap().asyncGetVisibleRegion() }
+    return requireMap().getVisibleRegion()
   }
 }

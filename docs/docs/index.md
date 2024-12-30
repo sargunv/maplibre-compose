@@ -27,9 +27,10 @@ Desktop support is implemented with [MapLibre GL JS][maplibre-js] and
 | Feature                                           | Android            | iOS                | Desktop            | Web |
 | ------------------------------------------------- | ------------------ | ------------------ | ------------------ | --- |
 | Render a map                                      | :white_check_mark: | :white_check_mark: | :white_check_mark: | :x: |
+| Overlay Compose UI over the map                   | :white_check_mark: | :white_check_mark: | :x:                | :x: |
 | Load Compose resource URIs                        | :white_check_mark: | :white_check_mark: | :white_check_mark: | :x: |
 | Configure ornaments (compass, logo, attribution)  | :white_check_mark: | :white_check_mark: | :white_check_mark: | :x: |
-| Configure gestures (pan, zoom, rotate, pitch)     | :white_check_mark: | :white_check_mark: | :x:                | :x: |
+| Configure gestures (pan, zoom, rotate, pitch)     | :white_check_mark: | :white_check_mark: | :white_check_mark: | :x: |
 | Respond to a map click or long click              | :white_check_mark: | :white_check_mark: | :x:                | :x: |
 | Query visible map features                        | :white_check_mark: | :white_check_mark: | :x:                | :x: |
 | Get, set, and animate the camera position         | :white_check_mark: | :white_check_mark: | :x:                | :x: |

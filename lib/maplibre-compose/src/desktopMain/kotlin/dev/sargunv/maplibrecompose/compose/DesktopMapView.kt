@@ -21,7 +21,7 @@ import dev.sargunv.maplibrecompose.core.WebviewMap
 internal actual fun ComposableMapView(
   modifier: Modifier,
   styleUri: String,
-  update: suspend (map: MaplibreMap) -> Unit,
+  update: (map: MaplibreMap) -> Unit,
   onReset: () -> Unit,
   logger: Logger?,
   callbacks: MaplibreMap.Callbacks,

@@ -52,13 +52,17 @@ import dev.sargunv.maplibrecompose.material3.controls.DisappearingCompassButton
 import dev.sargunv.maplibrecompose.material3.controls.DisappearingScaleBar
 
 private val DEMOS = buildList {
-  add(MarkersDemo)
-  if (Platform.supportsBlending) add(EdgeToEdgeDemo)
   add(StyleSwitcherDemo)
-  add(ClusteredPointsDemo)
-  add(AnimatedLayerDemo)
-  add(CameraStateDemo)
-  add(CameraFollowDemo)
+  if (Platform.supportsBlending) add(EdgeToEdgeDemo)
+  if (Platform.supportsLayers) {
+    add(MarkersDemo)
+    add(ClusteredPointsDemo)
+    add(AnimatedLayerDemo)
+  }
+  if (Platform.supportsCamera) {
+    add(CameraStateDemo)
+    add(CameraFollowDemo)
+  }
   if (Platform.supportsFps) add(FrameRateDemo)
 }
 
