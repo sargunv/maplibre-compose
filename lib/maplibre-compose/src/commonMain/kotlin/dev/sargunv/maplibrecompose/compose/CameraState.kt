@@ -19,6 +19,7 @@ import io.github.dellisd.spatialk.geojson.Position
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.runBlocking
 
 /** Remember a new [CameraState] in the initial state as given in [firstPosition]. */
 @Composable
@@ -31,7 +32,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
   internal var map: MaplibreMap? = null
     set(map) {
       if (map != null && map !== field) {
-        map.cameraPosition = position
+        runBlocking { map.asyncSetCameraPosition(position) }
         mapAttachSignal.trySend(map)
       }
       field = map
@@ -48,7 +49,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
   public var position: CameraPosition
     get() = positionState.value
     set(value) {
-      map?.cameraPosition = value
+      runBlocking { map?.asyncSetCameraPosition(value) }
       positionState.value = value
     }
 
@@ -88,7 +89,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
    * @throws IllegalStateException if the map is not initialized yet. See [awaitInitialized].
    */
   public fun screenLocationFromPosition(position: Position): DpOffset {
-    return requireMap().screenLocationFromPosition(position)
+    return runBlocking { requireMap().asyncGetScreenLocationFromPos(position) }
   }
 
   /**
@@ -98,7 +99,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
    * @throws IllegalStateException if the map is not initialized yet. See [awaitInitialized].
    */
   public fun positionFromScreenLocation(offset: DpOffset): Position {
-    return requireMap().positionFromScreenLocation(offset)
+    return runBlocking { requireMap().asyncGetPosFromScreenLocation(offset) }
   }
 
   /**
@@ -120,7 +121,9 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
   ): List<Feature> {
     val predicateOrNull =
       predicate.takeUnless { it == const(true) }?.compile(ExpressionContext.None)
-    return map?.queryRenderedFeatures(offset, layerIds, predicateOrNull) ?: emptyList()
+    return runBlocking {
+      map?.asyncQueryRenderedFeatures(offset, layerIds, predicateOrNull) ?: emptyList()
+    }
   }
 
   /**
@@ -141,7 +144,9 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
   ): List<Feature> {
     val predicateOrNull =
       predicate.takeUnless { it == const(true) }?.compile(ExpressionContext.None)
-    return map?.queryRenderedFeatures(rect, layerIds, predicateOrNull) ?: emptyList()
+    return runBlocking {
+      map?.asyncQueryRenderedFeatures(rect, layerIds, predicateOrNull) ?: emptyList()
+    }
   }
 
   /**
@@ -155,7 +160,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
    */
   public fun queryVisibleBoundingBox(): BoundingBox {
     // TODO at some point, this should be refactored to State, just like the camera position
-    return requireMap().visibleBoundingBox
+    return runBlocking { requireMap().asyncGetVisibleBoundingBox() }
   }
 
   /**
@@ -167,6 +172,6 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
    */
   public fun queryVisibleRegion(): VisibleRegion {
     // TODO at some point, this should be refactored to State, just like the camera position
-    return requireMap().visibleRegion
+    return runBlocking { requireMap().asyncGetVisibleRegion() }
   }
 }

@@ -10,33 +10,144 @@ import io.github.dellisd.spatialk.geojson.Position
 import kotlin.time.Duration
 
 internal interface MaplibreMap {
-  var styleUri: String
+  suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration)
 
-  var isDebugEnabled: Boolean
+  suspend fun asyncSetStyleUri(styleUri: String)
 
-  var cameraPosition: CameraPosition
+  suspend fun asyncSetDebugEnabled(enabled: Boolean)
 
-  var maxZoom: Double
+  suspend fun asyncGetCameraPosition(): CameraPosition
 
-  var minZoom: Double
+  suspend fun asyncSetCameraPosition(cameraPosition: CameraPosition)
 
-  var maxPitch: Double
+  suspend fun asyncSetMaxZoom(maxZoom: Double)
 
-  var minPitch: Double
+  suspend fun asyncSetMinZoom(minZoom: Double)
 
-  var onFpsChanged: (Double) -> Unit
+  suspend fun asyncSetMinPitch(minPitch: Double)
 
-  val visibleBoundingBox: BoundingBox
+  suspend fun asyncSetMaxPitch(maxPitch: Double)
 
-  val visibleRegion: VisibleRegion
+  suspend fun asyncGetVisibleBoundingBox(): BoundingBox
+
+  suspend fun asyncGetVisibleRegion(): VisibleRegion
+
+  suspend fun asyngSetMaximumFps(maximumFps: Int)
+
+  suspend fun asyncSetOrnamentSettings(value: OrnamentSettings)
+
+  suspend fun asyncSetGestureSettings(value: GestureSettings)
+
+  suspend fun asyncGetPosFromScreenLocation(offset: DpOffset): Position
+
+  suspend fun asyncGetScreenLocationFromPos(position: Position): DpOffset
+
+  suspend fun asyncQueryRenderedFeatures(
+    offset: DpOffset,
+    layerIds: Set<String>? = null,
+    predicate: CompiledExpression<BooleanValue>? = null,
+  ): List<Feature>
+
+  suspend fun asyncQueryRenderedFeatures(
+    rect: DpRect,
+    layerIds: Set<String>? = null,
+    predicate: CompiledExpression<BooleanValue>? = null,
+  ): List<Feature>
+
+  suspend fun asyncMetersPerDpAtLatitude(latitude: Double): Double
+
+  interface Callbacks {
+    fun onStyleChanged(map: MaplibreMap, style: Style?)
+
+    fun onCameraMoveStarted(map: MaplibreMap, reason: CameraMoveReason)
+
+    fun onCameraMoved(map: MaplibreMap)
+
+    fun onCameraMoveEnded(map: MaplibreMap)
+
+    fun onClick(map: MaplibreMap, latLng: Position, offset: DpOffset)
+
+    fun onLongClick(map: MaplibreMap, latLng: Position, offset: DpOffset)
+
+    fun onFrame(fps: Double)
+  }
+}
+
+internal interface StandardMaplibreMap : MaplibreMap {
+  override suspend fun asyncSetStyleUri(styleUri: String) = setStyleUri(styleUri)
+
+  override suspend fun asyncSetDebugEnabled(enabled: Boolean) = setDebugEnabled(enabled)
+
+  override suspend fun asyncGetCameraPosition(): CameraPosition = getCameraPosition()
+
+  override suspend fun asyncSetCameraPosition(cameraPosition: CameraPosition) =
+    setCameraPosition(cameraPosition)
+
+  override suspend fun asyncSetMaxZoom(maxZoom: Double) = setMaxZoom(maxZoom)
+
+  override suspend fun asyncSetMinZoom(minZoom: Double) = setMinZoom(minZoom)
+
+  override suspend fun asyncSetMinPitch(minPitch: Double) = setMinPitch(minPitch)
+
+  override suspend fun asyncSetMaxPitch(maxPitch: Double) = setMaxPitch(maxPitch)
+
+  override suspend fun asyncGetVisibleBoundingBox(): BoundingBox = getVisibleBoundingBox()
+
+  override suspend fun asyncGetVisibleRegion(): VisibleRegion = getVisibleRegion()
+
+  override suspend fun asyngSetMaximumFps(maximumFps: Int) = setMaximumFps(maximumFps)
+
+  override suspend fun asyncSetOrnamentSettings(value: OrnamentSettings) =
+    setOrnamentSettings(value)
+
+  override suspend fun asyncSetGestureSettings(value: GestureSettings) = setGestureSettings(value)
+
+  override suspend fun asyncGetPosFromScreenLocation(offset: DpOffset): Position =
+    positionFromScreenLocation(offset)
+
+  override suspend fun asyncGetScreenLocationFromPos(position: Position): DpOffset =
+    screenLocationFromPosition(position)
+
+  override suspend fun asyncQueryRenderedFeatures(
+    offset: DpOffset,
+    layerIds: Set<String>?,
+    predicate: CompiledExpression<BooleanValue>?,
+  ): List<Feature> = queryRenderedFeatures(offset, layerIds, predicate)
+
+  override suspend fun asyncQueryRenderedFeatures(
+    rect: DpRect,
+    layerIds: Set<String>?,
+    predicate: CompiledExpression<BooleanValue>?,
+  ): List<Feature> = queryRenderedFeatures(rect, layerIds, predicate)
+
+  override suspend fun asyncMetersPerDpAtLatitude(latitude: Double): Double =
+    metersPerDpAtLatitude(latitude)
+
+  fun setStyleUri(styleUri: String)
+
+  fun setDebugEnabled(enabled: Boolean)
+
+  fun getCameraPosition(): CameraPosition
+
+  fun setCameraPosition(cameraPosition: CameraPosition)
+
+  fun setMaxZoom(maxZoom: Double)
+
+  fun setMinZoom(minZoom: Double)
+
+  fun setMinPitch(minPitch: Double)
+
+  fun setMaxPitch(maxPitch: Double)
+
+  fun getVisibleBoundingBox(): BoundingBox
+
+  fun getVisibleRegion(): VisibleRegion
 
   fun setMaximumFps(maximumFps: Int)
 
   fun setOrnamentSettings(value: OrnamentSettings)
 
   fun setGestureSettings(value: GestureSettings)
-
-  suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration)
 
   fun positionFromScreenLocation(offset: DpOffset): Position
 
@@ -55,18 +166,4 @@ internal interface MaplibreMap {
   ): List<Feature>
 
   fun metersPerDpAtLatitude(latitude: Double): Double
-
-  interface Callbacks {
-    fun onStyleChanged(map: MaplibreMap, style: Style?)
-
-    fun onCameraMoveStarted(map: MaplibreMap, reason: CameraMoveReason)
-
-    fun onCameraMoved(map: MaplibreMap)
-
-    fun onCameraMoveEnded(map: MaplibreMap)
-
-    fun onClick(map: MaplibreMap, latLng: Position, offset: DpOffset)
-
-    fun onLongClick(map: MaplibreMap, latLng: Position, offset: DpOffset)
-  }
 }

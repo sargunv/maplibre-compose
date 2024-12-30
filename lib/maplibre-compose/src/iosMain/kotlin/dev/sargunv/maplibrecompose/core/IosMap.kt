@@ -90,20 +90,11 @@ internal class IosMap(
   internal var insetPadding: PaddingValues,
   internal var callbacks: MaplibreMap.Callbacks,
   internal var logger: Logger?,
-) : MaplibreMap {
+) : StandardMaplibreMap {
 
   // hold strong references to things that the sdk keeps weak references to
   private val gestures = mutableListOf<Gesture<*>>()
   private val delegate: Delegate
-
-  override var styleUri: String = ""
-    set(value) {
-      if (field == value) return
-      logger?.i { "Setting style URI" }
-      callbacks.onStyleChanged(this, null)
-      mapView.setStyleURL(NSURL(string = value))
-      field = value
-    }
 
   init {
     mapView.automaticallyAdjustsContentInset = false
@@ -215,8 +206,14 @@ internal class IosMap(
       val time = timeSource.markNow()
       val duration = time - lastFrameTime
       lastFrameTime = time
-      map.onFpsChanged(1.0 / duration.toDouble(DurationUnit.SECONDS))
+      map.callbacks.onFrame(1.0 / duration.toDouble(DurationUnit.SECONDS))
     }
+  }
+
+  override fun setStyleUri(styleUri: String) {
+    logger?.i { "Setting style URI" }
+    callbacks.onStyleChanged(this, null)
+    mapView.setStyleURL(NSURL(string = styleUri))
   }
 
   internal class Gesture<T : UIGestureRecognizer>(
@@ -247,55 +244,46 @@ internal class IosMap(
     }
   }
 
-  override var isDebugEnabled: Boolean
-    get() = mapView.debugMask != 0uL
-    set(value) {
-      mapView.debugMask =
-        if (value)
-          MLNMapDebugTileBoundariesMask or
-            MLNMapDebugTileInfoMask or
-            MLNMapDebugTimestampsMask or
-            MLNMapDebugCollisionBoxesMask
-        else 0uL
+  override fun setDebugEnabled(enabled: Boolean) {
+    mapView.debugMask =
+      if (enabled)
+        MLNMapDebugTileBoundariesMask or
+          MLNMapDebugTileInfoMask or
+          MLNMapDebugTimestampsMask or
+          MLNMapDebugCollisionBoxesMask
+      else 0uL
+  }
+
+  override fun setMinPitch(minPitch: Double) {
+    mapView.minimumPitch = minPitch
+  }
+
+  override fun setMaxPitch(maxPitch: Double) {
+    mapView.maximumPitch = maxPitch
+  }
+
+  override fun setMinZoom(minZoom: Double) {
+    mapView.minimumZoomLevel = minZoom
+  }
+
+  override fun setMaxZoom(maxZoom: Double) {
+    mapView.maximumZoomLevel = maxZoom
+  }
+
+  override fun getVisibleBoundingBox(): BoundingBox {
+    return mapView.visibleCoordinateBounds.toBoundingBox()
+  }
+
+  override fun getVisibleRegion(): VisibleRegion {
+    return size.useContents {
+      VisibleRegion(
+        farLeft = positionFromScreenLocation(DpOffset(x = 0.dp, y = 0.dp)),
+        farRight = positionFromScreenLocation(DpOffset(x = width.dp, y = 0.dp)),
+        nearLeft = positionFromScreenLocation(DpOffset(x = 0.dp, y = height.dp)),
+        nearRight = positionFromScreenLocation(DpOffset(x = width.dp, y = height.dp)),
+      )
     }
-
-  override var minPitch
-    get() = mapView.minimumPitch
-    set(value) {
-      mapView.minimumPitch = value
-    }
-
-  override var maxPitch
-    get() = mapView.maximumPitch
-    set(value) {
-      mapView.maximumPitch = value
-    }
-
-  override var minZoom
-    get() = mapView.minimumZoomLevel
-    set(value) {
-      mapView.minimumZoomLevel = value
-    }
-
-  override var maxZoom
-    get() = mapView.maximumZoomLevel
-    set(value) {
-      mapView.maximumZoomLevel = value
-    }
-
-  override val visibleBoundingBox: BoundingBox
-    get() = mapView.visibleCoordinateBounds.toBoundingBox()
-
-  override val visibleRegion: VisibleRegion
-    get() =
-      size.useContents {
-        VisibleRegion(
-          farLeft = positionFromScreenLocation(DpOffset(x = 0.dp, y = 0.dp)),
-          farRight = positionFromScreenLocation(DpOffset(x = width.dp, y = 0.dp)),
-          nearLeft = positionFromScreenLocation(DpOffset(x = 0.dp, y = height.dp)),
-          nearRight = positionFromScreenLocation(DpOffset(x = width.dp, y = height.dp)),
-        )
-      }
+  }
 
   override fun setMaximumFps(maximumFps: Int) {
     mapView.preferredFramesPerSecond = maximumFps.toLong()
@@ -411,30 +399,24 @@ internal class IosMap(
     }
   }
 
-  override var cameraPosition: CameraPosition
-    get() =
-      mapView.camera.toCameraPosition(
-        paddingValues =
-          mapView.cameraEdgeInsets.useContents {
-            PaddingValues.Absolute(
-              left = left.dp,
-              top = top.dp,
-              right = right.dp,
-              bottom = bottom.dp,
-            )
-          }
-      )
-    set(value) {
-      mapView.setCamera(
-        value.toMLNMapCamera(),
-        withDuration = 0.0,
-        animationTimingFunction = null,
-        edgePadding = value.padding.toEdgeInsets(),
-        completionHandler = null,
-      )
-    }
+  override fun getCameraPosition(): CameraPosition {
+    return mapView.camera.toCameraPosition(
+      paddingValues =
+        mapView.cameraEdgeInsets.useContents {
+          PaddingValues.Absolute(left = left.dp, top = top.dp, right = right.dp, bottom = bottom.dp)
+        }
+    )
+  }
 
-  override var onFpsChanged: (Double) -> Unit = { _ -> }
+  override fun setCameraPosition(cameraPosition: CameraPosition) {
+    mapView.setCamera(
+      cameraPosition.toMLNMapCamera(),
+      withDuration = 0.0,
+      animationTimingFunction = null,
+      edgePadding = cameraPosition.padding.toEdgeInsets(),
+      completionHandler = null,
+    )
+  }
 
   private fun PaddingValues.toEdgeInsets(): CValue<UIEdgeInsets> =
     UIEdgeInsetsMake(

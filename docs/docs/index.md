@@ -28,7 +28,7 @@ Desktop support is implemented with [MapLibre GL JS][maplibre-js] and
 | ------------------------------------------------- | ------------------ | ------------------ | ------------------ | --- |
 | Render a map                                      | :white_check_mark: | :white_check_mark: | :white_check_mark: | :x: |
 | Load Compose resource URIs                        | :white_check_mark: | :white_check_mark: | :white_check_mark: | :x: |
-| Configure ornaments (compass, logo, attribution)  | :white_check_mark: | :white_check_mark: | :x:                | :x: |
+| Configure ornaments (compass, logo, attribution)  | :white_check_mark: | :white_check_mark: | :white_check_mark: | :x: |
 | Configure gestures (pan, zoom, rotate, pitch)     | :white_check_mark: | :white_check_mark: | :x:                | :x: |
 | Respond to a map click or long click              | :white_check_mark: | :white_check_mark: | :x:                | :x: |
 | Query visible map features                        | :white_check_mark: | :white_check_mark: | :x:                | :x: |

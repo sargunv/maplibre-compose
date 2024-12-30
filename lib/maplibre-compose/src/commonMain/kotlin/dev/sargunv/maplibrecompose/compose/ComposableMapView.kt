@@ -9,7 +9,7 @@ import dev.sargunv.maplibrecompose.core.MaplibreMap
 internal expect fun ComposableMapView(
   modifier: Modifier,
   styleUri: String,
-  update: (map: MaplibreMap) -> Unit,
+  update: suspend (map: MaplibreMap) -> Unit,
   onReset: () -> Unit,
   logger: Logger?,
   callbacks: MaplibreMap.Callbacks,

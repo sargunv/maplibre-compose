@@ -7,10 +7,168 @@ import org.w3c.dom.HTMLElement
 /** [Map](https://maplibre.org/maplibre-gl-js/docs/API/classes/Map/) */
 @JsName("Map")
 public external class Maplibre public constructor(options: MapOptions) {
+  public var repaint: Boolean
+  public var showCollisionBoxes: Boolean
+  public var showOverdrawInspector: Boolean
+  public var showPadding: Boolean
+  public var showTileBoundaries: Boolean
+  public val version: String
+
   public fun setStyle(style: String)
+
+  public fun remove()
+
+  public fun getBearing(): Double
+
+  public fun getCenter(): LngLat
+
+  public fun getPitch(): Double
+
+  public fun getZoom(): Double
+
+  public fun setBearing(bearing: Double)
+
+  public fun setCenter(center: LngLat)
+
+  public fun setPitch(pitch: Double)
+
+  public fun setZoom(zoom: Double)
+
+  public fun setMaxZoom(max: Double)
+
+  public fun setMinZoom(min: Double)
+
+  public fun setMaxPitch(max: Double)
+
+  public fun setMinPitch(min: Double)
+
+  public fun jumpTo(options: JumpToOptions)
+
+  public fun flyTo(options: FlyToOptions)
+
+  public fun addControl(control: IControl, position: String)
+
+  public fun removeControl(control: IControl)
+}
+
+/** [LogoControl](https://maplibre.org/maplibre-gl-js/docs/API/classes/LogoControl/) */
+public external class LogoControl
+public constructor(options: LogoControlOptions = definedExternally) : IControl {
+  override fun onAdd(map: Maplibre): HTMLElement
+
+  override fun onRemove(map: Maplibre)
+}
+
+/**
+ * [LogoControlOptions](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/LogoControlOptions/)
+ */
+public external interface LogoControlOptions {
+  public var compact: Boolean?
+}
+
+/** [ScaleControl](https://maplibre.org/maplibre-gl-js/docs/API/classes/ScaleControl/) */
+public external class ScaleControl
+public constructor(options: ScaleControlOptions = definedExternally) : IControl {
+  override fun onAdd(map: Maplibre): HTMLElement
+
+  override fun onRemove(map: Maplibre)
+}
+
+/**
+ * [ScaleControlOptions](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/ScaleControlOptions/)
+ */
+public external interface ScaleControlOptions {
+  public var maxWidth: Double?
+  public var unit: String?
+}
+
+/**
+ * [AttributionControl](https://maplibre.org/maplibre-gl-js/docs/API/classes/AttributionControl/)
+ */
+public external class AttributionControl
+public constructor(options: AttributionControlOptions = definedExternally) : IControl {
+  override fun onAdd(map: Maplibre): HTMLElement
+
+  override fun onRemove(map: Maplibre)
+}
+
+/**
+ * [AttributionControlOptions](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/AttributionControlOptions/)
+ */
+public external interface AttributionControlOptions {
+  public var compact: Boolean?
+  public var customAttribution: String?
+}
+
+/** [NavigationControl](https://maplibre.org/maplibre-gl-js/docs/API/classes/NavigationControl/) */
+public external class NavigationControl
+public constructor(options: NavigationControlOptions = definedExternally) : IControl {
+  override fun onAdd(map: Maplibre): HTMLElement
+
+  override fun onRemove(map: Maplibre)
+}
+
+/**
+ * [NavigationControlOptions](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/NavigationControlOptions/)
+ */
+public external interface NavigationControlOptions {
+  public var showCompass: Boolean?
+  public var showZoom: Boolean?
+  public var visualizePitch: Boolean?
+}
+
+/** [IControl](https://maplibre.org/maplibre-gl-js/docs/API/interfaces/IControl/) */
+public external interface IControl {
+  public fun onAdd(map: Maplibre): HTMLElement
+
+  public fun onRemove(map: Maplibre)
+}
+
+/** [LngLat](https://maplibre.org/maplibre-gl-js/docs/API/classes/LngLat/) */
+public external class LngLat(public val lng: Double, public val lat: Double) {
+  public fun toArray(): DoubleArray
+}
+
+/** [JumpToOptions](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/JumpToOptions/) */
+public sealed external interface JumpToOptions : CameraOptions {
+  public var padding: PaddingOptions?
+}
+
+/** [FlyToOptions](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/FlyToOptions/) */
+public sealed external interface FlyToOptions : CameraOptions {
+  public var curve: Double?
+  public var maxDuration: Double?
+  public var minZoom: Double?
+  public var padding: PaddingOptions?
+  public var speed: Double?
+  public var screenSpeed: Double?
+}
+
+/** [CameraOptions](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/CameraOptions/) */
+public sealed external interface CameraOptions : CenterZoomBearing {
+  public var around: LngLat?
+  public var pitch: Double?
+}
+
+/**
+ * [CenterZoomBearing](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/CenterZoomBearing/)
+ */
+public sealed external interface CenterZoomBearing {
+  public var bearing: Double?
+  public var center: LngLat?
+  public var zoom: Double?
+}
+
+/** [PaddingOptions](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/PaddingOptions/) */
+public sealed external interface PaddingOptions {
+  public var bottom: Double
+  public var left: Double
+  public var right: Double
+  public var top: Double
 }
 
 /** [MapOptions](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/MapOptions/) */
 public sealed external interface MapOptions {
   public var container: HTMLElement
+  public var attributionControl: dynamic // false | AttributionControlOptions
 }

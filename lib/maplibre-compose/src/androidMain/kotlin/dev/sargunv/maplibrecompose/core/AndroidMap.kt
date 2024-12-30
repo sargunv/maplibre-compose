@@ -55,7 +55,7 @@ internal class AndroidMap(
   internal var callbacks: MaplibreMap.Callbacks,
   logger: Logger?,
   styleUri: String,
-) : MaplibreMap {
+) : StandardMaplibreMap {
 
   internal var layoutDir: LayoutDirection = layoutDir
     set(value) {
@@ -79,18 +79,15 @@ internal class AndroidMap(
       }
     }
 
-  override var styleUri: String = ""
-    set(value) {
-      if (field == value) return
-      logger?.i { "Setting style URI" }
-      callbacks.onStyleChanged(this, null)
-      val builder = MlnStyle.Builder().fromUri(value.correctedAndroidUri().toString())
-      map.setStyle(builder) {
-        logger?.i { "Style finished loading" }
-        callbacks.onStyleChanged(this, AndroidStyle(it))
-      }
-      field = value
+  override fun setStyleUri(styleUri: String) {
+    logger?.i { "Setting style URI" }
+    callbacks.onStyleChanged(this, null)
+    val builder = MlnStyle.Builder().fromUri(styleUri.correctedAndroidUri().toString())
+    map.setStyle(builder) {
+      logger?.i { "Style finished loading" }
+      callbacks.onStyleChanged(this, AndroidStyle(it))
     }
+  }
 
   init {
     map.addOnCameraMoveStartedListener { reason ->
@@ -175,48 +172,38 @@ internal class AndroidMap(
       true
     }
 
-    map.setOnFpsChangedListener { onFpsChanged(it) }
+    map.setOnFpsChangedListener { fps -> callbacks.onFrame(fps) }
 
-    this.styleUri = styleUri
+    this.setStyleUri(styleUri)
   }
 
-  override var isDebugEnabled
-    get() = map.isDebugActive
-    set(value) {
-      map.isDebugActive = value
-    }
+  override fun setDebugEnabled(enabled: Boolean) {
+    map.isDebugActive = enabled
+  }
 
-  override var onFpsChanged: (Double) -> Unit = { _ -> }
+  override fun setMinPitch(minPitch: Double) {
+    map.setMinPitchPreference(minPitch)
+  }
 
-  override var minPitch
-    get() = map.minPitch
-    set(value) {
-      map.setMinPitchPreference(value)
-    }
+  override fun setMaxPitch(maxPitch: Double) {
+    map.setMaxPitchPreference(maxPitch)
+  }
 
-  override var maxPitch
-    get() = map.maxPitch
-    set(value) {
-      map.setMaxPitchPreference(value)
-    }
+  override fun setMinZoom(minZoom: Double) {
+    map.setMinZoomPreference(minZoom)
+  }
 
-  override var minZoom
-    get() = map.minZoomLevel
-    set(value) {
-      map.setMinZoomPreference(value)
-    }
+  override fun setMaxZoom(maxZoom: Double) {
+    map.setMaxZoomPreference(maxZoom)
+  }
 
-  override var maxZoom
-    get() = map.maxZoomLevel
-    set(value) {
-      map.setMaxZoomPreference(value)
-    }
+  override fun getVisibleBoundingBox(): BoundingBox {
+    return map.projection.visibleRegion.latLngBounds.toBoundingBox()
+  }
 
-  override val visibleBoundingBox: BoundingBox
-    get() = map.projection.visibleRegion.latLngBounds.toBoundingBox()
-
-  override val visibleRegion: VisibleRegion
-    get() = map.projection.visibleRegion.toVisibleRegion()
+  override fun getVisibleRegion(): VisibleRegion {
+    return map.projection.visibleRegion.toVisibleRegion()
+  }
 
   override fun setMaximumFps(maximumFps: Int) = mapView.setMaximumFps(maximumFps)
 
@@ -293,11 +280,13 @@ internal class AndroidMap(
         .build()
     }
 
-  override var cameraPosition: CameraPosition
-    get() = map.cameraPosition.toCameraPosition()
-    set(value) {
-      map.moveCamera(CameraUpdateFactory.newCameraPosition(value.toMLNCameraPosition()))
-    }
+  override fun getCameraPosition(): CameraPosition {
+    return map.cameraPosition.toCameraPosition()
+  }
+
+  override fun setCameraPosition(cameraPosition: CameraPosition) {
+    map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition.toMLNCameraPosition()))
+  }
 
   override suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration) =
     suspendCoroutine { cont ->

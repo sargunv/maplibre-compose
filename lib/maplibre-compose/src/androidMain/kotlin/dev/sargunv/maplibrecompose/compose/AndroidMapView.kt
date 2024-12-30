@@ -14,6 +14,7 @@ import co.touchlab.kermit.Logger
 import dev.sargunv.maplibrecompose.core.AndroidMap
 import dev.sargunv.maplibrecompose.core.AndroidScaleBar
 import dev.sargunv.maplibrecompose.core.MaplibreMap
+import kotlinx.coroutines.runBlocking
 import org.maplibre.android.MapLibre
 import org.maplibre.android.maps.MapView
 
@@ -21,7 +22,7 @@ import org.maplibre.android.maps.MapView
 internal actual fun ComposableMapView(
   modifier: Modifier,
   styleUri: String,
-  update: (map: MaplibreMap) -> Unit,
+  update: suspend (map: MaplibreMap) -> Unit,
   onReset: () -> Unit,
   logger: Logger?,
   callbacks: MaplibreMap.Callbacks,
@@ -29,7 +30,7 @@ internal actual fun ComposableMapView(
   AndroidMapView(
     modifier = modifier,
     styleUri = styleUri,
-    update = update,
+    update = { runBlocking { update(it) } },
     onReset = onReset,
     logger = logger,
     callbacks = callbacks,
@@ -80,8 +81,8 @@ internal fun AndroidMapView(
       map.layoutDir = layoutDir
       map.density = density
       map.callbacks = callbacks
-      map.styleUri = styleUri
       map.logger = logger
+      map.setStyleUri(styleUri)
       update(map)
     },
     onReset = {

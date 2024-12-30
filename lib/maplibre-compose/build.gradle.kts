@@ -82,11 +82,10 @@ kotlin {
       implementation(libs.maplibre.android.scalebar)
     }
 
-    desktopMain.apply {
-      dependencies {
-        implementation(compose.desktop.common)
-        implementation(libs.webview)
-      }
+    desktopMain.dependencies {
+      implementation(compose.desktop.common)
+      implementation(libs.kotlinx.coroutines.swing)
+      implementation(libs.webview)
     }
 
     commonTest.dependencies {

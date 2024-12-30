@@ -9,6 +9,7 @@ kotlin {
 
     useEsModules()
     binaries.executable()
+    generateTypeScriptDefinitions()
   }
 
   sourceSets {

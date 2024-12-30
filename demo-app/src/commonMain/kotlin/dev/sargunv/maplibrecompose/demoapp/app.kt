@@ -51,17 +51,16 @@ import dev.sargunv.maplibrecompose.material3.controls.AttributionButton
 import dev.sargunv.maplibrecompose.material3.controls.DisappearingCompassButton
 import dev.sargunv.maplibrecompose.material3.controls.DisappearingScaleBar
 
-private val DEMOS =
-  listOf(
-    MarkersDemo,
-    EdgeToEdgeDemo,
-    StyleSwitcherDemo,
-    ClusteredPointsDemo,
-    AnimatedLayerDemo,
-    CameraStateDemo,
-    CameraFollowDemo,
-    FrameRateDemo,
-  )
+private val DEMOS = buildList {
+  add(MarkersDemo)
+  if (Platform.supportsBlending) add(EdgeToEdgeDemo)
+  add(StyleSwitcherDemo)
+  add(ClusteredPointsDemo)
+  add(AnimatedLayerDemo)
+  add(CameraStateDemo)
+  add(CameraFollowDemo)
+  if (Platform.supportsFps) add(FrameRateDemo)
+}
 
 @Composable
 fun DemoApp(navController: NavHostController = rememberNavController()) {
@@ -121,8 +120,10 @@ fun DemoAppBar(demo: Demo, navigateUp: () -> Unit, alpha: Float = 1f) {
       }
     },
     actions = {
-      IconButton(onClick = { showInfo = true }) {
-        Icon(imageVector = Icons.Default.Info, contentDescription = "Info")
+      if (Platform.supportsBlending) {
+        IconButton(onClick = { showInfo = true }) {
+          Icon(imageVector = Icons.Default.Info, contentDescription = "Info")
+        }
       }
     },
   )
@@ -151,20 +152,24 @@ fun DemoMapControls(
   modifier: Modifier = Modifier,
   onCompassClick: () -> Unit = {},
 ) {
-  Box(modifier = modifier.fillMaxSize().padding(8.dp)) {
-    DisappearingScaleBar(cameraState, modifier = Modifier.align(Alignment.TopStart))
-    DisappearingCompassButton(
-      cameraState,
-      modifier = Modifier.align(Alignment.TopEnd),
-      onClick = onCompassClick,
-    )
-    AttributionButton(styleState, modifier = Modifier.align(Alignment.BottomEnd))
+  if (Platform.supportsBlending) {
+    Box(modifier = modifier.fillMaxSize().padding(8.dp)) {
+      DisappearingScaleBar(cameraState, modifier = Modifier.align(Alignment.TopStart))
+      DisappearingCompassButton(
+        cameraState,
+        modifier = Modifier.align(Alignment.TopEnd),
+        onClick = onCompassClick,
+      )
+      AttributionButton(styleState, modifier = Modifier.align(Alignment.BottomEnd))
+    }
   }
 }
 
 fun DemoOrnamentSettings(padding: PaddingValues = PaddingValues(0.dp)) =
-  OrnamentSettings.AllDisabled.copy(
-    padding = padding,
-    isLogoEnabled = true,
-    logoAlignment = Alignment.BottomStart,
-  )
+  if (Platform.supportsBlending)
+    OrnamentSettings.AllDisabled.copy(
+      padding = padding,
+      isLogoEnabled = true,
+      logoAlignment = Alignment.BottomStart,
+    )
+  else OrnamentSettings.AllEnabled
