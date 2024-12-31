@@ -22,8 +22,9 @@ tasks.withType<MkdocsTask>().configureEach {
     mapOf(
       "release_version" to releaseVersion,
       "snapshot_version" to snapshotVersion,
-      "maplibre_ios_version" to libs.versions.maplibre.ios.get(),
       "maplibre_android_version" to libs.versions.maplibre.android.sdk.get(),
+      "maplibre_ios_version" to libs.versions.maplibre.ios.get(),
+      "maplibre_js_version" to libs.versions.maplibre.js.get(),
     )
   )
 }

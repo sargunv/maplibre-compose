@@ -4,40 +4,36 @@
 [![Documentation](https://img.shields.io/badge/Documentation-blue?logo=MaterialForMkDocs&logoColor=white)](https://sargunv.github.io/maplibre-compose/)
 [![API Reference](https://img.shields.io/badge/API_Reference-blue?logo=Kotlin&logoColor=white)](https://sargunv.github.io/maplibre-compose/api/)
 
-# MapLibre for Compose
+# MapLibre for Compose Multiplatform
 
-This project is a
-[Compose Multiplatform](https://www.jetbrains.com/compose-multiplatform/)
-library for [MapLibre](https://maplibre.org/). You can use it to embed an
-interactive vector map in your Compose app.
+## Introduction
+
+MapLibre Compose is a [Compose Multiplatform][compose] wrapper around the
+[MapLibre][maplibre] SDKs for rendering interactive maps. You can use it to add
+maps to your Compose UIs across Android, iOS, Desktop, and Web.
 
 <p float="left">
-  <img src="https://github.com/user-attachments/assets/997cf8a4-2841-40c8-b5a1-ef98193b21b2" width="200"/>
-  <img src="https://github.com/user-attachments/assets/e450f689-e254-48b7-bd91-3d3042faa290" width="200"/>
+  <img src="https://github.com/user-attachments/assets/997cf8a4-2841-40c8-b5a1-ef98193b21b2" width="200" alt="iOS Screenshot"/>
+  <img src="https://github.com/user-attachments/assets/e450f689-e254-48b7-bd91-3d3042faa290" width="200" alt="Android Screenshot"/>
 </p>
 
 ## Usage
 
-See the
-[Getting Started guide](https://sargunv.github.io/maplibre-compose/getting-started/)
-in the documentation.
+- [Getting Started](https://sargunv.github.io/maplibre-compose/getting-started/)
+- [API Reference](https://sargunv.github.io/maplibre-compose/api/)
+- [Demo App](./demo-app)
 
 ## Status
 
-Many common use cases are already supported, but the full breadth of the
-MapLibre SDKs is not yet covered. What is already supported may have bugs. API
-stability is not yet guaranteed; as we're still exploring how best to express an
-interactive map API in Compose.
+A large subset of MapLibre's features are already supported, but the full
+breadth of the MapLibre SDKs is not yet covered. What is already supported may
+have bugs. API stability is not yet guaranteed; we're still exploring how best
+to express an interactive map API in Compose.
 
-Android and iOS support is implemented with
-[MapLibre Native](https://github.com/maplibre/maplibre-native). A broad set of
-features are supported.
+See [the status table][status] for a breakdown of supported features on each
+platform. Android and iOS have the most complete support, while Desktop and Web
+are still catching up.
 
-Web support is implemented with
-[MapLibre GL JS](https://github.com/maplibre/maplibre-gl-js).
-
-Desktop support is also implemented with MapLibre GL JS and
-[KCEF](https://github.com/DatL4g/KCEF) for now, though we'd like to switch to
-MapLibre Native.
-
-Web is not yet supported.
+[compose]: https://www.jetbrains.com/compose-multiplatform/
+[maplibre]: https://maplibre.org/
+[status]: https://sargunv.github.io/maplibre-compose/#status
