@@ -1,3 +1,7 @@
+@file:OptIn(ExperimentalWasmDsl::class)
+
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+
 plugins {
   id("library-conventions")
   id(libs.plugins.kotlin.multiplatform.get().pluginId)
@@ -16,12 +20,14 @@ mavenPublishing {
 
 kotlin {
   js(IR) { browser() }
+  wasmJs { browser() }
 
   sourceSets {
-    commonMain.dependencies {
-      implementation(kotlin("stdlib-js"))
-      implementation(compose.foundation)
-    }
+    commonMain.dependencies { implementation(compose.foundation) }
+
+    jsMain.dependencies { implementation(kotlin("stdlib-js")) }
+
+    wasmJsMain.dependencies { implementation(libs.kotlinx.browser) }
 
     commonTest.dependencies {
       implementation(kotlin("test"))

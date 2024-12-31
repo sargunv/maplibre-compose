@@ -13,7 +13,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
-import org.w3c.dom.HTMLElement
 
 @Composable
 internal fun HtmlFocusAdapter(container: HTMLElement) {
@@ -29,10 +28,10 @@ internal fun HtmlFocusAdapter(container: HTMLElement) {
     modifier =
       Modifier.focusRequester(head).onFocusChanged {
         if (it.isFocused && !ownFocusRequest) {
-          val htmlHead = currentContainer.firstElementChild
+          val htmlHead = currentContainer.headChild
           if (htmlHead != null) {
             focusManager.clearFocus(force = true)
-            htmlHead.unsafeCast<HTMLElement>().focus()
+            htmlHead.focus()
           } else {
             ownFocusRequest = true
             tail.requestFocus()
@@ -47,10 +46,10 @@ internal fun HtmlFocusAdapter(container: HTMLElement) {
     modifier =
       Modifier.focusRequester(tail).onFocusChanged {
         if (it.isFocused && !ownFocusRequest) {
-          val htmlTail = currentContainer.lastElementChild
+          val htmlTail = currentContainer.tailChild
           if (htmlTail != null) {
             focusManager.clearFocus(force = true)
-            htmlTail.unsafeCast<HTMLElement>().focus()
+            htmlTail.focus()
           } else {
             ownFocusRequest = true
             head.requestFocus()
