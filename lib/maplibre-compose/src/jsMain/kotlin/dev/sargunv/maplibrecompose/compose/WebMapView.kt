@@ -1,5 +1,7 @@
 package dev.sargunv.maplibrecompose.compose
 
+import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.transformable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -14,6 +16,8 @@ import co.touchlab.kermit.Logger
 import dev.sargunv.composehtmlinterop.HtmlElement
 import dev.sargunv.maplibrecompose.core.JsMap
 import dev.sargunv.maplibrecompose.core.MaplibreMap
+import dev.sargunv.maplibrejs.AnimationOptions
+import dev.sargunv.maplibrejs.Point
 import kotlinx.browser.document
 import org.w3c.dom.HTMLElement
 
@@ -49,9 +53,20 @@ internal fun WebMapView(
   val layoutDir = LocalLayoutDirection.current
   val density = LocalDensity.current
 
+  val state = rememberTransformableState { zoomChange, offsetChange, rotationChange ->
+    val map = maybeMap ?: return@rememberTransformableState
+    println("zoomChange: $zoomChange, offsetChange: $offsetChange, rotationChange: $rotationChange")
+    with(density) {
+      map.impl.panBy(
+        Point(-offsetChange.x.toDp().value.toDouble(), -offsetChange.y.toDp().value.toDouble()),
+        js("{animate: false}").unsafeCast<AnimationOptions>(),
+      )
+    }
+  }
+
   HtmlElement(
-    modifier = modifier.onGloballyPositioned { maybeMap?.resize() },
-    // zIndex = "-1", // TODO figure out pointer interop
+    modifier = modifier.onGloballyPositioned { maybeMap?.resize() }.transformable(state = state),
+    zIndex = "-1", // TODO figure out pointer interop
     factory = {
       document.createElement("div").unsafeCast<HTMLElement>().apply {
         style.apply {
