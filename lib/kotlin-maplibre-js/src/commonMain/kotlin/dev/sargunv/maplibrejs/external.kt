@@ -2,11 +2,11 @@
 
 package dev.sargunv.maplibrejs
 
+import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement
 
 /** [Map](https://maplibre.org/maplibre-gl-js/docs/API/classes/Map/) */
-@JsName("Map")
-public external class Maplibre public constructor(options: MapOptions) {
+public external class Map public constructor(options: MapOptions) {
   public var repaint: Boolean
   public var showCollisionBoxes: Boolean
   public var showOverdrawInspector: Boolean
@@ -57,6 +57,14 @@ public external class Maplibre public constructor(options: MapOptions) {
   public fun addControl(control: IControl, position: String)
 
   public fun removeControl(control: IControl)
+
+  public fun triggerRepaint()
+
+  public fun getCanvasContainer(): HTMLElement
+
+  public fun getCanvas(): HTMLCanvasElement
+
+  public fun resize()
 }
 
 /**
@@ -157,9 +165,9 @@ public external class TwoFingersTouchZoomRotateHandler {
 /** [LogoControl](https://maplibre.org/maplibre-gl-js/docs/API/classes/LogoControl/) */
 public external class LogoControl
 public constructor(options: LogoControlOptions = definedExternally) : IControl {
-  override fun onAdd(map: Maplibre): HTMLElement
+  override fun onAdd(map: Map): HTMLElement
 
-  override fun onRemove(map: Maplibre)
+  override fun onRemove(map: Map)
 }
 
 /**
@@ -172,9 +180,9 @@ public external interface LogoControlOptions {
 /** [ScaleControl](https://maplibre.org/maplibre-gl-js/docs/API/classes/ScaleControl/) */
 public external class ScaleControl
 public constructor(options: ScaleControlOptions = definedExternally) : IControl {
-  override fun onAdd(map: Maplibre): HTMLElement
+  override fun onAdd(map: Map): HTMLElement
 
-  override fun onRemove(map: Maplibre)
+  override fun onRemove(map: Map)
 }
 
 /**
@@ -190,9 +198,9 @@ public external interface ScaleControlOptions {
  */
 public external class AttributionControl
 public constructor(options: AttributionControlOptions = definedExternally) : IControl {
-  override fun onAdd(map: Maplibre): HTMLElement
+  override fun onAdd(map: Map): HTMLElement
 
-  override fun onRemove(map: Maplibre)
+  override fun onRemove(map: Map)
 }
 
 /**
@@ -206,9 +214,9 @@ public external interface AttributionControlOptions {
 /** [NavigationControl](https://maplibre.org/maplibre-gl-js/docs/API/classes/NavigationControl/) */
 public external class NavigationControl
 public constructor(options: NavigationControlOptions = definedExternally) : IControl {
-  override fun onAdd(map: Maplibre): HTMLElement
+  override fun onAdd(map: Map): HTMLElement
 
-  override fun onRemove(map: Maplibre)
+  override fun onRemove(map: Map)
 }
 
 /**
@@ -222,9 +230,9 @@ public external interface NavigationControlOptions {
 
 /** [IControl](https://maplibre.org/maplibre-gl-js/docs/API/interfaces/IControl/) */
 public external interface IControl {
-  public fun onAdd(map: Maplibre): HTMLElement
+  public fun onAdd(map: Map): HTMLElement
 
-  public fun onRemove(map: Maplibre)
+  public fun onRemove(map: Map)
 }
 
 /** [LngLat](https://maplibre.org/maplibre-gl-js/docs/API/classes/LngLat/) */

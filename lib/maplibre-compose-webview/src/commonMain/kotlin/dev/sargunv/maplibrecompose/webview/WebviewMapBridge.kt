@@ -5,8 +5,8 @@ package dev.sargunv.maplibrecompose.webview
 
 import dev.sargunv.maplibrejs.AttributionControl
 import dev.sargunv.maplibrejs.LogoControl
+import dev.sargunv.maplibrejs.Map
 import dev.sargunv.maplibrejs.MapOptions
-import dev.sargunv.maplibrejs.Maplibre
 import dev.sargunv.maplibrejs.NavigationControl
 import dev.sargunv.maplibrejs.NavigationControlOptions
 import dev.sargunv.maplibrejs.ScaleControl
@@ -16,7 +16,7 @@ import org.w3c.dom.HTMLDivElement
 @JsExport
 object WebviewMapBridge {
   private var container: HTMLDivElement? = null
-  private lateinit var map: Maplibre
+  private lateinit var map: Map
   private lateinit var navigationControl: NavigationControl
   private lateinit var logoControl: LogoControl
   private lateinit var scaleControl: ScaleControl
@@ -28,7 +28,7 @@ object WebviewMapBridge {
         it.setAttribute("style", "width: 100%; height: 100vh;")
         document.body!!.appendChild(it)
       } as HTMLDivElement
-    map = Maplibre(MapOptions(container = container!!, disableAttributionControl = true))
+    map = Map(MapOptions(container = container!!, disableAttributionControl = true))
     navigationControl = NavigationControl(NavigationControlOptions(visualizePitch = true))
     logoControl = LogoControl()
     scaleControl = ScaleControl()

@@ -89,6 +89,8 @@ kotlin {
       implementation(libs.webview)
     }
 
+    jsMain.dependencies { implementation(project(":lib:kotlin-maplibre-js")) }
+
     commonTest.dependencies {
       implementation(kotlin("test"))
       implementation(kotlin("test-common"))
