@@ -1,4 +1,4 @@
-package dev.sargunv.maplibrecompose.compose
+package dev.sargunv.composehtmlinterop
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect

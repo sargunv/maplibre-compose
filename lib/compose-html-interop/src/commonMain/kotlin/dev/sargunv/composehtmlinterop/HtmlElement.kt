@@ -1,4 +1,4 @@
-package dev.sargunv.maplibrecompose.compose
+package dev.sargunv.composehtmlinterop
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
@@ -9,7 +9,7 @@ import kotlinx.browser.document
 import org.w3c.dom.HTMLElement
 
 @Composable
-internal fun <T : HTMLElement> HtmlElement(
+public fun <T : HTMLElement> HtmlElement(
   factory: () -> T,
   update: (T) -> Unit = {},
   modifier: Modifier = Modifier,

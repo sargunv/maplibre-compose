@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import co.touchlab.kermit.Logger
+import dev.sargunv.composehtmlinterop.HtmlElement
 import dev.sargunv.maplibrecompose.core.MaplibreMap
 import dev.sargunv.maplibrejs.Map
 import dev.sargunv.maplibrejs.MapOptions

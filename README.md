@@ -33,9 +33,11 @@ Android and iOS support is implemented with
 [MapLibre Native](https://github.com/maplibre/maplibre-native). A broad set of
 features are supported.
 
-Desktop support is implemented with
-[MapLibre GL JS](https://github.com/maplibre/maplibre-gl-js) and
-[KCEF](https://github.com/DatL4g/KCEF). It's currently **very** limited and
-experimental.
+Web support is implemented with
+[MapLibre GL JS](https://github.com/maplibre/maplibre-gl-js).
+
+Desktop support is also implemented with MapLibre GL JS and
+[KCEF](https://github.com/DatL4g/KCEF) for now, though we'd like to switch to
+MapLibre Native.
 
 Web is not yet supported.

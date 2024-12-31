@@ -21,29 +21,31 @@ to express an interactive map API in Compose.
 
 Android and iOS support is implemented with [MapLibre Native][maplibre-native].
 
-Desktop support is implemented with [MapLibre GL JS][maplibre-js] and
-[KCEF][kcef].
+Web support is implemented with [MapLibre GL JS][maplibre-js].
 
-| Feature                                           | Android            | iOS                | Desktop            | Web |
-| ------------------------------------------------- | ------------------ | ------------------ | ------------------ | --- |
-| Render a map                                      | :white_check_mark: | :white_check_mark: | :white_check_mark: | :x: |
-| Overlay Compose UI over the map                   | :white_check_mark: | :white_check_mark: | :x:                | :x: |
-| Load Compose resource URIs                        | :white_check_mark: | :white_check_mark: | :white_check_mark: | :x: |
-| Configure ornaments (compass, logo, attribution)  | :white_check_mark: | :white_check_mark: | :white_check_mark: | :x: |
-| Configure gestures (pan, zoom, rotate, pitch)     | :white_check_mark: | :white_check_mark: | :white_check_mark: | :x: |
-| Respond to a map click or long click              | :white_check_mark: | :white_check_mark: | :x:                | :x: |
-| Query visible map features                        | :white_check_mark: | :white_check_mark: | :x:                | :x: |
-| Get, set, and animate the camera position         | :white_check_mark: | :white_check_mark: | :x:                | :x: |
-| Convert between screen and geographic coordinates | :white_check_mark: | :white_check_mark: | :x:                | :x: |
-| Get the currently visible region and bounding box | :white_check_mark: | :white_check_mark: | :x:                | :x: |
-| Insert, remove, and replace layers                | :white_check_mark: | :white_check_mark: | :x:                | :x: |
-| Configure layers with expressions                 | :white_check_mark: | :white_check_mark: | :x:                | :x: |
-| Add data sources by URI or GeoJSON                | :white_check_mark: | :white_check_mark: | :x:                | :x: |
-| Add images to the style                           | :white_check_mark: | :white_check_mark: | :x:                | :x: |
-| Add annotations                                   | :x:                | :x:                | :x:                | :x: |
-| Snapshot the map as an image                      | :x:                | :x:                | :x:                | :x: |
-| Configure the offline cache                       | :x:                | :x:                | :x:                | :x: |
-| Configure layer transitions                       | :x:                | :x:                | :x:                | :x: |
+Desktop support is also implemented with MapLibre GL JS in [KCEF][kcef] for now,
+though we'd like to switch to MapLibre Native.
+
+| Feature                                           | Android            | iOS                | Desktop            | Web                |
+| ------------------------------------------------- | ------------------ | ------------------ | ------------------ | ------------------ |
+| Render a map                                      | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Overlay Compose UI over the map                   | :white_check_mark: | :white_check_mark: | :x:                | :x:                |
+| Load Compose resource URIs                        | :white_check_mark: | :white_check_mark: | :white_check_mark: | :x:                |
+| Configure ornaments (compass, logo, attribution)  | :white_check_mark: | :white_check_mark: | :white_check_mark: | :x:                |
+| Configure gestures (pan, zoom, rotate, pitch)     | :white_check_mark: | :white_check_mark: | :white_check_mark: | :x:                |
+| Respond to a map click or long click              | :white_check_mark: | :white_check_mark: | :x:                | :x:                |
+| Query visible map features                        | :white_check_mark: | :white_check_mark: | :x:                | :x:                |
+| Get, set, and animate the camera position         | :white_check_mark: | :white_check_mark: | :x:                | :x:                |
+| Convert between screen and geographic coordinates | :white_check_mark: | :white_check_mark: | :x:                | :x:                |
+| Get the currently visible region and bounding box | :white_check_mark: | :white_check_mark: | :x:                | :x:                |
+| Insert, remove, and replace layers                | :white_check_mark: | :white_check_mark: | :x:                | :x:                |
+| Configure layers with expressions                 | :white_check_mark: | :white_check_mark: | :x:                | :x:                |
+| Add data sources by URI or GeoJSON                | :white_check_mark: | :white_check_mark: | :x:                | :x:                |
+| Add images to the style                           | :white_check_mark: | :white_check_mark: | :x:                | :x:                |
+| Add annotations                                   | :x:                | :x:                | :x:                | :x:                |
+| Snapshot the map as an image                      | :x:                | :x:                | :x:                | :x:                |
+| Configure the offline cache                       | :x:                | :x:                | :x:                | :x:                |
+| Configure layer transitions                       | :x:                | :x:                | :x:                | :x:                |
 
 [compose]: https://www.jetbrains.com/compose-multiplatform/
 [maplibre]: https://maplibre.org/
