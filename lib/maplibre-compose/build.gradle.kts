@@ -89,6 +89,11 @@ kotlin {
       implementation(libs.webview)
     }
 
+    jsMain.dependencies {
+      implementation(project(":lib:kotlin-maplibre-js"))
+      implementation(project(":lib:compose-html-interop"))
+    }
+
     commonTest.dependencies {
       implementation(kotlin("test"))
       implementation(kotlin("test-common"))
@@ -111,9 +116,6 @@ compose.resources {
 
   customDirectory(
     sourceSetName = "desktopMain",
-    directoryProvider =
-      //    layout.dir(copyDesktopResources.map {
-      // it.destinationDir.relativeTo(layout.projectDirectory.asFile) }),
-      layout.dir(copyDesktopResources.map { it.destinationDir }),
+    directoryProvider = layout.dir(copyDesktopResources.map { it.destinationDir }),
   )
 }

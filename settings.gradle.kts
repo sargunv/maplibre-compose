@@ -42,4 +42,5 @@ include(
   ":lib:maplibre-compose-expressions",
   ":lib:maplibre-compose-webview",
   ":lib:kotlin-maplibre-js",
+  ":lib:compose-html-interop",
 )

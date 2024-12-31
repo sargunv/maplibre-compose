@@ -90,6 +90,7 @@ kotlin {
 
     androidMain.dependencies {
       implementation(libs.androidx.activity.compose)
+      implementation(libs.kotlinx.coroutines.android)
       implementation(libs.ktor.client.okhttp)
     }
 
@@ -101,7 +102,10 @@ kotlin {
       implementation(libs.ktor.client.okhttp)
     }
 
-    jsMain.dependencies { implementation(libs.ktor.client.js) }
+    jsMain.dependencies {
+      implementation(compose.html.core)
+      implementation(libs.ktor.client.js)
+    }
 
     commonTest.dependencies {
       implementation(kotlin("test"))
