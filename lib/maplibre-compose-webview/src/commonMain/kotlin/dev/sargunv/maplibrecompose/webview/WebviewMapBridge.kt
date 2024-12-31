@@ -116,8 +116,8 @@ object WebviewMapBridge {
       map.touchZoomRotate.enableRotation()
     } else {
       map.dragRotate.disable()
-      map.keyboard.enableRotation()
-      map.touchZoomRotate.enableRotation()
+      map.keyboard.disableRotation()
+      map.touchZoomRotate.disableRotation()
     }
   }
 

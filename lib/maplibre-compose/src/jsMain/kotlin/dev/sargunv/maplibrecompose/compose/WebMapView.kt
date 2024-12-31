@@ -1,6 +1,7 @@
 package dev.sargunv.maplibrecompose.compose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -9,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import co.touchlab.kermit.Logger
 import dev.sargunv.composehtmlinterop.HtmlElement
+import dev.sargunv.maplibrecompose.core.JsMap
 import dev.sargunv.maplibrecompose.core.MaplibreMap
 import dev.sargunv.maplibrejs.Map
 import dev.sargunv.maplibrejs.MapOptions
@@ -42,10 +44,10 @@ internal fun WebMapView(
   logger: Logger?,
   callbacks: MaplibreMap.Callbacks,
 ) {
-  var maybeMap by remember { mutableStateOf<Map?>(null) }
+  var maybeMap by remember { mutableStateOf<JsMap?>(null) }
 
   HtmlElement(
-    modifier = modifier.onGloballyPositioned { maybeMap?.resize() },
+    modifier = modifier.onGloballyPositioned { maybeMap?.map?.resize() },
     factory = {
       document.createElement("div").unsafeCast<HTMLElement>().apply {
         style.apply {
@@ -55,12 +57,14 @@ internal fun WebMapView(
       }
     },
     update = { element ->
-      val map =
-        maybeMap
-          ?: Map(MapOptions(container = element, disableAttributionControl = true)).also {
-            maybeMap = it
-          }
-      map.setStyle(styleUri)
+      val map = maybeMap ?: initMap(element).also { maybeMap = it }
+      map.setStyleUri(styleUri)
+      update(map)
     },
   )
+
+  DisposableEffect(Unit) { onDispose { onReset() } }
 }
+
+private fun initMap(element: HTMLElement) =
+  JsMap(Map(MapOptions(container = element, disableAttributionControl = true)))
