@@ -1,8 +1,12 @@
 package dev.sargunv.composehtmlinterop
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 
@@ -16,6 +20,11 @@ public fun <T : HTMLElement> HtmlElement(
   val container = rememberContainerNode()
   val child = rememberDomNode(parent = container, factory = factory)
   SnapshotEffect(child) { update(it) }
-  Box(modifier.onGloballyPositioned { container.matchLayout(it, density) })
+  Box(
+    modifier
+      .fillMaxSize()
+      .onGloballyPositioned { container.matchLayout(it, density) }
+      .drawBehind { drawRect(color = Color.Transparent, size = size, blendMode = BlendMode.Clear) }
+  )
   HtmlFocusAdapter(container)
 }
