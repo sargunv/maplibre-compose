@@ -11,7 +11,7 @@ public expect abstract class HTMLElement {
 
 internal fun Dp.toCssValue(): String = "${value}px"
 
-@Composable internal expect fun rememberContainerNode(): HTMLElement
+@Composable internal expect fun rememberContainerNode(zIndex: String): HTMLElement
 
 internal expect fun HTMLElement.matchLayout(layoutCoordinates: LayoutCoordinates, density: Density)
 

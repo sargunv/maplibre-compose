@@ -11,12 +11,12 @@ import kotlinx.browser.document
 public actual typealias HTMLElement = org.w3c.dom.HTMLElement
 
 @Composable
-internal actual fun rememberContainerNode(): HTMLElement =
+internal actual fun rememberContainerNode(zIndex: String): HTMLElement =
   rememberDomNode(parent = document.body!!) {
     document.createElement("div").unsafeCast<HTMLElement>().apply {
       style.position = "absolute"
       style.margin = "0px"
-      style.zIndex = "-1"
+      style.zIndex = zIndex
     }
   }
 

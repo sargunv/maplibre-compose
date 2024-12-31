@@ -14,10 +14,11 @@ import androidx.compose.ui.platform.LocalDensity
 public fun <T : HTMLElement> HtmlElement(
   factory: () -> T,
   update: (T) -> Unit = {},
+  zIndex: String = "auto",
   modifier: Modifier = Modifier,
 ) {
   val density = LocalDensity.current
-  val container = rememberContainerNode()
+  val container = rememberContainerNode(zIndex)
   val child = rememberDomNode(parent = container, factory = factory)
   SnapshotEffect(child) { update(it) }
   Box(
