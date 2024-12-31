@@ -15,8 +15,8 @@ actual fun getDefaultColorScheme(isDark: Boolean): ColorScheme {
 }
 
 actual object Platform {
-  actual val supportsBlending = true
-  actual val supportsFps = true
-  actual val supportsCamera = true
-  actual val supportsLayers = true
+  actual val isAndroid: Boolean = false
+  actual val isIos: Boolean = true
+  actual val isDesktop: Boolean = false
+  actual val isWeb: Boolean = false
 }

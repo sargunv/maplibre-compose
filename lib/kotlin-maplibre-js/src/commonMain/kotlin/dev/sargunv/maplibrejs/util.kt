@@ -95,3 +95,35 @@ public fun FlyToOptions(
   padding?.let { this.padding = it }
   screenSpeed?.let { this.screenSpeed = it }
 }
+
+public fun EaseToOptions(
+  center: LngLat? = null,
+  zoom: Double? = null,
+  bearing: Double? = null,
+  pitch: Double? = null,
+  padding: PaddingOptions? = null,
+  duration: Double? = null,
+  easing: ((Double) -> Double)? = null,
+): EaseToOptions = jso {
+  center?.let { this.center = it }
+  zoom?.let { this.zoom = it }
+  bearing?.let { this.bearing = it }
+  pitch?.let { this.pitch = it }
+  padding?.let { this.padding = it }
+  duration?.let { this.duration = it }
+  easing?.let { this.easing = it }
+}
+
+public fun QueryRenderedFeaturesOptions(
+  availableImages: Array<String>? = null,
+  layers: Array<String>? = null,
+  filter: Expression? = null,
+  validate: Boolean? = null,
+): QueryRenderedFeaturesOptions = jso {
+  availableImages?.let { this.availableImages = it }
+  layers?.let { this.layers = it }
+  filter?.let { this.filter = it }
+  validate?.let { this.validate = it }
+}
+
+public typealias Expression = Array<*>

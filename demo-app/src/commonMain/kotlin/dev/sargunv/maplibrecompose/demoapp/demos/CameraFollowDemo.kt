@@ -39,7 +39,9 @@ import dev.sargunv.maplibrecompose.demoapp.Demo
 import dev.sargunv.maplibrecompose.demoapp.DemoMapControls
 import dev.sargunv.maplibrecompose.demoapp.DemoOrnamentSettings
 import dev.sargunv.maplibrecompose.demoapp.DemoScaffold
+import dev.sargunv.maplibrecompose.demoapp.Platform
 import dev.sargunv.maplibrecompose.demoapp.PositionVectorConverter
+import dev.sargunv.maplibrecompose.demoapp.supportsLayers
 import dev.sargunv.maplibrecompose.expressions.dsl.const
 import dev.sargunv.maplibrecompose.expressions.dsl.offset
 import io.github.dellisd.spatialk.geojson.Point
@@ -85,7 +87,11 @@ object CameraFollowDemo : Demo {
             styleState = styleState,
             ornamentSettings = DemoOrnamentSettings(),
           ) {
-            LocationPuck(locationSource = rememberGeoJsonSource("target", Point(animatedPosition)))
+            if (Platform.supportsLayers) {
+              LocationPuck(
+                locationSource = rememberGeoJsonSource("target", Point(animatedPosition))
+              )
+            }
           }
           DemoMapControls(
             cameraState,

@@ -4,6 +4,9 @@ package dev.sargunv.maplibrejs
 
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.TouchEvent
+import org.w3c.dom.events.MouseEvent
+import org.w3c.dom.events.WheelEvent
 
 /** [Map](https://maplibre.org/maplibre-gl-js/docs/API/classes/Map/) */
 public external class Map public constructor(options: MapOptions) {
@@ -34,11 +37,15 @@ public external class Map public constructor(options: MapOptions) {
 
   public fun getZoom(): Double
 
+  public fun getPadding(): PaddingOptions
+
   public fun setBearing(bearing: Double)
 
   public fun setCenter(center: LngLat)
 
   public fun setPitch(pitch: Double)
+
+  public fun setPadding(padding: PaddingOptions)
 
   public fun setZoom(zoom: Double)
 
@@ -51,6 +58,8 @@ public external class Map public constructor(options: MapOptions) {
   public fun setMinPitch(min: Double)
 
   public fun jumpTo(options: JumpToOptions)
+
+  public fun easeTo(options: EaseToOptions)
 
   public fun flyTo(options: FlyToOptions)
 
@@ -65,12 +74,96 @@ public external class Map public constructor(options: MapOptions) {
   public fun getCanvas(): HTMLCanvasElement
 
   public fun resize()
+
+  public fun on(event: String, listener: (AnyEvent) -> Unit)
+
+  public fun off(event: String, listener: (AnyEvent) -> Unit)
+
+  public fun once(event: String, listener: (AnyEvent) -> Unit)
+
+  public fun project(lngLat: LngLat): Point
+
+  public fun unproject(point: Point): LngLat
+
+  public fun queryRenderedFeatures(
+    point: Point,
+    options: QueryRenderedFeaturesOptions = definedExternally,
+  ): Array<Any>
+
+  public fun queryRenderedFeatures(
+    box: Array<Point>,
+    options: QueryRenderedFeaturesOptions = definedExternally,
+  ): Array<Any>
+
+  public fun getBounds(): LngLatBounds
+}
+
+/**
+ * [QueryRenderedFeaturesOptions](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/QueryRenderedFeaturesOptions/)
+ */
+public sealed external interface QueryRenderedFeaturesOptions {
+  public var availableImages: Array<String>?
+  public var layers: Array<String>?
+  public var filter: Expression?
+  public var validate: Boolean?
+}
+
+public sealed external interface AnyEvent
+
+/** [MapLibreEvent](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/MapLibreEvent/) */
+public external interface MapLibreEvent<T> : AnyEvent {
+  public val originalEvent: T
+  public val target: Map
+  public val type: String
+}
+
+/** [MapMouseEvent](https://maplibre.org/maplibre-gl-js/docs/API/classes/MapMouseEvent/) */
+public external class MapMouseEvent private constructor() : MapLibreEvent<MouseEvent> {
+  public val defaultPrevented: Boolean
+  public val lngLat: LngLat
+  override val originalEvent: MouseEvent
+  public val point: Point
+  override val target: Map
+  override val type: String
+
+  public fun preventDefault()
+}
+
+/** [MapTouchEvent](https://maplibre.org/maplibre-gl-js/docs/API/classes/MapTouchEvent/) */
+public external class MapTouchEvent private constructor() : MapLibreEvent<TouchEvent> {
+  public val defaultPrevented: Boolean
+  public val lngLat: LngLat
+  public val lngLats: Array<LngLat>
+  override val originalEvent: TouchEvent
+  public val point: Point
+  public val points: Array<Point>
+  override val target: Map
+  override val type: String
+
+  public fun preventDefault()
+}
+
+/** [MapWheelEvent](https://maplibre.org/maplibre-gl-js/docs/API/classes/MapWheelEvent/) */
+public external class MapWheelEvent private constructor() : MapLibreEvent<WheelEvent> {
+  public val defaultPrevented: Boolean
+  override val originalEvent: WheelEvent
+  override val target: Map
+  override val type: String
+
+  public fun preventDefault()
+}
+
+/** [Point](https://github.com/mapbox/point-geometry/tree/main?tab=readme-ov-file#point) */
+public external class Point public constructor(x: Double, y: Double) {
+  public val x: Double
+  public val y: Double
+  // a whole bunch of methods I'm not going to bother with
 }
 
 /**
  * [DoubleClickZoomHandler](https://maplibre.org/maplibre-gl-js/docs/API/classes/DoubleClickZoomHandler/)
  */
-public external class DoubleClickZoomHandler {
+public external class DoubleClickZoomHandler private constructor() {
   public fun disable()
 
   public fun enable()
@@ -81,7 +174,7 @@ public external class DoubleClickZoomHandler {
 }
 
 /** [DragPanHandler](https://maplibre.org/maplibre-gl-js/docs/API/classes/DragPanHandler/) */
-public external class DragPanHandler {
+public external class DragPanHandler private constructor() {
   public fun disable()
 
   public fun enable()
@@ -92,7 +185,7 @@ public external class DragPanHandler {
 }
 
 /** [DragRotateHandler](https://maplibre.org/maplibre-gl-js/docs/API/classes/DragRotateHandler/) */
-public external class DragRotateHandler {
+public external class DragRotateHandler private constructor() {
   public fun disable()
 
   public fun enable()
@@ -103,7 +196,7 @@ public external class DragRotateHandler {
 }
 
 /** [KeyboardHandler](https://maplibre.org/maplibre-gl-js/docs/API/classes/KeyboardHandler/) */
-public external class KeyboardHandler {
+public external class KeyboardHandler private constructor() {
   public fun disable()
 
   public fun disableRotation()
@@ -118,7 +211,7 @@ public external class KeyboardHandler {
 }
 
 /** [ScrollZoomHandler](https://maplibre.org/maplibre-gl-js/docs/API/classes/ScrollZoomHandler/) */
-public external class ScrollZoomHandler {
+public external class ScrollZoomHandler private constructor() {
   public fun disable()
 
   public fun enable()
@@ -135,7 +228,7 @@ public external class ScrollZoomHandler {
 /**
  * [TwoFingersTouchPitchHandler](https://maplibre.org/maplibre-gl-js/docs/API/classes/TwoFingersTouchPitchHandler/)
  */
-public external class TwoFingersTouchPitchHandler {
+public external class TwoFingersTouchPitchHandler private constructor() {
   public fun disable()
 
   public fun enable()
@@ -148,7 +241,7 @@ public external class TwoFingersTouchPitchHandler {
 /**
  * [TwoFingersTouchZoomRotateHandler](https://maplibre.org/maplibre-gl-js/docs/API/classes/TwoFingersTouchZoomRotateHandler/)
  */
-public external class TwoFingersTouchZoomRotateHandler {
+public external class TwoFingersTouchZoomRotateHandler private constructor() {
   public fun disable()
 
   public fun disableRotation()
@@ -237,12 +330,57 @@ public external interface IControl {
 
 /** [LngLat](https://maplibre.org/maplibre-gl-js/docs/API/classes/LngLat/) */
 public external class LngLat(public val lng: Double, public val lat: Double) {
+  public fun distanceTo(lngLat: LngLat): Double
+
   public fun toArray(): DoubleArray
+
+  public fun wrap(): LngLat
+}
+
+/** [LngLatBounds](https://maplibre.org/maplibre-gl-js/docs/API/classes/LngLatBounds/) */
+public external class LngLatBounds(sw: LngLat, ne: LngLat) {
+  public fun adjustAntiMeridian(): LngLatBounds
+
+  public fun contains(lngLat: LngLat): Boolean
+
+  public fun extend(lngLat: LngLat): LngLatBounds
+
+  public fun getCenter(): LngLat
+
+  public fun getEast(): Double
+
+  public fun getWest(): Double
+
+  public fun getNorth(): Double
+
+  public fun getSouth(): Double
+
+  public fun getSouthWest(): LngLat
+
+  public fun getNorthEast(): LngLat
+
+  public fun getNorthWest(): LngLat
+
+  public fun getSouthEast(): LngLat
+
+  public fun isEmpty(): Boolean
+
+  public fun setSouthWest(lngLat: LngLat): LngLatBounds
+
+  public fun setNorthEast(lngLat: LngLat): LngLatBounds
+
+  public fun toArray(): Array<DoubleArray>
 }
 
 /** [JumpToOptions](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/JumpToOptions/) */
 public sealed external interface JumpToOptions : CameraOptions {
   public var padding: PaddingOptions?
+}
+
+public sealed external interface EaseToOptions : CameraOptions {
+  public var padding: PaddingOptions?
+  public var duration: Double?
+  public var easing: (t: Double) -> Double?
 }
 
 /** [FlyToOptions](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/FlyToOptions/) */

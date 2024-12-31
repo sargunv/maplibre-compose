@@ -112,7 +112,6 @@ public fun MaplibreMap(
     remember(cameraState, styleState, styleComposition) {
       object : MaplibreMap.Callbacks {
         override fun onStyleChanged(map: MaplibreMap, style: Style?) {
-          println("onStyleChanged!!")
           map as StandardMaplibreMap
           styleState.attach(style)
           rememberedStyle = style

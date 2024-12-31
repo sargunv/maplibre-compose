@@ -35,3 +35,10 @@ actual fun getDefaultColorScheme(isDark: Boolean): ColorScheme {
     else -> lightColorScheme()
   }
 }
+
+actual object Platform {
+  actual val isAndroid: Boolean = true
+  actual val isIos: Boolean = false
+  actual val isDesktop: Boolean = false
+  actual val isWeb: Boolean = false
+}

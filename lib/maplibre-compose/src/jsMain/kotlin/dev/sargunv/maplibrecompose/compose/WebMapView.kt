@@ -8,12 +8,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import co.touchlab.kermit.Logger
 import dev.sargunv.composehtmlinterop.HtmlElement
 import dev.sargunv.maplibrecompose.core.JsMap
 import dev.sargunv.maplibrecompose.core.MaplibreMap
-import dev.sargunv.maplibrejs.Map
-import dev.sargunv.maplibrejs.MapOptions
 import kotlinx.browser.document
 import org.w3c.dom.HTMLElement
 
@@ -46,8 +46,11 @@ internal fun WebMapView(
 ) {
   var maybeMap by remember { mutableStateOf<JsMap?>(null) }
 
+  val layoutDir = LocalLayoutDirection.current
+  val density = LocalDensity.current
+
   HtmlElement(
-    modifier = modifier.onGloballyPositioned { maybeMap?.map?.resize() },
+    modifier = modifier.onGloballyPositioned { maybeMap?.resize() },
     factory = {
       document.createElement("div").unsafeCast<HTMLElement>().apply {
         style.apply {
@@ -57,14 +60,16 @@ internal fun WebMapView(
       }
     },
     update = { element ->
-      val map = maybeMap ?: initMap(element).also { maybeMap = it }
+      val map =
+        maybeMap ?: JsMap(element, layoutDir, density, callbacks, logger).also { maybeMap = it }
       map.setStyleUri(styleUri)
+      map.layoutDir = layoutDir
+      map.density = density
+      map.callbacks = callbacks
+      map.logger = logger
       update(map)
     },
   )
 
   DisposableEffect(Unit) { onDispose { onReset() } }
 }
-
-private fun initMap(element: HTMLElement) =
-  JsMap(Map(MapOptions(container = element, disableAttributionControl = true)))

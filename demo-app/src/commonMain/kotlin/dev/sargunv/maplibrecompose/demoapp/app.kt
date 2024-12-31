@@ -59,11 +59,9 @@ private val DEMOS = buildList {
     add(ClusteredPointsDemo)
     add(AnimatedLayerDemo)
   }
-  if (Platform.supportsCamera) {
-    add(CameraStateDemo)
-    add(CameraFollowDemo)
-  }
-  if (Platform.supportsFps) add(FrameRateDemo)
+  add(CameraStateDemo)
+  add(CameraFollowDemo)
+  add(FrameRateDemo)
 }
 
 @Composable
