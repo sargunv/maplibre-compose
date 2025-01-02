@@ -96,6 +96,20 @@ public external class Map public constructor(options: MapOptions) {
   ): Array<Any>
 
   public fun getBounds(): LngLatBounds
+
+  public fun panBy(offset: Point, animationOptions: AnimationOptions = definedExternally)
+}
+
+/**
+ * [AnimationOptions](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/AnimationOptions/)
+ */
+public sealed external interface AnimationOptions {
+  public var animate: Boolean?
+  public var duration: Double?
+  public var easing: ((t: Double) -> Double)?
+  public var essential: Boolean?
+  public var freezeElevation: Boolean?
+  public var offset: Point?
 }
 
 /**
