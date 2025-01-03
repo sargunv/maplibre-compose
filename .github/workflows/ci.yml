@@ -49,6 +49,11 @@ jobs:
 
   test-android:
     runs-on: "ubuntu-latest"
+    strategy:
+      matrix:
+        api-level:
+          - 24
+          - 35
     steps:
       - uses: "actions/checkout@v4"
         with:
@@ -57,7 +62,7 @@ jobs:
       - name: "Run with AVD ./gradlew connectedDebugAndroidTest"
         uses: "./.github/actions/run-with-avd"
         with:
-          api-level: 35
+          api-level: "${{ matrix.api-level }}"
           script: "./gradlew connectedDebugAndroidTest"
 
   test-ios:

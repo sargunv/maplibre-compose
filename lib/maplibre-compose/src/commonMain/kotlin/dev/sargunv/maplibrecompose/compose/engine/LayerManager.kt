@@ -85,7 +85,7 @@ internal class LayerManager(private val styleNode: StyleNode) {
     // anything left in missedLayers is a new anchor
     missedLayers.forEach { (anchor, nodes) ->
       // let's initialize the anchor with one layer
-      val tail = nodes.removeLast()
+      val tail = nodes.removeAt(nodes.size - 1)
       styleNode.logger?.i { "Initializing anchor $anchor with layer ${tail.layer.id}" }
       when (anchor) {
         is Anchor.Top -> styleNode.style.addLayer(tail.layer)
