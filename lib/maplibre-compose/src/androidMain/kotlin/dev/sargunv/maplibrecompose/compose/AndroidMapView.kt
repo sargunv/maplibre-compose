@@ -59,7 +59,7 @@ internal fun AndroidMapView(
     modifier = modifier,
     factory = { context ->
       MapLibre.getInstance(context)
-      MapView(context, MapLibreMapOptions.createFromAttributes(context).textureMode(true)).also {
+      MapView(context, MapLibreMapOptions.createFromAttributes(context).textureMode(false)).also {
         mapView ->
         currentMapView = mapView
         mapView.getMapAsync { map ->
