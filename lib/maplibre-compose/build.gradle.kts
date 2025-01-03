@@ -47,14 +47,20 @@ val copyDesktopResources by
 
 kotlin {
   androidTarget {
-    compilerOptions { jvmTarget.set(JvmTarget.JVM_11) }
+    compilerOptions {
+      jvmTarget.set(JvmTarget.valueOf(project.properties["jvmTarget"]!!.toString()))
+    }
     instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
     publishLibraryVariants("release", "debug")
   }
   iosArm64()
   iosSimulatorArm64()
   iosX64()
-  jvm("desktop")
+  jvm("desktop") {
+    compilerOptions {
+      jvmTarget.set(JvmTarget.valueOf(project.properties["jvmTarget"]!!.toString()))
+    }
+  }
   js(IR) { browser() }
 
   cocoapods {
