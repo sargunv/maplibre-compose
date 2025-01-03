@@ -3,7 +3,6 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 
 plugins {
@@ -40,19 +39,13 @@ android {
 
 kotlin {
   androidTarget {
-    compilerOptions {
-      jvmTarget.set(JvmTarget.valueOf(project.properties["jvmTarget"]!!.toString()))
-    }
+    compilerOptions { jvmTarget = project.getJvmTarget() }
     instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
   }
   iosArm64()
   iosSimulatorArm64()
   iosX64()
-  jvm("desktop") {
-    compilerOptions {
-      jvmTarget.set(JvmTarget.valueOf(project.properties["jvmTarget"]!!.toString()))
-    }
-  }
+  jvm("desktop") { compilerOptions { jvmTarget = project.getJvmTarget() } }
   js(IR) {
     browser { commonWebpackConfig { outputFileName = "app.js" } }
     binaries.executable()

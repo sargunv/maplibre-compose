@@ -44,7 +44,7 @@ jobs:
       - uses: "actions/setup-java@v4"
         with:
           distribution: "temurin"
-          java-version: 23
+          java-version: 21
       - uses: "gradle/actions/dependency-submission@v4"
         with:
           build-scan-publish: true

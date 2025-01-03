@@ -11,6 +11,8 @@ group = "dev.sargunv.maplibre-compose"
 kotlin {
   explicitApi()
 
+  jvmToolchain(properties["jvmToolchain"]!!.toString().toInt())
+
   compilerOptions {
     allWarningsAsErrors = true
     freeCompilerArgs.addAll("-Xexpect-actual-classes", "-Xconsistent-data-class-copy-visibility")
