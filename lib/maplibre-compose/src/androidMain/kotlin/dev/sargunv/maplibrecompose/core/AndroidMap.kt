@@ -212,15 +212,8 @@ internal class AndroidMap(
   override fun setMaximumFps(maximumFps: Int) = mapView.setMaximumFps(maximumFps)
 
   override fun setGestureSettings(value: GestureSettings) {
-    map.uiSettings.isRotateGesturesEnabled = value.isRotateGesturesEnabled
-    map.uiSettings.isScrollGesturesEnabled = value.isScrollGesturesEnabled
-    map.uiSettings.isTiltGesturesEnabled = value.isTiltGesturesEnabled
-    map.uiSettings.isZoomGesturesEnabled = value.isZoomGesturesEnabled
-    // on iOS, there is no setting for enabling quick zoom (=double-tap, hold and move up or down)
-    // and zoom in by a double tap separately, so isZoomGesturesEnabled turns on or off ALL zoom
-    // gestures
-    map.uiSettings.isQuickZoomGesturesEnabled = value.isZoomGesturesEnabled
-    map.uiSettings.isDoubleTapGesturesEnabled = value.isZoomGesturesEnabled
+    map.uiSettings.setAllGesturesEnabled(false)
+    map.gesturesManager.detectors.clear()
   }
 
   override fun setOrnamentSettings(value: OrnamentSettings) {

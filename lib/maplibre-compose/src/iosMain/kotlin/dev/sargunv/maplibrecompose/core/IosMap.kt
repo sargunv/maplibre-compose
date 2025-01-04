@@ -41,7 +41,10 @@ import cocoapods.MapLibre.MLNOrnamentPositionTopLeft
 import cocoapods.MapLibre.MLNOrnamentPositionTopRight
 import cocoapods.MapLibre.MLNStyle
 import cocoapods.MapLibre.MLNZoomLevelForAltitude
+import cocoapods.MapLibre.allowsRotating
+import cocoapods.MapLibre.allowsScrolling
 import cocoapods.MapLibre.allowsTilting
+import cocoapods.MapLibre.allowsZooming
 import dev.sargunv.maplibrecompose.core.util.toBoundingBox
 import dev.sargunv.maplibrecompose.core.util.toCGPoint
 import dev.sargunv.maplibrecompose.core.util.toCGRect
@@ -294,10 +297,13 @@ internal class IosMap(
   }
 
   override fun setGestureSettings(value: GestureSettings) {
-    mapView.rotateEnabled = value.isRotateGesturesEnabled
-    mapView.scrollEnabled = value.isScrollGesturesEnabled
-    mapView.allowsTilting = value.isTiltGesturesEnabled
-    mapView.zoomEnabled = value.isZoomGesturesEnabled
+    mapView.rotateEnabled = false
+    mapView.scrollEnabled = false
+    mapView.allowsTilting = false
+    mapView.zoomEnabled = false
+    mapView.allowsZooming = false
+    mapView.allowsScrolling = false
+    mapView.allowsRotating = false
   }
 
   private fun calculateMargins(

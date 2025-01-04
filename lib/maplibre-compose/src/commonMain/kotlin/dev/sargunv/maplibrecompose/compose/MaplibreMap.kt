@@ -1,5 +1,7 @@
 package dev.sargunv.maplibrecompose.compose
 
+import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -8,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.DpOffset
 import co.touchlab.kermit.Logger
 import dev.sargunv.maplibrecompose.compose.engine.LayerNode
@@ -20,6 +23,7 @@ import dev.sargunv.maplibrecompose.core.StandardMaplibreMap
 import dev.sargunv.maplibrecompose.core.Style
 import dev.sargunv.maplibrecompose.core.util.PlatformUtils
 import io.github.dellisd.spatialk.geojson.Position
+import kotlin.math.log2
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 
@@ -178,8 +182,26 @@ public fun MaplibreMap(
 
   val scope = rememberCoroutineScope()
 
+  val density = LocalDensity.current
+
+  val transformableState = rememberTransformableState { zoomChange, offsetChange, rotationChange ->
+    val center = cameraState.screenLocationFromPosition(cameraState.position.target)
+    val newCenter =
+      center - with(density) { DpOffset(offsetChange.x.toDp(), offsetChange.y.toDp()) }
+    val newTarget = cameraState.positionFromScreenLocation(newCenter)
+    val newZoom =
+      (cameraState.position.zoom + log2(zoomChange)).coerceIn(
+        zoomRange.start.toDouble(),
+        zoomRange.endInclusive.toDouble(),
+      )
+    val newBearing = (cameraState.position.bearing - rotationChange).mod(360.0)
+    println("newTarget: $newTarget, newZoom: $newZoom, newBearing: $newBearing")
+    cameraState.position =
+      cameraState.position.copy(target = newTarget, zoom = newZoom, bearing = newBearing)
+  }
+
   ComposableMapView(
-    modifier = modifier.fillMaxSize(),
+    modifier = modifier.fillMaxSize().transformable(transformableState),
     styleUri = styleUri,
     update = { map ->
       when (map) {

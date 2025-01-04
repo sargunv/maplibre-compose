@@ -15,6 +15,7 @@ import dev.sargunv.maplibrecompose.core.AndroidMap
 import dev.sargunv.maplibrecompose.core.AndroidScaleBar
 import dev.sargunv.maplibrecompose.core.MaplibreMap
 import org.maplibre.android.MapLibre
+import org.maplibre.android.gestures.AndroidGesturesManager
 import org.maplibre.android.maps.MapLibreMapOptions
 import org.maplibre.android.maps.MapView
 
@@ -63,6 +64,12 @@ internal fun AndroidMapView(
         mapView ->
         currentMapView = mapView
         mapView.getMapAsync { map ->
+          map.setGesturesManager(AndroidGesturesManager(context), false, false)
+          mapView.isClickable = false
+          mapView.isLongClickable = false
+          mapView.isFocusable = false
+          mapView.setFocusableInTouchMode(false)
+          mapView.requestDisallowInterceptTouchEvent(false)
           currentMap =
             AndroidMap(
               mapView = mapView,
