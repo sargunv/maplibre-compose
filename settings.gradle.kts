@@ -28,8 +28,6 @@ dependencyResolutionManagement {
       }
     }
     mavenCentral()
-    // https://kevinnzou.github.io/compose-webview-multiplatform/installation/
-    maven("https://jogamp.org/deployment/maven")
   }
 }
 
@@ -40,7 +38,6 @@ include(
   ":lib:maplibre-compose",
   ":lib:maplibre-compose-material3",
   ":lib:maplibre-compose-expressions",
-  ":lib:maplibre-compose-webview",
   ":lib:kotlin-maplibre-js",
   ":lib:compose-html-interop",
 )

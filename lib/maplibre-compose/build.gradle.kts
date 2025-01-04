@@ -25,25 +25,6 @@ mavenPublishing {
   }
 }
 
-val desktopResources: Configuration by
-  configurations.creating {
-    isCanBeConsumed = false
-    isCanBeResolved = true
-  }
-
-dependencies {
-  desktopResources(
-    project(path = ":lib:maplibre-compose-webview", configuration = "jsBrowserDistribution")
-  )
-}
-
-val copyDesktopResources by
-  tasks.registering(Copy::class) {
-    from(desktopResources)
-    eachFile { path = "files/${path}" }
-    into(project.layout.buildDirectory.dir(desktopResources.name))
-  }
-
 kotlin {
   androidTarget {
     compilerOptions { jvmTarget = project.getJvmTarget() }
@@ -85,7 +66,48 @@ kotlin {
     desktopMain.dependencies {
       implementation(compose.desktop.common)
       implementation(libs.kotlinx.coroutines.swing)
-      implementation(libs.webview)
+      implementation(libs.lwjglx.awt.get().toString()) { exclude(group = "org.lwjgl") }
+
+      implementation(libs.lwjgl.core)
+      implementation(libs.lwjgl.jawt)
+      implementation(libs.lwjgl.opengl)
+      implementation(libs.lwjgl.vulkan)
+
+      runtimeOnly(
+        project.dependencies.variantOf(libs.lwjgl.core) { classifier("natives-macos-arm64") }
+      )
+      runtimeOnly(
+        project.dependencies.variantOf(libs.lwjgl.opengl) { classifier("natives-macos-arm64") }
+      )
+      runtimeOnly(
+        project.dependencies.variantOf(libs.lwjgl.vulkan) { classifier("natives-macos-arm64") }
+      )
+
+      runtimeOnly(project.dependencies.variantOf(libs.lwjgl.core) { classifier("natives-macos") })
+      runtimeOnly(project.dependencies.variantOf(libs.lwjgl.opengl) { classifier("natives-macos") })
+      runtimeOnly(project.dependencies.variantOf(libs.lwjgl.vulkan) { classifier("natives-macos") })
+
+      runtimeOnly(
+        project.dependencies.variantOf(libs.lwjgl.core) { classifier("natives-linux-arm64") }
+      )
+      runtimeOnly(
+        project.dependencies.variantOf(libs.lwjgl.opengl) { classifier("natives-linux-arm64") }
+      )
+
+      runtimeOnly(project.dependencies.variantOf(libs.lwjgl.core) { classifier("natives-linux") })
+      runtimeOnly(project.dependencies.variantOf(libs.lwjgl.opengl) { classifier("natives-linux") })
+
+      runtimeOnly(
+        project.dependencies.variantOf(libs.lwjgl.core) { classifier("natives-windows-arm64") }
+      )
+      runtimeOnly(
+        project.dependencies.variantOf(libs.lwjgl.opengl) { classifier("natives-windows-arm64") }
+      )
+
+      runtimeOnly(project.dependencies.variantOf(libs.lwjgl.core) { classifier("natives-windows") })
+      runtimeOnly(
+        project.dependencies.variantOf(libs.lwjgl.opengl) { classifier("natives-windows") }
+      )
     }
 
     jsMain.dependencies {
@@ -110,11 +132,4 @@ kotlin {
   }
 }
 
-compose.resources {
-  packageOfResClass = "dev.sargunv.maplibrecompose.generated"
-
-  customDirectory(
-    sourceSetName = "desktopMain",
-    directoryProvider = layout.dir(copyDesktopResources.map { it.destinationDir }),
-  )
-}
+compose.resources { packageOfResClass = "dev.sargunv.maplibrecompose.generated" }
