@@ -73,41 +73,18 @@ kotlin {
       implementation(libs.lwjgl.opengl)
       implementation(libs.lwjgl.vulkan)
 
-      runtimeOnly(
-        project.dependencies.variantOf(libs.lwjgl.core) { classifier("natives-macos-arm64") }
-      )
-      runtimeOnly(
-        project.dependencies.variantOf(libs.lwjgl.opengl) { classifier("natives-macos-arm64") }
-      )
-      runtimeOnly(
-        project.dependencies.variantOf(libs.lwjgl.vulkan) { classifier("natives-macos-arm64") }
-      )
+      fun lwjglNatives(left: Set<String>, right: Set<String>) = buildList {
+        for (l in left) for (r in right) add("natives-$l$r")
+      }
 
-      runtimeOnly(project.dependencies.variantOf(libs.lwjgl.core) { classifier("natives-macos") })
-      runtimeOnly(project.dependencies.variantOf(libs.lwjgl.opengl) { classifier("natives-macos") })
-      runtimeOnly(project.dependencies.variantOf(libs.lwjgl.vulkan) { classifier("natives-macos") })
+      lwjglNatives(setOf("linux", "macos", "windows"), setOf("", "-arm64")).forEach {
+        runtimeOnly(project.dependencies.variantOf(libs.lwjgl.core) { classifier(it) })
+        runtimeOnly(project.dependencies.variantOf(libs.lwjgl.opengl) { classifier(it) })
+      }
 
-      runtimeOnly(
-        project.dependencies.variantOf(libs.lwjgl.core) { classifier("natives-linux-arm64") }
-      )
-      runtimeOnly(
-        project.dependencies.variantOf(libs.lwjgl.opengl) { classifier("natives-linux-arm64") }
-      )
-
-      runtimeOnly(project.dependencies.variantOf(libs.lwjgl.core) { classifier("natives-linux") })
-      runtimeOnly(project.dependencies.variantOf(libs.lwjgl.opengl) { classifier("natives-linux") })
-
-      runtimeOnly(
-        project.dependencies.variantOf(libs.lwjgl.core) { classifier("natives-windows-arm64") }
-      )
-      runtimeOnly(
-        project.dependencies.variantOf(libs.lwjgl.opengl) { classifier("natives-windows-arm64") }
-      )
-
-      runtimeOnly(project.dependencies.variantOf(libs.lwjgl.core) { classifier("natives-windows") })
-      runtimeOnly(
-        project.dependencies.variantOf(libs.lwjgl.opengl) { classifier("natives-windows") }
-      )
+      lwjglNatives(setOf("macos"), setOf("", "-arm64")).forEach {
+        runtimeOnly(project.dependencies.variantOf(libs.lwjgl.vulkan) { classifier(it) })
+      }
     }
 
     jsMain.dependencies {
