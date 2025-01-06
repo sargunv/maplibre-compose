@@ -3,7 +3,6 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 
 plugins {
@@ -40,13 +39,17 @@ android {
 
 kotlin {
   androidTarget {
-    compilerOptions { jvmTarget.set(JvmTarget.JVM_11) }
+    compilerOptions { jvmTarget = project.getJvmTarget() }
     instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
   }
   iosArm64()
   iosSimulatorArm64()
   iosX64()
-  jvm("desktop")
+  jvm("desktop") { compilerOptions { jvmTarget = project.getJvmTarget() } }
+  js(IR) {
+    browser { commonWebpackConfig { outputFileName = "app.js" } }
+    binaries.executable()
+  }
 
   cocoapods {
     summary = "MapLibre Compose demo app"
@@ -86,6 +89,7 @@ kotlin {
 
     androidMain.dependencies {
       implementation(libs.androidx.activity.compose)
+      implementation(libs.kotlinx.coroutines.android)
       implementation(libs.ktor.client.okhttp)
     }
 
@@ -94,6 +98,12 @@ kotlin {
     desktopMain.dependencies {
       implementation(compose.desktop.currentOs)
       implementation(libs.kotlinx.coroutines.swing)
+      implementation(libs.ktor.client.okhttp)
+    }
+
+    jsMain.dependencies {
+      implementation(compose.html.core)
+      implementation(libs.ktor.client.js)
     }
 
     commonTest.dependencies {

@@ -21,13 +21,6 @@ import dev.sargunv.maplibrecompose.compose.rememberCameraState
 import dev.sargunv.maplibrecompose.compose.rememberStyleState
 import dev.sargunv.maplibrecompose.compose.source.rememberGeoJsonSource
 import dev.sargunv.maplibrecompose.core.CameraPosition
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.asNumber
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.asString
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.const
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.feature
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.not
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.offset
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.step
 import dev.sargunv.maplibrecompose.core.source.GeoJsonOptions
 import dev.sargunv.maplibrecompose.demoapp.DEFAULT_STYLE
 import dev.sargunv.maplibrecompose.demoapp.Demo
@@ -35,6 +28,13 @@ import dev.sargunv.maplibrecompose.demoapp.DemoMapControls
 import dev.sargunv.maplibrecompose.demoapp.DemoOrnamentSettings
 import dev.sargunv.maplibrecompose.demoapp.DemoScaffold
 import dev.sargunv.maplibrecompose.demoapp.generated.Res
+import dev.sargunv.maplibrecompose.expressions.dsl.asNumber
+import dev.sargunv.maplibrecompose.expressions.dsl.asString
+import dev.sargunv.maplibrecompose.expressions.dsl.const
+import dev.sargunv.maplibrecompose.expressions.dsl.feature
+import dev.sargunv.maplibrecompose.expressions.dsl.not
+import dev.sargunv.maplibrecompose.expressions.dsl.offset
+import dev.sargunv.maplibrecompose.expressions.dsl.step
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.FeatureCollection
 import io.github.dellisd.spatialk.geojson.Point
@@ -86,12 +86,12 @@ object ClusteredPointsDemo : Demo {
           CircleLayer(
             id = "clustered-bikes",
             source = bikeSource,
-            filter = feature.has(const("point_count")),
+            filter = feature.has("point_count"),
             color = const(LIME_GREEN),
             opacity = const(0.5f),
             radius =
               step(
-                input = feature.get(const("point_count")).asNumber(),
+                input = feature.get("point_count").asNumber(),
                 fallback = const(15.dp),
                 25 to const(20.dp),
                 100 to const(30.dp),
@@ -117,8 +117,8 @@ object ClusteredPointsDemo : Demo {
           SymbolLayer(
             id = "clustered-bikes-count",
             source = bikeSource,
-            filter = feature.has(const("point_count")),
-            textField = feature.get(const("point_count_abbreviated")).asString(),
+            filter = feature.has("point_count"),
+            textField = feature.get("point_count_abbreviated").asString(),
             textFont = const(listOf("Noto Sans Regular")),
             textColor = const(MaterialTheme.colorScheme.onBackground),
           )
@@ -126,7 +126,7 @@ object ClusteredPointsDemo : Demo {
           CircleLayer(
             id = "unclustered-bikes-shadow",
             source = bikeSource,
-            filter = !feature.has(const("point_count")),
+            filter = !feature.has("point_count"),
             radius = const(13.dp),
             color = const(Color.Black),
             blur = const(1f),
@@ -136,7 +136,7 @@ object ClusteredPointsDemo : Demo {
           CircleLayer(
             id = "unclustered-bikes",
             source = bikeSource,
-            filter = !feature.has(const("point_count")),
+            filter = !feature.has("point_count"),
             color = const(LIME_GREEN),
             radius = const(7.dp),
             strokeWidth = const(3.dp),

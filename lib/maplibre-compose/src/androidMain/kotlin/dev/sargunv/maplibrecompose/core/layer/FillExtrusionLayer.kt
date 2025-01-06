@@ -1,16 +1,14 @@
 package dev.sargunv.maplibrecompose.core.layer
 
-import dev.sargunv.maplibrecompose.core.expression.BooleanValue
-import dev.sargunv.maplibrecompose.core.expression.ColorValue
-import dev.sargunv.maplibrecompose.core.expression.DpOffsetValue
-import dev.sargunv.maplibrecompose.core.expression.EnumValue
-import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.FloatValue
-import dev.sargunv.maplibrecompose.core.expression.ImageValue
-import dev.sargunv.maplibrecompose.core.expression.ResolvedValue
-import dev.sargunv.maplibrecompose.core.expression.TranslateAnchor
 import dev.sargunv.maplibrecompose.core.source.Source
 import dev.sargunv.maplibrecompose.core.util.toMLNExpression
+import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
+import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
+import dev.sargunv.maplibrecompose.expressions.value.ColorValue
+import dev.sargunv.maplibrecompose.expressions.value.DpOffsetValue
+import dev.sargunv.maplibrecompose.expressions.value.FloatValue
+import dev.sargunv.maplibrecompose.expressions.value.ImageValue
+import dev.sargunv.maplibrecompose.expressions.value.TranslateAnchor
 import org.maplibre.android.style.expressions.Expression as MLNExpression
 import org.maplibre.android.style.layers.FillExtrusionLayer as MLNFillExtrusionLayer
 import org.maplibre.android.style.layers.PropertyFactory
@@ -21,39 +19,39 @@ internal actual class FillExtrusionLayer actual constructor(id: String, source: 
 
   actual override var sourceLayer: String by impl::sourceLayer
 
-  actual override fun setFilter(filter: Expression<BooleanValue>) {
+  actual override fun setFilter(filter: CompiledExpression<BooleanValue>) {
     impl.setFilter(filter.toMLNExpression() ?: MLNExpression.literal(true))
   }
 
-  actual fun setFillExtrusionOpacity(opacity: Expression<FloatValue>) {
+  actual fun setFillExtrusionOpacity(opacity: CompiledExpression<FloatValue>) {
     impl.setProperties(PropertyFactory.fillExtrusionOpacity(opacity.toMLNExpression()))
   }
 
-  actual fun setFillExtrusionColor(color: Expression<ColorValue>) {
+  actual fun setFillExtrusionColor(color: CompiledExpression<ColorValue>) {
     impl.setProperties(PropertyFactory.fillExtrusionColor(color.toMLNExpression()))
   }
 
-  actual fun setFillExtrusionTranslate(translate: Expression<DpOffsetValue>) {
+  actual fun setFillExtrusionTranslate(translate: CompiledExpression<DpOffsetValue>) {
     impl.setProperties(PropertyFactory.fillExtrusionTranslate(translate.toMLNExpression()))
   }
 
-  actual fun setFillExtrusionTranslateAnchor(anchor: Expression<EnumValue<TranslateAnchor>>) {
+  actual fun setFillExtrusionTranslateAnchor(anchor: CompiledExpression<TranslateAnchor>) {
     impl.setProperties(PropertyFactory.fillExtrusionTranslateAnchor(anchor.toMLNExpression()))
   }
 
-  actual fun setFillExtrusionPattern(pattern: Expression<ResolvedValue<ImageValue>>) {
+  actual fun setFillExtrusionPattern(pattern: CompiledExpression<ImageValue>) {
     impl.setProperties(PropertyFactory.fillExtrusionPattern(pattern.toMLNExpression()))
   }
 
-  actual fun setFillExtrusionHeight(height: Expression<FloatValue>) {
+  actual fun setFillExtrusionHeight(height: CompiledExpression<FloatValue>) {
     impl.setProperties(PropertyFactory.fillExtrusionHeight(height.toMLNExpression()))
   }
 
-  actual fun setFillExtrusionBase(base: Expression<FloatValue>) {
+  actual fun setFillExtrusionBase(base: CompiledExpression<FloatValue>) {
     impl.setProperties(PropertyFactory.fillExtrusionBase(base.toMLNExpression()))
   }
 
-  actual fun setFillExtrusionVerticalGradient(verticalGradient: Expression<BooleanValue>) {
+  actual fun setFillExtrusionVerticalGradient(verticalGradient: CompiledExpression<BooleanValue>) {
     impl.setProperties(
       PropertyFactory.fillExtrusionVerticalGradient(verticalGradient.toMLNExpression())
     )

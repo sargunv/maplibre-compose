@@ -2,7 +2,6 @@
 
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 
 plugins {
@@ -10,6 +9,7 @@ plugins {
   id("android-library-conventions")
   id(libs.plugins.kotlin.multiplatform.get().pluginId)
   id(libs.plugins.kotlin.cocoapods.get().pluginId)
+  id(libs.plugins.kotlin.composeCompiler.get().pluginId)
   id(libs.plugins.android.library.get().pluginId)
   id(libs.plugins.compose.get().pluginId)
   id(libs.plugins.mavenPublish.get().pluginId)
@@ -25,16 +25,36 @@ mavenPublishing {
   }
 }
 
+val desktopResources: Configuration by
+  configurations.creating {
+    isCanBeConsumed = false
+    isCanBeResolved = true
+  }
+
+dependencies {
+  desktopResources(
+    project(path = ":lib:maplibre-compose-webview", configuration = "jsBrowserDistribution")
+  )
+}
+
+val copyDesktopResources by
+  tasks.registering(Copy::class) {
+    from(desktopResources)
+    eachFile { path = "files/${path}" }
+    into(project.layout.buildDirectory.dir(desktopResources.name))
+  }
+
 kotlin {
   androidTarget {
-    compilerOptions { jvmTarget.set(JvmTarget.JVM_11) }
+    compilerOptions { jvmTarget = project.getJvmTarget() }
     instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
     publishLibraryVariants("release", "debug")
   }
   iosArm64()
   iosSimulatorArm64()
   iosX64()
-  jvm("desktop")
+  jvm("desktop") { compilerOptions { jvmTarget = project.getJvmTarget() } }
+  js(IR) { browser() }
 
   cocoapods {
     noPodspec()
@@ -51,8 +71,10 @@ kotlin {
 
     commonMain.dependencies {
       implementation(compose.foundation)
+      implementation(compose.components.resources)
       api(libs.kermit)
       api(libs.spatialk.geojson)
+      api(project(":lib:maplibre-compose-expressions"))
     }
 
     androidMain.dependencies {
@@ -61,7 +83,14 @@ kotlin {
     }
 
     desktopMain.dependencies {
-      implementation("io.github.kevinnzou:compose-webview-multiplatform:1.9.40")
+      implementation(compose.desktop.common)
+      implementation(libs.kotlinx.coroutines.swing)
+      implementation(libs.webview)
+    }
+
+    jsMain.dependencies {
+      implementation(project(":lib:kotlin-maplibre-js"))
+      implementation(project(":lib:compose-html-interop"))
     }
 
     commonTest.dependencies {
@@ -79,4 +108,13 @@ kotlin {
       implementation(libs.androidx.composeUi.testManifest)
     }
   }
+}
+
+compose.resources {
+  packageOfResClass = "dev.sargunv.maplibrecompose.generated"
+
+  customDirectory(
+    sourceSetName = "desktopMain",
+    directoryProvider = layout.dir(copyDesktopResources.map { it.destinationDir }),
+  )
 }

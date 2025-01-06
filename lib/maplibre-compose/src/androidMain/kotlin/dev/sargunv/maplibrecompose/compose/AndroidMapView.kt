@@ -15,6 +15,7 @@ import dev.sargunv.maplibrecompose.core.AndroidMap
 import dev.sargunv.maplibrecompose.core.AndroidScaleBar
 import dev.sargunv.maplibrecompose.core.MaplibreMap
 import org.maplibre.android.MapLibre
+import org.maplibre.android.maps.MapLibreMapOptions
 import org.maplibre.android.maps.MapView
 
 @Composable
@@ -58,7 +59,8 @@ internal fun AndroidMapView(
     modifier = modifier,
     factory = { context ->
       MapLibre.getInstance(context)
-      MapView(context).also { mapView ->
+      MapView(context, MapLibreMapOptions.createFromAttributes(context).textureMode(false)).also {
+        mapView ->
         currentMapView = mapView
         mapView.getMapAsync { map ->
           currentMap =
@@ -80,8 +82,8 @@ internal fun AndroidMapView(
       map.layoutDir = layoutDir
       map.density = density
       map.callbacks = callbacks
-      map.styleUri = styleUri
       map.logger = logger
+      map.setStyleUri(styleUri)
       update(map)
     },
     onReset = {

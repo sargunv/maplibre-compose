@@ -1,34 +1,32 @@
 package dev.sargunv.maplibrecompose.core.layer
 
-import dev.sargunv.maplibrecompose.core.expression.BooleanValue
-import dev.sargunv.maplibrecompose.core.expression.ColorValue
-import dev.sargunv.maplibrecompose.core.expression.DpOffsetValue
-import dev.sargunv.maplibrecompose.core.expression.EnumValue
-import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.FloatValue
-import dev.sargunv.maplibrecompose.core.expression.ImageValue
-import dev.sargunv.maplibrecompose.core.expression.ResolvedValue
-import dev.sargunv.maplibrecompose.core.expression.TranslateAnchor
 import dev.sargunv.maplibrecompose.core.source.Source
+import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
+import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
+import dev.sargunv.maplibrecompose.expressions.value.ColorValue
+import dev.sargunv.maplibrecompose.expressions.value.DpOffsetValue
+import dev.sargunv.maplibrecompose.expressions.value.FloatValue
+import dev.sargunv.maplibrecompose.expressions.value.ImageValue
+import dev.sargunv.maplibrecompose.expressions.value.TranslateAnchor
 
 internal expect class FillLayer(id: String, source: Source) : FeatureLayer {
   override var sourceLayer: String
 
-  override fun setFilter(filter: Expression<BooleanValue>)
+  override fun setFilter(filter: CompiledExpression<BooleanValue>)
 
-  fun setFillSortKey(sortKey: Expression<FloatValue>)
+  fun setFillSortKey(sortKey: CompiledExpression<FloatValue>)
 
-  fun setFillAntialias(antialias: Expression<BooleanValue>)
+  fun setFillAntialias(antialias: CompiledExpression<BooleanValue>)
 
-  fun setFillOpacity(opacity: Expression<FloatValue>)
+  fun setFillOpacity(opacity: CompiledExpression<FloatValue>)
 
-  fun setFillColor(color: Expression<ColorValue>)
+  fun setFillColor(color: CompiledExpression<ColorValue>)
 
-  fun setFillOutlineColor(outlineColor: Expression<ColorValue>)
+  fun setFillOutlineColor(outlineColor: CompiledExpression<ColorValue>)
 
-  fun setFillTranslate(translate: Expression<DpOffsetValue>)
+  fun setFillTranslate(translate: CompiledExpression<DpOffsetValue>)
 
-  fun setFillTranslateAnchor(translateAnchor: Expression<EnumValue<TranslateAnchor>>)
+  fun setFillTranslateAnchor(translateAnchor: CompiledExpression<TranslateAnchor>)
 
-  fun setFillPattern(pattern: Expression<ResolvedValue<ImageValue>>)
+  fun setFillPattern(pattern: CompiledExpression<ImageValue>)
 }

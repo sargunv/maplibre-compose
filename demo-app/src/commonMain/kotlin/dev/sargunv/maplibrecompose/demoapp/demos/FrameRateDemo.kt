@@ -23,6 +23,8 @@ import dev.sargunv.maplibrecompose.demoapp.DemoMapControls
 import dev.sargunv.maplibrecompose.demoapp.DemoOrnamentSettings
 import dev.sargunv.maplibrecompose.demoapp.DemoScaffold
 import dev.sargunv.maplibrecompose.demoapp.FrameRateState
+import dev.sargunv.maplibrecompose.demoapp.Platform
+import dev.sargunv.maplibrecompose.demoapp.usesMaplibreNative
 import kotlin.math.roundToInt
 
 object FrameRateDemo : Demo {
@@ -56,7 +58,8 @@ object FrameRateDemo : Demo {
           Slider(
             value = maximumFps.toFloat(),
             onValueChange = { maximumFps = it.roundToInt() },
-            valueRange = 15f..systemRefreshRate.toFloat(),
+            valueRange = 15f..systemRefreshRate.toFloat().coerceAtLeast(15f),
+            enabled = Platform.usesMaplibreNative,
           )
           Text(
             "Target: $maximumFps ${fpsState.spinChar} Actual: ${fpsState.avgFps}",

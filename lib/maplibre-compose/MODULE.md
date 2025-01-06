@@ -1,6 +1,6 @@
 # Module maplibre-compose
 
-Multiplatform library to manipulate maps in Compose apps.
+The primary entry point for MapLibre Compose.
 
 # Package dev.sargunv.maplibrecompose.compose
 

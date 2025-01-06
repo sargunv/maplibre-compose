@@ -97,8 +97,8 @@ internal fun IosMapView(
         map.density = density
         map.insetPadding = insetPadding
         map.callbacks = callbacks
-        map.styleUri = styleUri
         map.logger = logger
+        map.setStyleUri(styleUri)
         update(map)
       },
       onReset = {

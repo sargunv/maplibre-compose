@@ -12,13 +12,13 @@ import dev.sargunv.maplibrecompose.compose.layer.CircleLayer
 import dev.sargunv.maplibrecompose.compose.layer.LineLayer
 import dev.sargunv.maplibrecompose.compose.source.getBaseSource
 import dev.sargunv.maplibrecompose.compose.source.rememberGeoJsonSource
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.const
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.exponential
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.interpolate
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.zoom
-import dev.sargunv.maplibrecompose.core.expression.LineCap
-import dev.sargunv.maplibrecompose.core.expression.LineJoin
 import dev.sargunv.maplibrecompose.demoapp.generated.Res
+import dev.sargunv.maplibrecompose.expressions.dsl.const
+import dev.sargunv.maplibrecompose.expressions.dsl.exponential
+import dev.sargunv.maplibrecompose.expressions.dsl.interpolate
+import dev.sargunv.maplibrecompose.expressions.dsl.zoom
+import dev.sargunv.maplibrecompose.expressions.value.LineCap
+import dev.sargunv.maplibrecompose.expressions.value.LineJoin
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 @Composable
@@ -67,7 +67,7 @@ fun Layers() {
       color = const(Color.Blue),
       width =
         interpolate(
-          type = exponential(const(1.2f)),
+          type = exponential(1.2f),
           input = zoom(),
           5 to const(0.4.dp),
           6 to const(0.7.dp),

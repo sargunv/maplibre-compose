@@ -51,17 +51,18 @@ import dev.sargunv.maplibrecompose.material3.controls.AttributionButton
 import dev.sargunv.maplibrecompose.material3.controls.DisappearingCompassButton
 import dev.sargunv.maplibrecompose.material3.controls.DisappearingScaleBar
 
-private val DEMOS =
-  listOf(
-    MarkersDemo,
-    EdgeToEdgeDemo,
-    StyleSwitcherDemo,
-    ClusteredPointsDemo,
-    AnimatedLayerDemo,
-    CameraStateDemo,
-    CameraFollowDemo,
-    FrameRateDemo,
-  )
+private val DEMOS = buildList {
+  add(StyleSwitcherDemo)
+  if (Platform.supportsBlending) add(EdgeToEdgeDemo)
+  if (Platform.supportsLayers) {
+    add(MarkersDemo)
+    add(ClusteredPointsDemo)
+    add(AnimatedLayerDemo)
+  }
+  if (!Platform.isDesktop) add(CameraStateDemo)
+  if (Platform.usesMaplibreNative) add(CameraFollowDemo)
+  if (!Platform.isDesktop) add(FrameRateDemo)
+}
 
 @Composable
 fun DemoApp(navController: NavHostController = rememberNavController()) {
@@ -121,8 +122,10 @@ fun DemoAppBar(demo: Demo, navigateUp: () -> Unit, alpha: Float = 1f) {
       }
     },
     actions = {
-      IconButton(onClick = { showInfo = true }) {
-        Icon(imageVector = Icons.Default.Info, contentDescription = "Info")
+      if (Platform.supportsBlending) {
+        IconButton(onClick = { showInfo = true }) {
+          Icon(imageVector = Icons.Default.Info, contentDescription = "Info")
+        }
       }
     },
   )
@@ -151,24 +154,28 @@ fun DemoMapControls(
   modifier: Modifier = Modifier,
   onCompassClick: () -> Unit = {},
 ) {
-  Box(modifier = modifier.fillMaxSize().padding(8.dp)) {
-    DisappearingScaleBar(
-      metersPerDp = cameraState.metersPerDpAtTarget,
-      zoom = cameraState.position.zoom,
-      modifier = Modifier.align(Alignment.TopStart),
-    )
-    DisappearingCompassButton(
-      cameraState,
-      modifier = Modifier.align(Alignment.TopEnd),
-      onClick = onCompassClick,
-    )
-    AttributionButton(styleState, modifier = Modifier.align(Alignment.BottomEnd))
+  if (Platform.supportsBlending) {
+    Box(modifier = modifier.fillMaxSize().padding(8.dp)) {
+      DisappearingScaleBar(
+        metersPerDp = cameraState.metersPerDpAtTarget,
+        zoom = cameraState.position.zoom,
+        modifier = Modifier.align(Alignment.TopStart),
+      )
+      DisappearingCompassButton(
+        cameraState,
+        modifier = Modifier.align(Alignment.TopEnd),
+        onClick = onCompassClick,
+      )
+      AttributionButton(styleState, modifier = Modifier.align(Alignment.BottomEnd))
+    }
   }
 }
 
 fun DemoOrnamentSettings(padding: PaddingValues = PaddingValues(0.dp)) =
-  OrnamentSettings.AllDisabled.copy(
-    padding = padding,
-    isLogoEnabled = true,
-    logoAlignment = Alignment.BottomStart,
-  )
+  if (Platform.supportsBlending)
+    OrnamentSettings.AllDisabled.copy(
+      padding = padding,
+      isLogoEnabled = true,
+      logoAlignment = Alignment.BottomStart,
+    )
+  else OrnamentSettings.AllEnabled

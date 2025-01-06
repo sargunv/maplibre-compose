@@ -1,7 +1,6 @@
 plugins {
   id("module-conventions")
   id("org.jetbrains.kotlin.multiplatform")
-  id("org.jetbrains.kotlin.plugin.compose")
   id("org.jetbrains.kotlin.plugin.serialization")
   id("org.jetbrains.dokka")
   id("maven-publish")
@@ -12,13 +11,13 @@ group = "dev.sargunv.maplibre-compose"
 kotlin {
   explicitApi()
 
+  jvmToolchain(properties["jvmToolchain"]!!.toString().toInt())
+
   compilerOptions {
     allWarningsAsErrors = true
     freeCompilerArgs.addAll("-Xexpect-actual-classes", "-Xconsistent-data-class-copy-visibility")
   }
 }
-
-composeCompiler { reportsDestination = layout.buildDirectory.dir("compose/reports") }
 
 dokka {
   dokkaSourceSets {

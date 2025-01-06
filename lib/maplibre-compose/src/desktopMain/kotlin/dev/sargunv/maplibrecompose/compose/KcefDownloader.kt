@@ -1,7 +1,5 @@
 package dev.sargunv.maplibrecompose.compose
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -9,14 +7,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import dev.datlag.kcef.KCEF
+import dev.sargunv.maplibrecompose.core.CustomCefAppHandler
 import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
-internal fun KcefDownloader(content: @Composable () -> Unit) {
+public fun KcefProvider(loading: @Composable () -> Unit = {}, content: @Composable () -> Unit) {
   var initialized by remember { mutableStateOf(false) }
 
   LaunchedEffect(Unit) {
@@ -24,12 +22,13 @@ internal fun KcefDownloader(content: @Composable () -> Unit) {
       KCEF.init({
         // TODO https://github.com/harawata/appdirs
         installDir(File("kcef-bundle"))
+        appHandler(CustomCefAppHandler)
       })
     }
     initialized = true
   }
 
-  if (initialized) content() else Box(modifier = Modifier.fillMaxSize())
+  if (initialized) content() else loading()
 
   DisposableEffect(Unit) { onDispose { KCEF.disposeBlocking() } }
 }

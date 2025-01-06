@@ -3,14 +3,13 @@ package dev.sargunv.maplibrecompose.compose.layer
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import dev.sargunv.maplibrecompose.compose.MaplibreComposable
-import dev.sargunv.maplibrecompose.compose.engine.LocalStyleNode
-import dev.sargunv.maplibrecompose.core.expression.ColorValue
-import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.const
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.nil
-import dev.sargunv.maplibrecompose.core.expression.FloatValue
-import dev.sargunv.maplibrecompose.core.expression.ImageValue
 import dev.sargunv.maplibrecompose.core.layer.BackgroundLayer
+import dev.sargunv.maplibrecompose.expressions.ast.Expression
+import dev.sargunv.maplibrecompose.expressions.dsl.const
+import dev.sargunv.maplibrecompose.expressions.dsl.nil
+import dev.sargunv.maplibrecompose.expressions.value.ColorValue
+import dev.sargunv.maplibrecompose.expressions.value.FloatValue
+import dev.sargunv.maplibrecompose.expressions.value.ImageValue
 
 /**
  * The background layer just draws the map background, by default, plain black.
@@ -41,8 +40,11 @@ public fun BackgroundLayer(
   color: Expression<ColorValue> = const(Color.Black),
   pattern: Expression<ImageValue> = nil(),
 ) {
-  val node = LocalStyleNode.current
-  val resolvedPattern = node.imageManager.resolveImages(pattern)
+  val compile = rememberPropertyCompiler()
+
+  val compiledOpacity = compile(opacity)
+  val compiledColor = compile(color)
+  val compiledPattern = compile(pattern)
 
   LayerNode(
     factory = { BackgroundLayer(id = id) },
@@ -50,9 +52,9 @@ public fun BackgroundLayer(
       set(minZoom) { layer.minZoom = it }
       set(maxZoom) { layer.maxZoom = it }
       set(visible) { layer.visible = it }
-      set(color) { layer.setBackgroundColor(it) }
-      set(resolvedPattern) { layer.setBackgroundPattern(it) }
-      set(opacity) { layer.setBackgroundOpacity(it) }
+      set(compiledColor) { layer.setBackgroundColor(it) }
+      set(compiledPattern) { layer.setBackgroundPattern(it) }
+      set(compiledOpacity) { layer.setBackgroundOpacity(it) }
     },
     onClick = null,
     onLongClick = null,

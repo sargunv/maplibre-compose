@@ -8,10 +8,12 @@ import androidx.compose.ui.unit.DpRect
 import dev.sargunv.maplibrecompose.core.CameraMoveReason
 import dev.sargunv.maplibrecompose.core.CameraPosition
 import dev.sargunv.maplibrecompose.core.MaplibreMap
+import dev.sargunv.maplibrecompose.core.StandardMaplibreMap
 import dev.sargunv.maplibrecompose.core.VisibleRegion
-import dev.sargunv.maplibrecompose.core.expression.BooleanValue
-import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.const
+import dev.sargunv.maplibrecompose.expressions.ExpressionContext
+import dev.sargunv.maplibrecompose.expressions.ast.Expression
+import dev.sargunv.maplibrecompose.expressions.dsl.const
+import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
@@ -30,7 +32,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
   internal var map: MaplibreMap? = null
     set(map) {
       if (map != null && map !== field) {
-        map.cameraPosition = position
+        (map as StandardMaplibreMap).setCameraPosition(position)
         mapAttachSignal.trySend(map)
       }
       field = map
@@ -47,7 +49,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
   public var position: CameraPosition
     get() = positionState.value
     set(value) {
-      map?.cameraPosition = value
+      maybeMap { it.setCameraPosition(value) }
       positionState.value = value
     }
 
@@ -73,11 +75,15 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
     map.animateCameraPosition(finalPosition, duration)
   }
 
-  private fun requireMap(): MaplibreMap {
+  private fun requireMap(): StandardMaplibreMap {
     check(map != null) {
       "Map requested before it was initialized; try calling awaitInitialization() first"
     }
-    return map!!
+    return map as? StandardMaplibreMap ?: error("Desktop not supported yet")
+  }
+
+  private fun <T> maybeMap(block: (StandardMaplibreMap) -> T): T? {
+    return map?.let { block(it as? StandardMaplibreMap ?: error("Desktop not supported yet")) }
   }
 
   /**
@@ -117,8 +123,9 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
     layerIds: Set<String>? = null,
     predicate: Expression<BooleanValue> = const(true),
   ): List<Feature> {
-    val predicateOrNull = predicate.takeUnless { it == const(true) }
-    return map?.queryRenderedFeatures(offset, layerIds, predicateOrNull) ?: emptyList()
+    val predicateOrNull =
+      predicate.takeUnless { it == const(true) }?.compile(ExpressionContext.None)
+    return maybeMap { it.queryRenderedFeatures(offset, layerIds, predicateOrNull) } ?: emptyList()
   }
 
   /**
@@ -137,8 +144,9 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
     layerIds: Set<String>? = null,
     predicate: Expression<BooleanValue> = const(true),
   ): List<Feature> {
-    val predicateOrNull = predicate.takeUnless { it == const(true) }
-    return map?.queryRenderedFeatures(rect, layerIds, predicateOrNull) ?: emptyList()
+    val predicateOrNull =
+      predicate.takeUnless { it == const(true) }?.compile(ExpressionContext.None)
+    return maybeMap { it.queryRenderedFeatures(rect, layerIds, predicateOrNull) } ?: emptyList()
   }
 
   /**
@@ -152,7 +160,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
    */
   public fun queryVisibleBoundingBox(): BoundingBox {
     // TODO at some point, this should be refactored to State, just like the camera position
-    return requireMap().visibleBoundingBox
+    return requireMap().getVisibleBoundingBox()
   }
 
   /**
@@ -164,6 +172,6 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
    */
   public fun queryVisibleRegion(): VisibleRegion {
     // TODO at some point, this should be refactored to State, just like the camera position
-    return requireMap().visibleRegion
+    return requireMap().getVisibleRegion()
   }
 }

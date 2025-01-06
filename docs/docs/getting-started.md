@@ -96,12 +96,29 @@ androidMain.dependencies {
 }
 ```
 
+## Set up Web (JS)
+
+!!! warning
+
+    Web support is not yet at feature parity with Android and iOS. Check the [status table](index.md#status) for more info.
+
+For Web, you'll additionally need to add the MapLibre CSS to your page. The
+easiest way to do this is via the CDN:
+
+```kotlin title="index.html"
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@{{ gradle.maplibre_js_version }}/dist/maplibre-gl.css'/>
+  </head>
+</html>
+```
+
 ## Set up Desktop (JVM)
 
 !!! warning
 
-    Desktop support is not yet at feature parity with Android and iOS. Feel free to try it out,
-    but don't expect it to work well yet. Check the [status table](index.md#status) for more info.
+    Desktop support is not yet at feature parity with Android and iOS. Check the [status table](index.md#status) for more info.
 
 On desktop, we use [DATL4g/KCEF][kcef] to embed a Chromium based browser. It
 requires some special configuration.
@@ -130,14 +147,13 @@ compose.desktop {
 }
 ```
 
-Wrap your app with the `MaplibreContext` composable:
+Wrap your app with `KcefProvider` to download KCEF on first lanch, and
+`MaplibreContext` to provide the library with context about the window your app
+is running in:
 
 ```kotlin title="Main.kt"
 -8<- "demo-app/src/desktopMain/kotlin/dev/sargunv/maplibrecompose/demoapp/Main.kt:main"
 ```
-
-When the app first launches, KCEF will be downloaded in the background before
-your UI is visible.
 
 ## Display your first map
 

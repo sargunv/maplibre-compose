@@ -2,7 +2,6 @@
 
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 
 plugins {
@@ -10,6 +9,7 @@ plugins {
   id("android-library-conventions")
   id(libs.plugins.kotlin.multiplatform.get().pluginId)
   id(libs.plugins.kotlin.cocoapods.get().pluginId)
+  id(libs.plugins.kotlin.composeCompiler.get().pluginId)
   id(libs.plugins.android.library.get().pluginId)
   id(libs.plugins.compose.get().pluginId)
   id(libs.plugins.mavenPublish.get().pluginId)
@@ -27,14 +27,15 @@ mavenPublishing {
 
 kotlin {
   androidTarget {
-    compilerOptions { jvmTarget.set(JvmTarget.JVM_11) }
+    compilerOptions { jvmTarget = project.getJvmTarget() }
     instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
     publishLibraryVariants("release", "debug")
   }
   iosArm64()
   iosSimulatorArm64()
   iosX64()
-  jvm("desktop")
+  jvm("desktop") { compilerOptions { jvmTarget = project.getJvmTarget() } }
+  js(IR) { browser() }
 
   cocoapods {
     noPodspec()

@@ -11,8 +11,8 @@ import org.maplibre.android.maps.Style as MLNStyle
 internal class AndroidStyle(style: MLNStyle) : Style {
   private var impl: MLNStyle = style
 
-  override fun addImage(id: String, image: ImageBitmap) {
-    impl.addImage(id, image.asAndroidBitmap())
+  override fun addImage(id: String, image: ImageBitmap, sdf: Boolean) {
+    impl.addImage(id, image.asAndroidBitmap(), sdf)
   }
 
   override fun removeImage(id: String) {

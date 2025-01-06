@@ -33,15 +33,17 @@ import dev.sargunv.maplibrecompose.compose.rememberStyleState
 import dev.sargunv.maplibrecompose.compose.source.rememberGeoJsonSource
 import dev.sargunv.maplibrecompose.core.CameraMoveReason
 import dev.sargunv.maplibrecompose.core.CameraPosition
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.const
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.offset
 import dev.sargunv.maplibrecompose.core.source.Source
 import dev.sargunv.maplibrecompose.demoapp.DEFAULT_STYLE
 import dev.sargunv.maplibrecompose.demoapp.Demo
 import dev.sargunv.maplibrecompose.demoapp.DemoMapControls
 import dev.sargunv.maplibrecompose.demoapp.DemoOrnamentSettings
 import dev.sargunv.maplibrecompose.demoapp.DemoScaffold
+import dev.sargunv.maplibrecompose.demoapp.Platform
 import dev.sargunv.maplibrecompose.demoapp.PositionVectorConverter
+import dev.sargunv.maplibrecompose.demoapp.supportsLayers
+import dev.sargunv.maplibrecompose.expressions.dsl.const
+import dev.sargunv.maplibrecompose.expressions.dsl.offset
 import io.github.dellisd.spatialk.geojson.Point
 import io.github.dellisd.spatialk.geojson.Position
 import kotlin.math.roundToInt
@@ -85,7 +87,11 @@ object CameraFollowDemo : Demo {
             styleState = styleState,
             ornamentSettings = DemoOrnamentSettings(),
           ) {
-            LocationPuck(locationSource = rememberGeoJsonSource("target", Point(animatedPosition)))
+            if (Platform.supportsLayers) {
+              LocationPuck(
+                locationSource = rememberGeoJsonSource("target", Point(animatedPosition))
+              )
+            }
           }
           DemoMapControls(
             cameraState,

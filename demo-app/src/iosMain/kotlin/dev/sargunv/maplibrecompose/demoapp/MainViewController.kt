@@ -13,3 +13,10 @@ fun MainViewController() = ComposeUIViewController { DemoApp() }
 actual fun getDefaultColorScheme(isDark: Boolean): ColorScheme {
   return if (isDark) darkColorScheme() else lightColorScheme()
 }
+
+actual object Platform {
+  actual val isAndroid: Boolean = false
+  actual val isIos: Boolean = true
+  actual val isDesktop: Boolean = false
+  actual val isWeb: Boolean = false
+}

@@ -1,34 +1,32 @@
 package dev.sargunv.maplibrecompose.core.layer
 
-import dev.sargunv.maplibrecompose.core.expression.BooleanValue
-import dev.sargunv.maplibrecompose.core.expression.ColorValue
-import dev.sargunv.maplibrecompose.core.expression.DpOffsetValue
-import dev.sargunv.maplibrecompose.core.expression.EnumValue
-import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.FloatValue
-import dev.sargunv.maplibrecompose.core.expression.ImageValue
-import dev.sargunv.maplibrecompose.core.expression.ResolvedValue
-import dev.sargunv.maplibrecompose.core.expression.TranslateAnchor
 import dev.sargunv.maplibrecompose.core.source.Source
+import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
+import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
+import dev.sargunv.maplibrecompose.expressions.value.ColorValue
+import dev.sargunv.maplibrecompose.expressions.value.DpOffsetValue
+import dev.sargunv.maplibrecompose.expressions.value.FloatValue
+import dev.sargunv.maplibrecompose.expressions.value.ImageValue
+import dev.sargunv.maplibrecompose.expressions.value.TranslateAnchor
 
 internal expect class FillExtrusionLayer(id: String, source: Source) : FeatureLayer {
   override var sourceLayer: String
 
-  override fun setFilter(filter: Expression<BooleanValue>)
+  override fun setFilter(filter: CompiledExpression<BooleanValue>)
 
-  fun setFillExtrusionOpacity(opacity: Expression<FloatValue>)
+  fun setFillExtrusionOpacity(opacity: CompiledExpression<FloatValue>)
 
-  fun setFillExtrusionColor(color: Expression<ColorValue>)
+  fun setFillExtrusionColor(color: CompiledExpression<ColorValue>)
 
-  fun setFillExtrusionTranslate(translate: Expression<DpOffsetValue>)
+  fun setFillExtrusionTranslate(translate: CompiledExpression<DpOffsetValue>)
 
-  fun setFillExtrusionTranslateAnchor(anchor: Expression<EnumValue<TranslateAnchor>>)
+  fun setFillExtrusionTranslateAnchor(anchor: CompiledExpression<TranslateAnchor>)
 
-  fun setFillExtrusionPattern(pattern: Expression<ResolvedValue<ImageValue>>)
+  fun setFillExtrusionPattern(pattern: CompiledExpression<ImageValue>)
 
-  fun setFillExtrusionHeight(height: Expression<FloatValue>)
+  fun setFillExtrusionHeight(height: CompiledExpression<FloatValue>)
 
-  fun setFillExtrusionBase(base: Expression<FloatValue>)
+  fun setFillExtrusionBase(base: CompiledExpression<FloatValue>)
 
-  fun setFillExtrusionVerticalGradient(verticalGradient: Expression<BooleanValue>)
+  fun setFillExtrusionVerticalGradient(verticalGradient: CompiledExpression<BooleanValue>)
 }

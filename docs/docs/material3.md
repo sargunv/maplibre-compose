@@ -1,5 +1,14 @@
 # Material 3 extensions
 
+!!! warning
+
+    While this module is available across all platforms, you won't be able to use it on top of the
+    map on Web or Desktop due to technical limitations in Compose Multiplatform. See YouTrack issue
+    [CMP-6001](https://youtrack.jetbrains.com/issue/CMP-6001) and
+    [CMP-6856](https://youtrack.jetbrains.com/issue/CMP-6856).
+
+    Android and iOS are not affected by this limitation.
+
 ## Getting Started
 
 We provide reimplementations of certain ornaments using Material 3. These are

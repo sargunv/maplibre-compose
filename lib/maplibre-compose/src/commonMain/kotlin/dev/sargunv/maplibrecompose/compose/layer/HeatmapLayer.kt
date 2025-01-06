@@ -4,17 +4,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrecompose.compose.FeaturesClickHandler
 import dev.sargunv.maplibrecompose.compose.MaplibreComposable
-import dev.sargunv.maplibrecompose.core.expression.BooleanValue
-import dev.sargunv.maplibrecompose.core.expression.ColorValue
-import dev.sargunv.maplibrecompose.core.expression.Defaults
-import dev.sargunv.maplibrecompose.core.expression.DpValue
-import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.const
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.heatmapDensity
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.nil
-import dev.sargunv.maplibrecompose.core.expression.FloatValue
 import dev.sargunv.maplibrecompose.core.layer.HeatmapLayer
 import dev.sargunv.maplibrecompose.core.source.Source
+import dev.sargunv.maplibrecompose.expressions.Defaults
+import dev.sargunv.maplibrecompose.expressions.ast.Expression
+import dev.sargunv.maplibrecompose.expressions.dsl.const
+import dev.sargunv.maplibrecompose.expressions.dsl.heatmapDensity
+import dev.sargunv.maplibrecompose.expressions.dsl.nil
+import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
+import dev.sargunv.maplibrecompose.expressions.value.ColorValue
+import dev.sargunv.maplibrecompose.expressions.value.DpValue
+import dev.sargunv.maplibrecompose.expressions.value.FloatValue
 
 /**
  * A heatmap layer draws points from the [sourceLayer] in the given [source] as a heatmap.
@@ -28,8 +28,7 @@ import dev.sargunv.maplibrecompose.core.source.Source
  *   this, the layer will be hidden. A value in the range of `[0..24]`.
  * @param filter An expression specifying conditions on source features. Only features that match
  *   the filter are displayed. Zoom expressions in filters are only evaluated at integer zoom
- *   levels. The
- *   [featureState][dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.featureState]
+ *   levels. The [featureState][dev.sargunv.maplibrecompose.expressions.dsl.Feature.state]
  *   expression is not supported in filter expressions.
  * @param visible Whether the layer should be displayed.
  * @param color Defines the color of each pixel based on its density value in a heatmap. Should be
@@ -63,19 +62,28 @@ public fun HeatmapLayer(
   onClick: FeaturesClickHandler? = null,
   onLongClick: FeaturesClickHandler? = null,
 ) {
+  val compile = rememberPropertyCompiler()
+
+  val compiledFilter = compile(filter)
+  val compiledColor = compile(color)
+  val compiledOpacity = compile(opacity)
+  val compiledRadius = compile(radius)
+  val compiledWeight = compile(weight)
+  val compiledIntensity = compile(intensity)
+
   LayerNode(
     factory = { HeatmapLayer(id = id, source = source) },
     update = {
       set(sourceLayer) { layer.sourceLayer = it }
       set(minZoom) { layer.minZoom = it }
       set(maxZoom) { layer.maxZoom = it }
-      set(filter) { layer.setFilter(it) }
+      set(compiledFilter) { layer.setFilter(it) }
       set(visible) { layer.visible = it }
-      set(radius) { layer.setHeatmapRadius(it) }
-      set(weight) { layer.setHeatmapWeight(it) }
-      set(intensity) { layer.setHeatmapIntensity(it) }
-      set(color) { layer.setHeatmapColor(it) }
-      set(opacity) { layer.setHeatmapOpacity(it) }
+      set(compiledRadius) { layer.setHeatmapRadius(it) }
+      set(compiledWeight) { layer.setHeatmapWeight(it) }
+      set(compiledIntensity) { layer.setHeatmapIntensity(it) }
+      set(compiledColor) { layer.setHeatmapColor(it) }
+      set(compiledOpacity) { layer.setHeatmapOpacity(it) }
     },
     onClick = onClick,
     onLongClick = onLongClick,

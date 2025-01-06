@@ -22,8 +22,9 @@ tasks.withType<MkdocsTask>().configureEach {
     mapOf(
       "release_version" to releaseVersion,
       "snapshot_version" to snapshotVersion,
-      "maplibre_ios_version" to libs.versions.maplibre.ios.get(),
       "maplibre_android_version" to libs.versions.maplibre.android.sdk.get(),
+      "maplibre_ios_version" to libs.versions.maplibre.ios.get(),
+      "maplibre_js_version" to libs.versions.maplibre.js.get(),
     )
   )
 }
@@ -46,7 +47,10 @@ tasks.register("generateDocs") {
 
 dependencies {
   dokka(project(":lib:maplibre-compose:"))
+  dokka(project(":lib:maplibre-compose-expressions:"))
   dokka(project(":lib:maplibre-compose-material3:"))
+  dokka(project(":lib:kotlin-maplibre-js"))
+  dokka(project(":lib:compose-html-interop:"))
 }
 
 spotless {
@@ -64,11 +68,11 @@ spotless {
   }
   format("markdown") {
     target("**/*.md")
-    prettier().config(mapOf("proseWrap" to "always"))
+    prettier(libs.versions.tool.prettier.get()).config(mapOf("proseWrap" to "always"))
   }
   yaml {
     target("**/*.yml", "**/*.yaml")
-    prettier()
+    prettier(libs.versions.tool.prettier.get())
   }
 }
 

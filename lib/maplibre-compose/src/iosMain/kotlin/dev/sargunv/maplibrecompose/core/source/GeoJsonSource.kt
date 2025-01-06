@@ -10,9 +10,10 @@ import cocoapods.MapLibre.MLNShapeSourceOptionMaximumZoomLevel
 import cocoapods.MapLibre.MLNShapeSourceOptionMaximumZoomLevelForClustering
 import cocoapods.MapLibre.MLNShapeSourceOptionMinimumZoomLevel
 import cocoapods.MapLibre.MLNShapeSourceOptionSimplificationTolerance
-import dev.sargunv.maplibrecompose.core.expression.Expression
 import dev.sargunv.maplibrecompose.core.util.toMLNShape
 import dev.sargunv.maplibrecompose.core.util.toNSExpression
+import dev.sargunv.maplibrecompose.expressions.ExpressionContext
+import dev.sargunv.maplibrecompose.expressions.ast.FunctionCall
 import io.github.dellisd.spatialk.geojson.GeoJson
 import platform.Foundation.NSNumber
 import platform.Foundation.NSURL
@@ -43,7 +44,7 @@ public actual class GeoJsonSource : Source {
       put(
         MLNShapeSourceOptionClusterProperties,
         options.clusterProperties.mapValues { (_, p) ->
-          Expression.ofList(listOf(p.operator, p.mapper.value)).toNSExpression()
+          FunctionCall.of(p.operator, p.mapper).compile(ExpressionContext.None).toNSExpression()
         },
       )
     }

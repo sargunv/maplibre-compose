@@ -6,20 +6,19 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrecompose.compose.FeaturesClickHandler
 import dev.sargunv.maplibrecompose.compose.MaplibreComposable
-import dev.sargunv.maplibrecompose.core.expression.BooleanValue
-import dev.sargunv.maplibrecompose.core.expression.CirclePitchAlignment
-import dev.sargunv.maplibrecompose.core.expression.CirclePitchScale
-import dev.sargunv.maplibrecompose.core.expression.ColorValue
-import dev.sargunv.maplibrecompose.core.expression.DpOffsetValue
-import dev.sargunv.maplibrecompose.core.expression.DpValue
-import dev.sargunv.maplibrecompose.core.expression.EnumValue
-import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.const
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.nil
-import dev.sargunv.maplibrecompose.core.expression.FloatValue
-import dev.sargunv.maplibrecompose.core.expression.TranslateAnchor
 import dev.sargunv.maplibrecompose.core.layer.CircleLayer
 import dev.sargunv.maplibrecompose.core.source.Source
+import dev.sargunv.maplibrecompose.expressions.ast.Expression
+import dev.sargunv.maplibrecompose.expressions.dsl.const
+import dev.sargunv.maplibrecompose.expressions.dsl.nil
+import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
+import dev.sargunv.maplibrecompose.expressions.value.CirclePitchAlignment
+import dev.sargunv.maplibrecompose.expressions.value.CirclePitchScale
+import dev.sargunv.maplibrecompose.expressions.value.ColorValue
+import dev.sargunv.maplibrecompose.expressions.value.DpOffsetValue
+import dev.sargunv.maplibrecompose.expressions.value.DpValue
+import dev.sargunv.maplibrecompose.expressions.value.FloatValue
+import dev.sargunv.maplibrecompose.expressions.value.TranslateAnchor
 
 /**
  * A circle layer draws points from the [sourceLayer] in the given [source] in the given style as a
@@ -34,8 +33,7 @@ import dev.sargunv.maplibrecompose.core.source.Source
  *   this, the layer will be hidden. A value in the range of `[0..24]`.
  * @param filter An expression specifying conditions on source features. Only features that match
  *   the filter are displayed. Zoom expressions in filters are only evaluated at integer zoom
- *   levels. The
- *   [featureState][dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.featureState]
+ *   levels. The [featureState][dev.sargunv.maplibrecompose.expressions.dsl.Feature.state]
  *   expression is not supported in filter expressions.
  * @param visible Whether the layer should be displayed.
  * @param sortKey Sorts features within this layer in ascending order based on this value. Features
@@ -71,7 +69,7 @@ public fun CircleLayer(
   visible: Boolean = true,
   sortKey: Expression<FloatValue> = nil(),
   translate: Expression<DpOffsetValue> = const(DpOffset.Zero),
-  translateAnchor: Expression<EnumValue<TranslateAnchor>> = const(TranslateAnchor.Map),
+  translateAnchor: Expression<TranslateAnchor> = const(TranslateAnchor.Map),
   opacity: Expression<FloatValue> = const(1f),
   color: Expression<ColorValue> = const(Color.Black),
   blur: Expression<FloatValue> = const(0f),
@@ -79,32 +77,47 @@ public fun CircleLayer(
   strokeOpacity: Expression<FloatValue> = const(1f),
   strokeColor: Expression<ColorValue> = const(Color.Black),
   strokeWidth: Expression<DpValue> = const(0.dp),
-  pitchScale: Expression<EnumValue<CirclePitchScale>> = const(CirclePitchScale.Map),
-  pitchAlignment: Expression<EnumValue<CirclePitchAlignment>> =
-    const(CirclePitchAlignment.Viewport),
+  pitchScale: Expression<CirclePitchScale> = const(CirclePitchScale.Map),
+  pitchAlignment: Expression<CirclePitchAlignment> = const(CirclePitchAlignment.Viewport),
   onClick: FeaturesClickHandler? = null,
   onLongClick: FeaturesClickHandler? = null,
 ) {
+  val compile = rememberPropertyCompiler()
+
+  val compiledFilter = compile(filter)
+  val compiledSortKey = compile(sortKey)
+  val compiledTranslate = compile(translate)
+  val compiledTranslateAnchor = compile(translateAnchor)
+  val compiledOpacity = compile(opacity)
+  val compiledColor = compile(color)
+  val compiledBlur = compile(blur)
+  val compiledRadius = compile(radius)
+  val compiledStrokeOpacity = compile(strokeOpacity)
+  val compiledStrokeColor = compile(strokeColor)
+  val compiledStrokeWidth = compile(strokeWidth)
+  val compiledPitchScale = compile(pitchScale)
+  val compiledPitchAlignment = compile(pitchAlignment)
+
   LayerNode(
     factory = { CircleLayer(id = id, source = source) },
     update = {
       set(sourceLayer) { layer.sourceLayer = it }
       set(minZoom) { layer.minZoom = it }
       set(maxZoom) { layer.maxZoom = it }
-      set(filter) { layer.setFilter(it) }
+      set(compiledFilter) { layer.setFilter(it) }
       set(visible) { layer.visible = it }
-      set(sortKey) { layer.setCircleSortKey(it) }
-      set(radius) { layer.setCircleRadius(it) }
-      set(color) { layer.setCircleColor(it) }
-      set(blur) { layer.setCircleBlur(it) }
-      set(opacity) { layer.setCircleOpacity(it) }
-      set(translate) { layer.setCircleTranslate(it) }
-      set(translateAnchor) { layer.setCircleTranslateAnchor(it) }
-      set(pitchScale) { layer.setCirclePitchScale(it) }
-      set(pitchAlignment) { layer.setCirclePitchAlignment(it) }
-      set(strokeWidth) { layer.setCircleStrokeWidth(it) }
-      set(strokeColor) { layer.setCircleStrokeColor(it) }
-      set(strokeOpacity) { layer.setCircleStrokeOpacity(it) }
+      set(compiledSortKey) { layer.setCircleSortKey(it) }
+      set(compiledRadius) { layer.setCircleRadius(it) }
+      set(compiledColor) { layer.setCircleColor(it) }
+      set(compiledBlur) { layer.setCircleBlur(it) }
+      set(compiledOpacity) { layer.setCircleOpacity(it) }
+      set(compiledTranslate) { layer.setCircleTranslate(it) }
+      set(compiledTranslateAnchor) { layer.setCircleTranslateAnchor(it) }
+      set(compiledPitchScale) { layer.setCirclePitchScale(it) }
+      set(compiledPitchAlignment) { layer.setCirclePitchAlignment(it) }
+      set(compiledStrokeWidth) { layer.setCircleStrokeWidth(it) }
+      set(compiledStrokeColor) { layer.setCircleStrokeColor(it) }
+      set(compiledStrokeOpacity) { layer.setCircleStrokeOpacity(it) }
     },
     onClick = onClick,
     onLongClick = onLongClick,

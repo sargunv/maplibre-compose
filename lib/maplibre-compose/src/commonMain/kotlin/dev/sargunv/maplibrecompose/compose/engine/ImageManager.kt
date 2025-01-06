@@ -1,112 +1,82 @@
 package dev.sargunv.maplibrecompose.compose.engine
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.takeOrElse
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.LayoutDirection
-import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.ExpressionValue
-import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.cast
-import dev.sargunv.maplibrecompose.core.expression.ResolvedValue
+import androidx.compose.ui.unit.dp
 
 internal class ImageManager(private val node: StyleNode) {
-  private val bitmapIds = IncrementingIdMap<ImageBitmap>("bitmap")
-  private val bitmapCounter = ReferenceCounter<ImageBitmap>()
+  private val bitmapIds = IncrementingIdMap<BitmapKey>("bitmap")
+  private val bitmapCounter = ReferenceCounter<BitmapKey>()
 
-  private val painterIds = IncrementingIdMap<Painter>("painter")
-  private val painterCounter = ReferenceCounter<Painter>()
-  private val painterBitmaps = mutableMapOf<Painter, ImageBitmap>()
+  private val painterIds = IncrementingIdMap<PainterKey>("painter")
+  private val painterCounter = ReferenceCounter<PainterKey>()
+  private val painterBitmaps = mutableMapOf<PainterKey, ImageBitmap>()
 
-  private fun resolveBitmap(bitmap: ImageBitmap): String {
-    bitmapCounter.increment(bitmap) {
-      val id = bitmapIds.addId(bitmap)
+  internal fun acquireBitmap(key: BitmapKey): String {
+    bitmapCounter.increment(key) {
+      val id = bitmapIds.addId(key)
       node.logger?.i { "Adding bitmap $id" }
-      node.style.addImage(id, bitmap)
+      node.style.addImage(id, key.bitmap, key.sdf)
     }
-    return bitmapIds.getId(bitmap)
+    return bitmapIds.getId(key)
   }
 
-  private fun disposeBitmap(bitmap: ImageBitmap) {
-    bitmapCounter.decrement(bitmap) {
-      val id = bitmapIds.removeId(bitmap)
+  internal fun releaseBitmap(key: BitmapKey) {
+    bitmapCounter.decrement(key) {
+      val id = bitmapIds.removeId(key)
       node.logger?.i { "Removing bitmap $id" }
       node.style.removeImage(id)
     }
   }
 
-  private fun Painter.drawToBitmap(
-    density: Density,
-    layoutDirection: LayoutDirection,
-  ): ImageBitmap {
-    val size = intrinsicSize.takeOrElse { Size(16f, 16f) }
-    return ImageBitmap(size.width.toInt(), size.height.toInt()).also { bitmap ->
-      CanvasDrawScope().draw(density, layoutDirection, Canvas(bitmap), size) { draw(size) }
+  private fun PainterKey.drawToBitmap(): ImageBitmap {
+    val size =
+      with(density) {
+        size?.let { Size(it.width.toPx(), it.height.toPx()) }
+          ?: painter.intrinsicSize.takeOrElse { Size(16.dp.toPx(), 16.dp.toPx()) }
+      }
+    val bitmap = ImageBitmap(size.width.toInt(), size.height.toInt())
+    CanvasDrawScope().draw(density, layoutDirection, Canvas(bitmap), size) {
+      with(painter) { draw(size) }
     }
+    return bitmap
   }
 
-  private fun resolvePainter(
-    painter: Painter,
-    density: Density,
-    layoutDirection: LayoutDirection,
-  ): String {
-    painterCounter.increment(painter) {
-      val id = painterIds.addId(painter)
+  internal fun acquirePainter(key: PainterKey): String {
+    painterCounter.increment(key) {
+      val id = painterIds.addId(key)
       node.logger?.i { "Adding painter $id" }
-      painter.drawToBitmap(density, layoutDirection).let { bitmap ->
-        painterBitmaps[painter] = bitmap
-        node.style.addImage(id, bitmap)
+      key.drawToBitmap().let { bitmap ->
+        painterBitmaps[key] = bitmap
+        node.style.addImage(id, bitmap, key.sdf)
       }
     }
-    return painterIds.getId(painter)
+    return painterIds.getId(key)
   }
 
-  private fun disposePainter(painter: Painter) {
-    painterCounter.decrement(painter) {
-      val id = painterIds.removeId(painter)
+  internal fun releasePainter(key: PainterKey) {
+    painterCounter.decrement(key) {
+      val id = painterIds.removeId(key)
       node.logger?.i { "Removing painter $id" }
-      painterBitmaps.remove(painter)
+      painterBitmaps.remove(key)
       node.style.removeImage(id)
     }
   }
 
-  @Composable
-  internal fun <T : ExpressionValue> resolveImages(
-    expr: Expression<T>
-  ): Expression<ResolvedValue<T>> {
-    val density = LocalDensity.current
-    val layoutDirection = LocalLayoutDirection.current
+  internal data class BitmapKey(val bitmap: ImageBitmap, val sdf: Boolean)
 
-    DisposableEffect(expr) {
-      onDispose {
-        expr.visitLeaves { value ->
-          when (value) {
-            is ImageBitmap -> disposeBitmap(value)
-            is Painter -> disposePainter(value)
-            else -> {}
-          }
-        }
-      }
-    }
-
-    return remember(expr) {
-      expr
-        .mapLeaves { value ->
-          when (value) {
-            is ImageBitmap -> resolveBitmap(value)
-            is Painter -> resolvePainter(value, density, layoutDirection)
-            else -> value
-          }
-        }
-        .cast()
-    }
-  }
+  internal data class PainterKey(
+    val painter: Painter,
+    val density: Density,
+    val layoutDirection: LayoutDirection,
+    val size: DpSize?,
+    val sdf: Boolean,
+  )
 }

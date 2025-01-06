@@ -10,8 +10,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Logger
-import dev.sargunv.maplibrecompose.core.expression.BooleanValue
-import dev.sargunv.maplibrecompose.core.expression.Expression
 import dev.sargunv.maplibrecompose.core.util.correctedAndroidUri
 import dev.sargunv.maplibrecompose.core.util.toBoundingBox
 import dev.sargunv.maplibrecompose.core.util.toGravity
@@ -21,6 +19,8 @@ import dev.sargunv.maplibrecompose.core.util.toOffset
 import dev.sargunv.maplibrecompose.core.util.toPointF
 import dev.sargunv.maplibrecompose.core.util.toPosition
 import dev.sargunv.maplibrecompose.core.util.toRectF
+import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
+import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
@@ -55,7 +55,7 @@ internal class AndroidMap(
   internal var callbacks: MaplibreMap.Callbacks,
   logger: Logger?,
   styleUri: String,
-) : MaplibreMap {
+) : StandardMaplibreMap {
 
   internal var layoutDir: LayoutDirection = layoutDir
     set(value) {
@@ -79,18 +79,19 @@ internal class AndroidMap(
       }
     }
 
-  override var styleUri: String = ""
-    set(value) {
-      if (field == value) return
-      logger?.i { "Setting style URI" }
-      callbacks.onStyleChanged(this, null)
-      val builder = MlnStyle.Builder().fromUri(value.correctedAndroidUri().toString())
-      map.setStyle(builder) {
-        logger?.i { "Style finished loading" }
-        callbacks.onStyleChanged(this, AndroidStyle(it))
-      }
-      field = value
+  private var lastStyleUri: String = ""
+
+  override fun setStyleUri(styleUri: String) {
+    if (styleUri == lastStyleUri) return
+    lastStyleUri = styleUri
+    logger?.i { "Setting style URI" }
+    callbacks.onStyleChanged(this, null)
+    val builder = MlnStyle.Builder().fromUri(styleUri.correctedAndroidUri().toString())
+    map.setStyle(builder) {
+      logger?.i { "Style finished loading" }
+      callbacks.onStyleChanged(this, AndroidStyle(it))
     }
+  }
 
   init {
     map.addOnCameraMoveStartedListener { reason ->
@@ -175,24 +176,38 @@ internal class AndroidMap(
       true
     }
 
-    map.setOnFpsChangedListener { onFpsChanged(it) }
+    map.setOnFpsChangedListener { fps -> callbacks.onFrame(fps) }
 
-    this.styleUri = styleUri
+    this.setStyleUri(styleUri)
   }
 
-  override var isDebugEnabled
-    get() = map.isDebugActive
-    set(value) {
-      map.isDebugActive = value
-    }
+  override fun setDebugEnabled(enabled: Boolean) {
+    map.isDebugActive = enabled
+  }
 
-  override var onFpsChanged: (Double) -> Unit = { _ -> }
+  override fun setMinPitch(minPitch: Double) {
+    map.setMinPitchPreference(minPitch)
+  }
 
-  override val visibleBoundingBox: BoundingBox
-    get() = map.projection.visibleRegion.latLngBounds.toBoundingBox()
+  override fun setMaxPitch(maxPitch: Double) {
+    map.setMaxPitchPreference(maxPitch)
+  }
 
-  override val visibleRegion: VisibleRegion
-    get() = map.projection.visibleRegion.toVisibleRegion()
+  override fun setMinZoom(minZoom: Double) {
+    map.setMinZoomPreference(minZoom)
+  }
+
+  override fun setMaxZoom(maxZoom: Double) {
+    map.setMaxZoomPreference(maxZoom)
+  }
+
+  override fun getVisibleBoundingBox(): BoundingBox {
+    return map.projection.visibleRegion.latLngBounds.toBoundingBox()
+  }
+
+  override fun getVisibleRegion(): VisibleRegion {
+    return map.projection.visibleRegion.toVisibleRegion()
+  }
 
   override fun setMaximumFps(maximumFps: Int) = mapView.setMaximumFps(maximumFps)
 
@@ -269,11 +284,13 @@ internal class AndroidMap(
         .build()
     }
 
-  override var cameraPosition: CameraPosition
-    get() = map.cameraPosition.toCameraPosition()
-    set(value) {
-      map.moveCamera(CameraUpdateFactory.newCameraPosition(value.toMLNCameraPosition()))
-    }
+  override fun getCameraPosition(): CameraPosition {
+    return map.cameraPosition.toCameraPosition()
+  }
+
+  override fun setCameraPosition(cameraPosition: CameraPosition) {
+    map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition.toMLNCameraPosition()))
+  }
 
   override suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration) =
     suspendCoroutine { cont ->
@@ -297,7 +314,7 @@ internal class AndroidMap(
   override fun queryRenderedFeatures(
     offset: DpOffset,
     layerIds: Set<String>?,
-    predicate: Expression<BooleanValue>?,
+    predicate: CompiledExpression<BooleanValue>?,
   ): List<Feature> {
     // Kotlin hack to pass null to a java nullable varargs
     val query: (PointF, MLNExpression?, Array<String>?) -> List<MLNFeature> =
@@ -309,7 +326,7 @@ internal class AndroidMap(
   override fun queryRenderedFeatures(
     rect: DpRect,
     layerIds: Set<String>?,
-    predicate: Expression<BooleanValue>?,
+    predicate: CompiledExpression<BooleanValue>?,
   ): List<Feature> {
     // Kotlin hack to pass null to a java nullable varargs
     val query: (RectF, MLNExpression?, Array<String>?) -> List<MLNFeature> =

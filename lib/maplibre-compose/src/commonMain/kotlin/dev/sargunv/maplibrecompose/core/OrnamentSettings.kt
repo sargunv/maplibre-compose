@@ -9,6 +9,9 @@ import androidx.compose.ui.unit.dp
  * Defines which additional UI elements are displayed on top of the map.
  *
  * @param padding padding of the ornaments to the edge of the map.
+ *
+ * Note: this paarameter does not take effect on web and desktop.
+ *
  * @param isLogoEnabled whether to display the MapLibre logo.
  * @param logoAlignment where to place the MapLibre logo.
  *
