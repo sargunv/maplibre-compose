@@ -85,6 +85,8 @@ kotlin {
       lwjglNatives(setOf("macos"), setOf("", "-arm64")).forEach {
         runtimeOnly(project.dependencies.variantOf(libs.lwjgl.vulkan) { classifier(it) })
       }
+
+      implementation(project(":lib:kotlin-maplibre-native"))
     }
 
     jsMain.dependencies {

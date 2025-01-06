@@ -39,5 +39,6 @@ include(
   ":lib:maplibre-compose-material3",
   ":lib:maplibre-compose-expressions",
   ":lib:kotlin-maplibre-js",
+  ":lib:kotlin-maplibre-native",
   ":lib:compose-html-interop",
 )

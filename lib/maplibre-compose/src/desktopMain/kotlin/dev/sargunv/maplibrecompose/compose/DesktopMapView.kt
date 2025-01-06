@@ -2,16 +2,26 @@ package dev.sargunv.maplibrecompose.compose
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
 import co.touchlab.kermit.Logger
 import dev.sargunv.maplibrecompose.core.MaplibreMap
+import dev.sargunv.maplibrenative.ClientOptions
 import javax.swing.SwingUtilities
 import kotlin.math.abs
 import kotlin.math.sin
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL.createCapabilities
-import org.lwjgl.opengl.GL11.*
+import org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT
+import org.lwjgl.opengl.GL11.GL_QUADS
+import org.lwjgl.opengl.GL11.glBegin
+import org.lwjgl.opengl.GL11.glClear
+import org.lwjgl.opengl.GL11.glClearColor
+import org.lwjgl.opengl.GL11.glColor3f
+import org.lwjgl.opengl.GL11.glEnd
+import org.lwjgl.opengl.GL11.glVertex2f
+import org.lwjgl.opengl.GL11.glViewport
 import org.lwjgl.opengl.awt.AWTGLCanvas
 
 @Composable
@@ -41,6 +51,13 @@ internal fun DesktopMapView(
   logger: Logger?,
   callbacks: MaplibreMap.Callbacks,
 ) {
+  DisposableEffect(Unit) {
+    val options = ClientOptions("MaplibreCompose", "0.1.0")
+    onDispose {
+      println("Disposing options ${options.name}@v${options.version}")
+      options.close()
+    }
+  }
   SwingPanel(modifier = modifier.fillMaxSize(), factory = { OpenGlDemo() }, update = { _ -> })
 }
 
