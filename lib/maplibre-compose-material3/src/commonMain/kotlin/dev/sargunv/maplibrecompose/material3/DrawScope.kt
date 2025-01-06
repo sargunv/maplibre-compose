@@ -23,24 +23,24 @@ internal fun DrawScope.drawPath(
   pathEffect: PathEffect? = null,
   alpha: Float = 1.0f,
   colorFilter: ColorFilter? = null,
-  blendMode: BlendMode = DefaultBlendMode
+  blendMode: BlendMode = DefaultBlendMode,
 ) {
   val it = path.iterator()
   if (!it.hasNext()) return
   var start = it.next()
   while (it.hasNext()) {
     val end = start + it.next()
-      drawLine(
-        color = color,
-        start = start,
-        end = end,
-        strokeWidth = strokeWidth,
-        cap = cap,
-        pathEffect = pathEffect,
-        alpha = alpha,
-        colorFilter = colorFilter,
-        blendMode = blendMode
-      )
+    drawLine(
+      color = color,
+      start = start,
+      end = end,
+      strokeWidth = strokeWidth,
+      cap = cap,
+      pathEffect = pathEffect,
+      alpha = alpha,
+      colorFilter = colorFilter,
+      blendMode = blendMode,
+    )
     start = end
   }
 }
@@ -55,20 +55,10 @@ internal fun DrawScope.drawPathsWithHalo(
   cap: StrokeCap = Stroke.DefaultCap,
 ) {
   for (path in paths) {
-    drawPath(
-      color = haloColor,
-      path = path,
-      strokeWidth = strokeWidth + haloWidth * 2,
-      cap = cap,
-    )
+    drawPath(color = haloColor, path = path, strokeWidth = strokeWidth + haloWidth * 2, cap = cap)
   }
   for (path in paths) {
-    drawPath(
-      color = color,
-      path = path,
-      strokeWidth = strokeWidth,
-      cap = cap,
-    )
+    drawPath(color = color, path = path, strokeWidth = strokeWidth, cap = cap)
   }
 }
 
@@ -85,12 +75,12 @@ internal fun DrawScope.drawTextWithHalo(
     textLayoutResult = textLayoutResult,
     color = haloColor,
     topLeft = topLeft,
-    drawStyle = stroke
+    drawStyle = stroke,
   )
   drawText(
     textLayoutResult = textLayoutResult,
     color = color,
     topLeft = topLeft,
-    drawStyle = Fill
+    drawStyle = Fill,
   )
 }

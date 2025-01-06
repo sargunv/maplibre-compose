@@ -37,6 +37,7 @@ public enum class ScaleBarMeasure {
   ImperialAndMetric;
 
   public fun isMetric(): Boolean = this != Imperial
+
   public fun isImperial(): Boolean = this != Metric
 }
 
@@ -45,11 +46,11 @@ public enum class ScaleBarMeasure {
  * when zoomed in to the map, changing to miles and kilometers, respectively, when zooming out.
  *
  * @param metersPerDp how many meters are displayed in one device independent pixel (dp), i.e. the
- *   scale. See [CameraState.metersPerDpAtTarget][dev.sargunv.maplibrecompose.compose.CameraState.metersPerDpAtTarget]
+ *   scale. See
+ *   [CameraState.metersPerDpAtTarget][dev.sargunv.maplibrecompose.compose.CameraState.metersPerDpAtTarget]
  * @param modifier the [Modifier] to be applied to this layout node
- * @param measure which measure to show on the scale bar (feet/miles, meters/kilometers or both).
- *   If `null`, a measure will be selected based on the system settings or otherwise the user's
- *   locale.
+ * @param measure which measure to show on the scale bar (feet/miles, meters/kilometers or both). If
+ *   `null`, a measure will be selected based on the system settings or otherwise the user's locale.
  * @param haloColor halo for better visibility when displayed on top of the map
  * @param color scale bar and text color.
  * @param textStyle the text style. The text size is the deciding factor how large the scale bar is
@@ -71,16 +72,16 @@ public fun ScaleBar(
   val ft = stringResource(Res.string.feet_symbol)
   val mi = stringResource(Res.string.miles_symbol)
 
-  @Suppress("NAME_SHADOWING")
-  val measure = measure ?: defaultScaleBarMeasure()
+  @Suppress("NAME_SHADOWING") val measure = measure ?: defaultScaleBarMeasure()
 
   val textMeasurer = rememberTextMeasurer()
   // longest possible text
-  val maxTextSizePx = remember(textMeasurer, textStyle, m, km, ft, mi) {
+  val maxTextSizePx =
+    remember(textMeasurer, textStyle, m, km, ft, mi) {
       listOf(m, km, ft, mi)
         .map { textMeasurer.measure("5000 $it", textStyle).size }
         .maxBy { it.width }
-  }
+    }
   val maxTextSize = with(LocalDensity.current) { maxTextSizePx.toSize().toDpSize() }
 
   // bar stroke width
@@ -120,29 +121,31 @@ public fun ScaleBar(
       val feetStop = findStop(maxBarWidthInFeet, IMPERIAL_STOPS)
 
       val barLengthPx = (feetStop * METERS_IN_FEET / metersPerPx).toFloat()
-      val offsetX = alignment.align(
-        size = barLengthPx.toInt(),
-        space = (size.width - fullStrokeWidthPx).toInt(),
-        layoutDirection = layoutDirection
-      )
+      val offsetX =
+        alignment.align(
+          size = barLengthPx.toInt(),
+          space = (size.width - fullStrokeWidthPx).toInt(),
+          layoutDirection = layoutDirection
+        )
       paths.add(
         listOf(
           Offset(offsetX + fullStrokeWidthPx / 2f, 0f + textHeightPx / 2f),
           Offset(0f, barEndsHeightPx),
           Offset(barLengthPx, 0f),
-          Offset(0f, -barEndsHeightPx)
+          Offset(0f, -barEndsHeightPx),
         )
       )
 
-      val text = if (feetStop >= FEET_IN_MILE) {
-        "${(feetStop/FEET_IN_MILE).toShortString()} $mi"
-      } else {
-        "${feetStop.toShortString()} $ft"
-      }
+      val text =
+        if (feetStop >= FEET_IN_MILE) {
+          "${(feetStop/FEET_IN_MILE).toShortString()} $mi"
+        } else {
+          "${feetStop.toShortString()} $ft"
+        }
       texts.add(
         Pair(
           Offset(textHorizontalPaddingPx + fullStrokeWidthPx, 0f),
-          textMeasurer.measure(text, textStyle)
+          textMeasurer.measure(text, textStyle),
         )
       )
 
@@ -154,32 +157,34 @@ public fun ScaleBar(
       val metersStop = findStop(maxBarWidthInMeters, METRIC_STOPS)
 
       val barLengthPx = metersStop / metersPerPx
-      val offsetX = alignment.align(
-        size = barLengthPx.toInt(),
-        space = (size.width - fullStrokeWidthPx).toInt(),
-        layoutDirection = layoutDirection
-      )
+      val offsetX =
+        alignment.align(
+          size = barLengthPx.toInt(),
+          space = (size.width - fullStrokeWidthPx).toInt(),
+          layoutDirection = layoutDirection
+        )
       paths.add(
         listOf(
           Offset(offsetX + fullStrokeWidthPx / 2f, y + fullStrokeWidthPx / 2f + barEndsHeightPx),
           Offset(0f, -barEndsHeightPx),
           Offset(barLengthPx, 0f),
-          Offset(0f, +barEndsHeightPx)
+          Offset(0f, +barEndsHeightPx),
         )
       )
 
-      val text = if (metersStop >= 1000) {
-        "${(metersStop/1000f).toShortString()} $km"
-      } else {
-        "${metersStop.toShortString()} $m"
-      }
+      val text =
+        if (metersStop >= 1000) {
+          "${(metersStop/1000f).toShortString()} $km"
+        } else {
+          "${metersStop.toShortString()} $m"
+        }
       texts.add(
         Pair(
           Offset(
             textHorizontalPaddingPx + fullStrokeWidthPx,
             y + textVerticalPaddingPx + fullStrokeWidthPx
           ),
-          textMeasurer.measure(text, textStyle)
+          textMeasurer.measure(text, textStyle),
         )
       )
     }
@@ -194,17 +199,18 @@ public fun ScaleBar(
     )
 
     for ((offset, textLayoutResult) in texts) {
-      val offsetX = alignment.align(
-        size = textLayoutResult.size.width,
-        space = (size.width - 2 * offset.x).toInt(),
-        layoutDirection = layoutDirection
-      ) + offset.x
+      val offsetX =
+          alignment.align(
+          size = textLayoutResult.size.width,
+          space = (size.width - 2 * offset.x).toInt(),
+          layoutDirection = layoutDirection
+        ) + offset.x
       drawTextWithHalo(
         textLayoutResult = textLayoutResult,
         topLeft = Offset(offsetX, offset.y),
         color = color,
         haloColor = haloColor,
-        haloWidth = haloStrokeWidth.toPx()
+        haloWidth = haloStrokeWidth.toPx(),
       )
     }
   }
@@ -220,8 +226,7 @@ private const val FEET_IN_MILE: Int = 5280
 private fun findStop(max: Float, stops: List<Float>): Float {
   var maxStop = stops.first()
   for (stop in stops) {
-    if (stop <= max) maxStop = stop
-    else break
+    if (stop <= max) maxStop = stop else break
   }
   return maxStop
 }

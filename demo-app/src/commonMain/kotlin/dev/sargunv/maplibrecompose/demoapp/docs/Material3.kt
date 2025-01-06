@@ -52,7 +52,7 @@ fun Material3() {
       DisappearingScaleBar(
         metersPerDp = cameraState.metersPerDpAtTarget,
         zoom = cameraState.position.zoom,
-        modifier = Modifier.align(Alignment.TopStart)
+        modifier = Modifier.align(Alignment.TopStart),
       ) // (1)!
       DisappearingCompassButton(cameraState, modifier = Modifier.align(Alignment.TopEnd)) // (2)!
       AttributionButton(styleState, modifier = Modifier.align(Alignment.BottomEnd))
