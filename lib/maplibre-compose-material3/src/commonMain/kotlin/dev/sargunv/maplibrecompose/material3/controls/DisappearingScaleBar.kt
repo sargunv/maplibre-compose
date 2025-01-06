@@ -11,6 +11,7 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -31,6 +32,7 @@ import kotlin.time.Duration.Companion.seconds
  * @param color scale bar and text color.
  * @param textStyle the text style. The text size is the deciding factor how large the scale bar is
  *   is displayed.
+ * @param alignment alignment of the scale bar and text
  * @param visibilityDuration how long it should be visible after the zoom changed
  * @param enterTransition EnterTransition(s) used for the appearing animation
  * @param exitTransition ExitTransition(s) used for the disappearing animation
@@ -44,6 +46,7 @@ public fun DisappearingScaleBar(
   haloColor: Color = MaterialTheme.colorScheme.surface,
   color: Color = contentColorFor(haloColor),
   textStyle: TextStyle = MaterialTheme.typography.labelMedium,
+  alignment: Alignment.Horizontal = Alignment.Start,
   visibilityDuration: Duration = 3.seconds,
   enterTransition: EnterTransition = fadeIn(),
   exitTransition: ExitTransition = fadeOut(),
@@ -70,6 +73,7 @@ public fun DisappearingScaleBar(
       haloColor = haloColor,
       color = color,
       textStyle = textStyle,
+      alignment = alignment,
     )
   }
 }
