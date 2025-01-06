@@ -1,12 +1,7 @@
 package dev.sargunv.maplibrecompose.material3
 
+import androidx.compose.ui.text.intl.Locale
 import dev.sargunv.maplibrecompose.material3.controls.ScaleBarMeasure
-
-/** ISO 639 language code of user's locale */
-internal expect fun defaultLanguage(): String?
-
-/** ISO 3166-1 alpha-2 country code of the user's locale */
-internal expect fun defaultCountry(): String?
 
 /** user system preference for the scale bar measure, if any */
 internal expect fun scaleBareMeasurePreference(): ScaleBarMeasure?
@@ -15,9 +10,9 @@ internal expect fun scaleBareMeasurePreference(): ScaleBarMeasure?
  * default scale bar measure to use, depending on the user's locale (or system preferences, if
  * available)
  */
-internal fun defaultScaleBarMeasure(): ScaleBarMeasure {
-  return scaleBareMeasurePreference() ?: defaultScaleBarMeasure(defaultLanguage(), defaultCountry())
-}
+internal fun defaultScaleBarMeasure(): ScaleBarMeasure =
+  scaleBareMeasurePreference()
+    ?: defaultScaleBarMeasure(Locale.current.language, Locale.current.region)
 
 /** default scale bar measure to use, depending on the locale */
 internal fun defaultScaleBarMeasure(language: String?, country: String?): ScaleBarMeasure {
@@ -30,7 +25,7 @@ internal fun defaultScaleBarMeasure(language: String?, country: String?): ScaleB
       // Belize, Liberia, Myanmar transition slowly to metric
       "BZ", "LR", "MM",
       // US dependencies are mainly imperial, some metric in use
-      "AS", "GU", "MH", "MP", "PR", "PW", "VI", "WS",
+      "AS", "GU", "MH", "MP", "PR", "PW", "VI", //"WS",
       // United Kingdom and British dependencies are mainly metric, some imperial remains
       "AG", "AI", "BM", "BS", "FK", "GB", "GD", "GG", "GI", "GS", "IM", "JE", "KN", "KY", "LC",
       "MS", "TC", "VG", "VC" -> {
