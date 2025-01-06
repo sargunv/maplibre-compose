@@ -25,7 +25,7 @@ internal fun defaultScaleBarMeasure(language: String?, country: String?): ScaleB
     return when (country) {
       // US is famously imperial only
       "US" -> {
-        ScaleBarMeasure.IMPERIAL
+        ScaleBarMeasure.Imperial
       }
       // Belize, Liberia, Myanmar transition slowly to metric
       "BZ", "LR", "MM",
@@ -34,11 +34,11 @@ internal fun defaultScaleBarMeasure(language: String?, country: String?): ScaleB
       // United Kingdom and British dependencies are mainly metric, some imperial remains
       "AG", "AI", "BM", "BS", "FK", "GB", "GD", "GG", "GI", "GS", "IM", "JE", "KN", "KY", "LC",
       "MS", "TC", "VG", "VC" -> {
-        ScaleBarMeasure.IMPERIAL_AND_METRIC
+        ScaleBarMeasure.ImperialAndMetric
       }
       // all others are metric only
       else -> {
-        ScaleBarMeasure.METRIC
+        ScaleBarMeasure.Metric
       }
     }
   }
@@ -47,13 +47,13 @@ internal fun defaultScaleBarMeasure(language: String?, country: String?): ScaleB
     when (language) {
       // English (GB, US, LR and dependencies of GB, US), Burmese (MM), Samoan (WS, AS)
       "en", "my", "sm" -> {
-        ScaleBarMeasure.IMPERIAL_AND_METRIC
+        ScaleBarMeasure.ImperialAndMetric
       }
       else -> {
-        ScaleBarMeasure.METRIC
+        ScaleBarMeasure.Metric
       }
     }
   }
   // default to both
-  return ScaleBarMeasure.IMPERIAL_AND_METRIC
+  return ScaleBarMeasure.ImperialAndMetric
 }

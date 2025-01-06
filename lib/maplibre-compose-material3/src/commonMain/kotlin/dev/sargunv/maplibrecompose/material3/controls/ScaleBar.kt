@@ -30,14 +30,14 @@ import org.jetbrains.compose.resources.stringResource
 /** Which measure to show on the scale bar. */
 public enum class ScaleBarMeasure {
   /** meters / kilometers */
-  METRIC,
+  Metric,
   /** feet / miles */
-  IMPERIAL,
+  Imperial,
   /** both feet / miles and meters / kilometers */
-  IMPERIAL_AND_METRIC;
+  ImperialAndMetric;
 
-  public fun isMetric(): Boolean = this != IMPERIAL
-  public fun isImperial(): Boolean = this != METRIC
+  public fun isMetric(): Boolean = this != Imperial
+  public fun isImperial(): Boolean = this != Metric
 }
 
 /**
@@ -97,7 +97,7 @@ public fun ScaleBar(
 
   val fullStrokeWidth = haloStrokeWidth * 2 + strokeWidth
 
-  val textCount = if (measure == ScaleBarMeasure.IMPERIAL_AND_METRIC) 2 else 1
+  val textCount = if (measure == ScaleBarMeasure.ImperialAndMetric) 2 else 1
   val totalHeight = (maxTextSize.height + textVerticalPadding) * textCount + fullStrokeWidth
 
   Canvas(modifier.size(totalMaxWidth, totalHeight)) {
