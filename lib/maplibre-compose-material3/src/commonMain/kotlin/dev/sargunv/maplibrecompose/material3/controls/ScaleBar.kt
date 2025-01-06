@@ -212,7 +212,6 @@ public fun ScaleBar(
 
 private const val METERS_IN_FEET: Double = 0.3048
 private const val FEET_IN_MILE: Int = 5280
-private const val INCHES_IN_FOOT: Int = 12
 
 /**
  * find the largest stop in the list of stops (sorted in ascending order) that is below or equal
@@ -263,9 +262,9 @@ private val METRIC_STOPS: List<Float> = listOf(
 
 /** list of feet stops */
 private val IMPERIAL_STOPS: List<Float> = listOf(
-  1f / INCHES_IN_FOOT,
-  2f / INCHES_IN_FOOT,
-  5f / INCHES_IN_FOOT,
+  0.1f,
+  0.2f,
+  0.5f,
   1f,
   2f,
   5f,
