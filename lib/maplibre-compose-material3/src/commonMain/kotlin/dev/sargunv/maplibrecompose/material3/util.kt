@@ -8,12 +8,15 @@ internal expect fun defaultLanguage(): String?
 /** ISO 3166-1 alpha-2 country code of the user's locale */
 internal expect fun defaultCountry(): String?
 
+/** user system preference for the scale bar measure, if any */
+internal expect fun scaleBareMeasurePreference(): ScaleBarMeasure?
+
 /**
  * default scale bar measure to use, depending on the user's locale (or system preferences, if
  * available)
  */
 internal fun defaultScaleBarMeasure(): ScaleBarMeasure {
-  return defaultScaleBarMeasure(defaultLanguage(), defaultCountry())
+  return scaleBareMeasurePreference() ?: defaultScaleBarMeasure(defaultLanguage(), defaultCountry())
 }
 
 /** default scale bar measure to use, depending on the locale */
