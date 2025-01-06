@@ -17,14 +17,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import dev.sargunv.maplibrecompose.material3.defaultScaleBarMeasure
+import dev.sargunv.maplibrecompose.material3.drawPathsWithHalo
+import dev.sargunv.maplibrecompose.material3.drawTextWithHalo
 import dev.sargunv.maplibrecompose.material3.generated.Res
 import dev.sargunv.maplibrecompose.material3.generated.feet_symbol
 import dev.sargunv.maplibrecompose.material3.generated.kilometers_symbol
 import dev.sargunv.maplibrecompose.material3.generated.meters_symbol
 import dev.sargunv.maplibrecompose.material3.generated.miles_symbol
 import org.jetbrains.compose.resources.stringResource
-
-// TODO default depending on locale / LocaleData.MeasurementSystem
 
 /** Which measure to show on the scale bar. */
 public enum class ScaleBarMeasure {
@@ -46,7 +47,9 @@ public enum class ScaleBarMeasure {
  * @param metersPerDp how many meters are displayed in one device independent pixel (dp), i.e. the
  *   scale. See [CameraState.metersPerDpAtTarget][dev.sargunv.maplibrecompose.compose.CameraState.metersPerDpAtTarget]
  * @param modifier the [Modifier] to be applied to this layout node
- * @param measure which measure to show on the scale bar (feet/miles, meters/kilometers or both)
+ * @param measure which measure to show on the scale bar (feet/miles, meters/kilometers or both).
+ *   If `null`, a measure will be selected based on the system settings or otherwise the user's
+ *   locale.
  * @param haloColor halo for better visibility when displayed on top of the map
  * @param color scale bar and text color.
  * @param textStyle the text style. The text size is the deciding factor how large the scale bar is
@@ -57,7 +60,7 @@ public enum class ScaleBarMeasure {
 public fun ScaleBar(
   metersPerDp: Double,
   modifier: Modifier = Modifier,
-  measure: ScaleBarMeasure = ScaleBarMeasure.IMPERIAL_AND_METRIC,
+  measure: ScaleBarMeasure? = null,
   haloColor: Color = MaterialTheme.colorScheme.surface,
   color: Color = contentColorFor(haloColor),
   textStyle: TextStyle = MaterialTheme.typography.labelSmall,
@@ -67,6 +70,9 @@ public fun ScaleBar(
   val km = stringResource(Res.string.kilometers_symbol)
   val ft = stringResource(Res.string.feet_symbol)
   val mi = stringResource(Res.string.miles_symbol)
+
+  @Suppress("NAME_SHADOWING")
+  val measure = measure ?: defaultScaleBarMeasure()
 
   val textMeasurer = rememberTextMeasurer()
   // longest possible text

@@ -27,8 +27,9 @@ import kotlin.time.Duration.Companion.seconds
  *   scale. See [CameraState.metersPerDpAtTarget][dev.sargunv.maplibrecompose.compose.CameraState.metersPerDpAtTarget]
  * @param zoom zoom level of the map
  * @param modifier the [Modifier] to be applied to this layout node
- * @param measure which measure to show on the scale bar (feet/miles, meters/kilometers or both)
- * @param haloColor halo for better visibility when displayed on top of the map
+ * @param measure which measure to show on the scale bar (feet/miles, meters/kilometers or both).
+ *   If `null`, a measure will be selected based on the system settings or otherwise the user's
+ *   locale. * @param haloColor halo for better visibility when displayed on top of the map
  * @param color scale bar and text color.
  * @param textStyle the text style. The text size is the deciding factor how large the scale bar is
  *   is displayed.
@@ -42,7 +43,7 @@ public fun DisappearingScaleBar(
   metersPerDp: Double,
   zoom: Double,
   modifier: Modifier = Modifier,
-  measure: ScaleBarMeasure = ScaleBarMeasure.IMPERIAL_AND_METRIC,
+  measure: ScaleBarMeasure? = null,
   haloColor: Color = MaterialTheme.colorScheme.surface,
   color: Color = contentColorFor(haloColor),
   textStyle: TextStyle = MaterialTheme.typography.labelMedium,

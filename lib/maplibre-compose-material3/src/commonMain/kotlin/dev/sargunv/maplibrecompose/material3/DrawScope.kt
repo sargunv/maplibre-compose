@@ -1,4 +1,4 @@
-package dev.sargunv.maplibrecompose.material3.controls
+package dev.sargunv.maplibrecompose.material3
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
