@@ -125,7 +125,7 @@ public fun ScaleBar(
         alignment.align(
           size = barLengthPx.toInt(),
           space = (size.width - fullStrokeWidthPx).toInt(),
-          layoutDirection = layoutDirection
+          layoutDirection = layoutDirection,
         )
       paths.add(
         listOf(
@@ -161,7 +161,7 @@ public fun ScaleBar(
         alignment.align(
           size = barLengthPx.toInt(),
           space = (size.width - fullStrokeWidthPx).toInt(),
-          layoutDirection = layoutDirection
+          layoutDirection = layoutDirection,
         )
       paths.add(
         listOf(
@@ -182,7 +182,7 @@ public fun ScaleBar(
         Pair(
           Offset(
             textHorizontalPaddingPx + fullStrokeWidthPx,
-            y + textVerticalPaddingPx + fullStrokeWidthPx
+            y + textVerticalPaddingPx + fullStrokeWidthPx,
           ),
           textMeasurer.measure(text, textStyle),
         )
@@ -200,10 +200,10 @@ public fun ScaleBar(
 
     for ((offset, textLayoutResult) in texts) {
       val offsetX =
-          alignment.align(
+        alignment.align(
           size = textLayoutResult.size.width,
           space = (size.width - 2 * offset.x).toInt(),
-          layoutDirection = layoutDirection
+          layoutDirection = layoutDirection,
         ) + offset.x
       drawTextWithHalo(
         textLayoutResult = textLayoutResult,
@@ -235,64 +235,66 @@ private fun findStop(max: Float, stops: List<Float>): Float {
 private fun Float.toShortString() = if (this % 1 == 0f) toInt().toString() else toString()
 
 /** list of meters stops */
-private val METRIC_STOPS: List<Float> = listOf(
-  0.1f,
-  0.2f,
-  0.5f,
-  1f,
-  2f,
-  5f,
-  10f,
-  20f,
-  50f,
-  100f,
-  200f,
-  500f,
-  1000f,
-  2000f,
-  5000f,
-  10000f,
-  20000f,
-  50000f,
-  100000f,
-  200000f,
-  500000f,
-  1000000f,
-  2000000f,
-  5000000f,
-  10000000f,
-  20000000f,
-  40000000f,
-)
+private val METRIC_STOPS: List<Float> =
+  listOf(
+    0.1f,
+    0.2f,
+    0.5f,
+    1f,
+    2f,
+    5f,
+    10f,
+    20f,
+    50f,
+    100f,
+    200f,
+    500f,
+    1000f,
+    2000f,
+    5000f,
+    10000f,
+    20000f,
+    50000f,
+    100000f,
+    200000f,
+    500000f,
+    1000000f,
+    2000000f,
+    5000000f,
+    10000000f,
+    20000000f,
+    40000000f,
+  )
 
 /** list of feet stops */
-private val IMPERIAL_STOPS: List<Float> = listOf(
-  0.1f,
-  0.2f,
-  0.5f,
-  1f,
-  2f,
-  5f,
-  10f,
-  20f,
-  50f,
-  100f,
-  200f,
-  500f,
-  1000f,
-  2000f,
-  1f * FEET_IN_MILE,
-  2f * FEET_IN_MILE,
-  5f * FEET_IN_MILE,
-  10f * FEET_IN_MILE,
-  20f * FEET_IN_MILE,
-  50f * FEET_IN_MILE,
-  100f * FEET_IN_MILE,
-  200f * FEET_IN_MILE,
-  500f * FEET_IN_MILE,
-  1000f * FEET_IN_MILE,
-  2000f * FEET_IN_MILE,
-  5000f * FEET_IN_MILE,
-  10000f * FEET_IN_MILE,
-  20000f * FEET_IN_MILE,
-)
+private val IMPERIAL_STOPS: List<Float> =
+  listOf(
+    0.1f,
+    0.2f,
+    0.5f,
+    1f,
+    2f,
+    5f,
+    10f,
+    20f,
+    50f,
+    100f,
+    200f,
+    500f,
+    1000f,
+    2000f,
+    1f * FEET_IN_MILE,
+    2f * FEET_IN_MILE,
+    5f * FEET_IN_MILE,
+    10f * FEET_IN_MILE,
+    20f * FEET_IN_MILE,
+    50f * FEET_IN_MILE,
+    100f * FEET_IN_MILE,
+    200f * FEET_IN_MILE,
+    500f * FEET_IN_MILE,
+    1000f * FEET_IN_MILE,
+    2000f * FEET_IN_MILE,
+    5000f * FEET_IN_MILE,
+    10000f * FEET_IN_MILE,
+    20000f * FEET_IN_MILE,
+  )
