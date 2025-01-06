@@ -9,13 +9,15 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultBlendMode
+import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.drawText
 
-internal fun DrawScope.drawPolyline(
+/** Draw several lines. Each offset in [path] is relative to the previous. */
+internal fun DrawScope.drawPath(
   color: Color,
-  polyline: List<Offset>,
+  path: List<Offset>,
   strokeWidth: Float = Stroke.HairlineWidth,
   cap: StrokeCap = Stroke.DefaultCap,
   pathEffect: PathEffect? = null,
@@ -23,47 +25,47 @@ internal fun DrawScope.drawPolyline(
   colorFilter: ColorFilter? = null,
   blendMode: BlendMode = DefaultBlendMode
 ) {
-  val it = polyline.iterator()
+  val it = path.iterator()
   if (!it.hasNext()) return
-  var start = Offset.Zero
-  val first = it.next()
+  var start = it.next()
   while (it.hasNext()) {
-    val end = it.next()
-    drawLine(
-      color = color,
-      start = first + start,
-      end = first + end,
-      strokeWidth = strokeWidth,
-      cap = cap,
-      pathEffect = pathEffect,
-      alpha = alpha,
-      colorFilter = colorFilter,
-      blendMode = blendMode
-    )
+    val end = start + it.next()
+      drawLine(
+        color = color,
+        start = start,
+        end = end,
+        strokeWidth = strokeWidth,
+        cap = cap,
+        pathEffect = pathEffect,
+        alpha = alpha,
+        colorFilter = colorFilter,
+        blendMode = blendMode
+      )
     start = end
   }
 }
 
-internal fun DrawScope.drawPolylinesWithHalo(
+/** Draw several paths with halo. All halos of all [paths] are behind all strokes. */
+internal fun DrawScope.drawPathsWithHalo(
   color: Color,
   haloColor: Color,
-  polylines: List<List<Offset>>,
+  paths: List<List<Offset>>,
   strokeWidth: Float = Stroke.HairlineWidth,
   haloWidth: Float = Stroke.HairlineWidth,
   cap: StrokeCap = Stroke.DefaultCap,
 ) {
-  for (polyline in polylines) {
-    drawPolyline(
+  for (path in paths) {
+    drawPath(
       color = haloColor,
-      polyline = polyline,
+      path = path,
       strokeWidth = strokeWidth + haloWidth * 2,
       cap = cap,
     )
   }
-  for (polyline in polylines) {
-    drawPolyline(
+  for (path in paths) {
+    drawPath(
       color = color,
-      polyline = polyline,
+      path = path,
       strokeWidth = strokeWidth,
       cap = cap,
     )
@@ -89,5 +91,6 @@ internal fun DrawScope.drawTextWithHalo(
     textLayoutResult = textLayoutResult,
     color = color,
     topLeft = topLeft,
+    drawStyle = Fill
   )
 }

@@ -1,52 +1,40 @@
 package dev.sargunv.maplibrecompose.material3.controls
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.StrokeJoin
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection.*
 import androidx.compose.ui.unit.dp
-import dev.sargunv.maplibrecompose.compose.CameraState
+import androidx.compose.ui.unit.toSize
 import dev.sargunv.maplibrecompose.material3.generated.Res
 import dev.sargunv.maplibrecompose.material3.generated.feet_symbol
 import dev.sargunv.maplibrecompose.material3.generated.kilometers_symbol
 import dev.sargunv.maplibrecompose.material3.generated.meters_symbol
 import dev.sargunv.maplibrecompose.material3.generated.miles_symbol
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
-import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.stringResource
 
-public object ScaleBarDefaults {
-  public val width: Dp = 65.dp
-}
+// TODO default depending on locale / LocaleData.MeasurementSystem
 
 /** Which measure to show on the scale bar. */
 public enum class ScaleBarMeasure {
+  /** meters / kilometers */
   METRIC,
+  /** feet / miles */
   IMPERIAL,
-  METRIC_AND_IMPERIAL;
+  /** both feet / miles and meters / kilometers */
+  IMPERIAL_AND_METRIC;
 
   public fun isMetric(): Boolean = this != IMPERIAL
   public fun isImperial(): Boolean = this != METRIC
@@ -55,155 +43,170 @@ public enum class ScaleBarMeasure {
 /**
  * A scale bar composable that shows the current scale of the map in feet, meters or feet and meters
  * when zoomed in to the map, changing to miles and kilometers, respectively, when zooming out.
+ *
+ * @param metersPerDp how many meters are displayed in one device independent pixel (dp), i.e. the
+ *   scale. See [CameraState.metersPerDpAtTarget][dev.sargunv.maplibrecompose.compose.CameraState.metersPerDpAtTarget]
+ * @param modifier the [Modifier] to be applied to this layout node
+ * @param measure which measure to show on the scale bar (feet/miles, meters/kilometers or both)
+ * @param haloColor halo for better visibility when displayed on top of the map
+ * @param color scale bar and text color.
+ * @param textStyle the text style. The text size is the deciding factor how large the scale bar is
+ *   is displayed.
  */
 @Composable
 public fun ScaleBar(
-  cameraState: CameraState,
+  metersPerDp: Double,
   modifier: Modifier = Modifier,
-  measure: ScaleBarMeasure = ScaleBarMeasure.METRIC_AND_IMPERIAL,
-  width: Dp = ScaleBarDefaults.width,
+  measure: ScaleBarMeasure = ScaleBarMeasure.IMPERIAL_AND_METRIC,
   haloColor: Color = MaterialTheme.colorScheme.surface,
   color: Color = contentColorFor(haloColor),
-  textStyle: TextStyle = MaterialTheme.typography.labelMedium,
+  textStyle: TextStyle = MaterialTheme.typography.labelSmall,
 ) {
-  val textMeasurer = rememberTextMeasurer(32)
-  val textHeight = with(LocalDensity.current) {
-    textMeasurer.measure("0", textStyle).size.height.toDp()
+  val m = stringResource(Res.string.meters_symbol)
+  val km = stringResource(Res.string.kilometers_symbol)
+  val ft = stringResource(Res.string.feet_symbol)
+  val mi = stringResource(Res.string.miles_symbol)
+
+  val textMeasurer = rememberTextMeasurer()
+  // longest possible text
+  val maxTextSizePx = remember(textMeasurer, textStyle, m, km, ft, mi) {
+      listOf(m, km, ft, mi)
+        .map { textMeasurer.measure("5000 $it", textStyle).size }
+        .maxBy { it.width }
   }
+  val maxTextSize = with(LocalDensity.current) { maxTextSizePx.toSize().toDpSize() }
+
+  // bar stroke width
   val strokeWidth = 2.dp
   val haloStrokeWidth = 1.dp
+  // padding of text to bar stroke
+  val textHorizontalPadding = 4.dp
+  val textVerticalPadding = 0.dp
+
+  // multiplied by 2.5 because the next stop can be the x2.5 of a previous stop (e.g. 2km -> 5km),
+  // so the bar can end at approx 1/2.5th of the total width. We want to avoid that the bar
+  // intersects with the text, i.e. is drawn behind the text
+  val totalMaxWidth = maxTextSize.width * 2.5f + (textHorizontalPadding + strokeWidth) * 2f
+
   val fullStrokeWidth = haloStrokeWidth * 2 + strokeWidth
-  val textPadding = 2.dp
-  val texts = if (measure == ScaleBarMeasure.METRIC_AND_IMPERIAL) 2 else 1
-  val totalHeight = (textHeight + textPadding) * texts + fullStrokeWidth
-  val horizontalTextPadding = fullStrokeWidth + textPadding
 
-  val maxBarWidthInMeters = (width.value * cameraState.metersPerDpAtTarget).toInt()
-  val metersStop = findStop(maxBarWidthInMeters, METRIC_STOPS)
-  val metricText = if (metersStop >= 1000) {
-    "${metersStop/1000} ${stringResource(Res.string.kilometers_symbol)}"
-  } else {
-    "$metersStop ${stringResource(Res.string.meters_symbol)}"
-  }
+  val textCount = if (measure == ScaleBarMeasure.IMPERIAL_AND_METRIC) 2 else 1
+  val totalHeight = (maxTextSize.height + textVerticalPadding) * textCount + fullStrokeWidth
 
-  val maxBarWidthInFeet = (width.value * cameraState.metersPerDpAtTarget / METERS_IN_FEET).toInt()
-  val feetStop = findStop(maxBarWidthInFeet, IMPERIAL_STOPS)
-  val imperialText = if (feetStop >= FEET_IN_MILE) {
-    "${feetStop/FEET_IN_MILE} ${stringResource(Res.string.miles_symbol)}"
-  } else {
-    "$feetStop ${stringResource(Res.string.feet_symbol)}"
-  }
+  Canvas(modifier.size(totalMaxWidth, totalHeight)) {
+    val fullStrokeWidthPx = fullStrokeWidth.toPx()
+    val textHeightPx = maxTextSizePx.height
+    val textHorizontalPaddingPx = textHorizontalPadding.toPx()
+    val textVerticalPaddingPx = textVerticalPadding.toPx()
+    // scale bar start/end should not overlap horizontally with canvas bounds
+    val maxBarLengthPx = size.width - fullStrokeWidthPx
+    // bar ends should go to the vertical center of the text
+    val barEndsHeightPx = textHeightPx / 2f + textVerticalPadding.toPx() + fullStrokeWidthPx / 2f
+    val metersPerPx = metersPerDp.dp.toPx()
 
-  // TODO RTL
-
-  Canvas(modifier.size(width, totalHeight)) {
     var y = 0f
-    val polylines = mutableListOf<List<Offset>>()
-    val metersPerPx = cameraState.metersPerDpAtTarget.dp.toPx()
+    val paths = ArrayList<List<Offset>>(6)
+    val texts = ArrayList<Pair<Offset, TextLayoutResult>>(2)
 
     if (measure.isImperial()) {
-      val barLength = metersStop * METERS_IN_FEET / metersPerPx
-      polylines.add(listOf(Offset(0f, 0f), Offset(barLength.toFloat(), 0f)))
-      // todo vertical lines
+      val maxBarWidthInFeet = (maxBarLengthPx * metersPerPx / METERS_IN_FEET).toFloat()
+      val feetStop = findStop(maxBarWidthInFeet, IMPERIAL_STOPS)
+
+      val barLengthPx = (feetStop * METERS_IN_FEET / metersPerPx).toFloat()
+      paths.add(
+        listOf(
+          Offset(fullStrokeWidthPx / 2f, 0f + textHeightPx / 2f),
+          Offset(0f, barEndsHeightPx),
+          Offset(barLengthPx, 0f),
+          Offset(0f, -barEndsHeightPx)
+        )
+      )
+
+      val text = if (feetStop >= FEET_IN_MILE) {
+        "${(feetStop/FEET_IN_MILE).toShortString()} $mi"
+      } else {
+        "${feetStop.toShortString()} $ft"
+      }
+      texts.add(
+        Pair(
+          Offset(textHorizontalPaddingPx + fullStrokeWidthPx, 0f),
+          textMeasurer.measure(text, textStyle)
+        )
+      )
+
+      y += textHeightPx + textVerticalPaddingPx
     }
 
     if (measure.isMetric()) {
-      val barLength = feetStop / metersPerPx
-      polylines.add(listOf(Offset(0f, 0f), Offset(barLength.toFloat(), 0f)))
-      // todo vertical lines
+      val maxBarWidthInMeters = maxBarLengthPx * metersPerPx
+      val metersStop = findStop(maxBarWidthInMeters, METRIC_STOPS)
+
+      val barLengthPx = metersStop / metersPerPx
+      paths.add(
+        listOf(
+          Offset(fullStrokeWidthPx / 2f, y + fullStrokeWidthPx / 2f + barEndsHeightPx),
+          Offset(0f, -barEndsHeightPx),
+          Offset(barLengthPx, 0f),
+          Offset(0f, +barEndsHeightPx)
+        )
+      )
+
+      val text = if (metersStop >= 1000) {
+        "${(metersStop/1000f).toShortString()} $km"
+      } else {
+        "${metersStop.toShortString()} $m"
+      }
+      texts.add(
+        Pair(
+          Offset(
+            textHorizontalPaddingPx + fullStrokeWidthPx,
+            y + textVerticalPaddingPx + fullStrokeWidthPx
+          ),
+          textMeasurer.measure(text, textStyle)
+        )
+      )
     }
 
-    // TODO use blend mode instead of having strict order of draw instructions in Canvas?
+    val pathScaleX = when (layoutDirection) {
+      Ltr -> 1f
+      Rtl -> -1f
+    }
+    scale(scaleX = pathScaleX, scaleY = 1f) {
+      drawPathsWithHalo(
+        color = color,
+        haloColor = haloColor,
+        paths = paths,
+        strokeWidth = strokeWidth.toPx(),
+        haloWidth = haloStrokeWidth.toPx(),
+        cap = StrokeCap.Round,
+      )
+    }
 
-    drawPolylinesWithHalo(
-      color = color,
-      haloColor = haloColor,
-      polylines = polylines,
-      strokeWidth = strokeWidth.toPx(),
-      haloWidth = haloStrokeWidth.toPx(),
-      cap = StrokeCap.Round,
-    )
-
-    // text is drawn on above the lines
-    if (measure.isImperial()) {
+    for ((offset, textLayoutResult) in texts) {
+      val offsetX = when (layoutDirection) {
+        Ltr -> offset.x
+        Rtl -> size.width - textLayoutResult.size.width - offset.x
+      }
       drawTextWithHalo(
-        textLayoutResult = textMeasurer.measure(
-          text = imperialText,
-          style = textStyle,
-        ),
-        topLeft = Offset(horizontalTextPadding.toPx(), y),
+        textLayoutResult = textLayoutResult,
+        topLeft = Offset(offsetX, offset.y),
         color = color,
         haloColor = haloColor,
         haloWidth = haloStrokeWidth.toPx()
       )
     }
-    if (measure.isMetric()) {
-      drawTextWithHalo(
-        textLayoutResult = textMeasurer.measure(
-          text = metricText,
-          style = textStyle,
-        ),
-        topLeft = Offset(horizontalTextPadding.toPx(), y),
-        color = color,
-        haloColor = haloColor,
-        haloWidth = haloStrokeWidth.toPx()
-      )
-    }
-  }
-}
-
-/**
- * An animated scale bar that appears when the zoom level of the map changes, and then disappears
- * after [visibilityDuration]. This composable wraps [ScaleBar] with visibility animations.
- */
-@Composable
-public fun DisappearingScaleBar(
-  cameraState: CameraState,
-  modifier: Modifier = Modifier,
-  measure: ScaleBarMeasure = ScaleBarMeasure.METRIC_AND_IMPERIAL,
-  width: Dp = ScaleBarDefaults.width,
-  haloColor: Color = MaterialTheme.colorScheme.surface,
-  color: Color = contentColorFor(haloColor),
-  textStyle: TextStyle = MaterialTheme.typography.labelMedium,
-  visibilityDuration: Duration = 3.seconds,
-  enterTransition: EnterTransition = fadeIn(),
-  exitTransition: ExitTransition = fadeOut(),
-) {
-  val visible = remember { MutableTransitionState(true) }
-
-  LaunchedEffect(key1 = cameraState.position.zoom) {
-    // Show ScaleBar
-    visible.targetState = true
-    delay(visibilityDuration)
-    // Hide ScaleBar after timeout period
-    visible.targetState = false
-  }
-
-  AnimatedVisibility(
-    visibleState = visible,
-    modifier = modifier,
-    enter = enterTransition,
-    exit = exitTransition,
-  ) {
-    ScaleBar(
-      cameraState = cameraState,
-      measure = measure,
-      width = width,
-      haloColor = haloColor,
-      color = color,
-      textStyle = textStyle,
-    )
   }
 }
 
 private const val METERS_IN_FEET: Double = 0.3048
 private const val FEET_IN_MILE: Int = 5280
+private const val INCHES_IN_FOOT: Int = 12
 
 /**
  * find the largest stop in the list of stops (sorted in ascending order) that is below or equal
  * [max].
  */
-private fun findStop(max: Int, stops: List<Int>): Int {
+private fun findStop(max: Float, stops: List<Float>): Float {
   var maxStop = stops.first()
   for (stop in stops) {
     if (stop <= max) maxStop = stop
@@ -212,59 +215,68 @@ private fun findStop(max: Int, stops: List<Int>): Int {
   return maxStop
 }
 
+/** format like an int if this has no decimals */
+private fun Float.toShortString() = if (this % 1 == 0f) toInt().toString() else toString()
+
 /** list of meters stops */
-private val METRIC_STOPS: List<Int> = listOf(
-  1,
-  2,
-  5,
-  10,
-  20,
-  50,
-  100,
-  200,
-  300,
-  500,
-  1000,
-  2000,
-  5000,
-  10000,
-  20000,
-  50000,
-  100000,
-  200000,
-  500000,
-  1000000,
-  2000000,
-  5000000,
-  10000000,
-  20000000,
-  40000000,
+private val METRIC_STOPS: List<Float> = listOf(
+  0.1f,
+  0.2f,
+  0.5f,
+  1f,
+  2f,
+  5f,
+  10f,
+  20f,
+  50f,
+  100f,
+  200f,
+  500f,
+  1000f,
+  2000f,
+  5000f,
+  10000f,
+  20000f,
+  50000f,
+  100000f,
+  200000f,
+  500000f,
+  1000000f,
+  2000000f,
+  5000000f,
+  10000000f,
+  20000000f,
+  40000000f,
 )
 
 /** list of feet stops */
-private val IMPERIAL_STOPS: List<Int> = listOf(
-  2,
-  5,
-  10,
-  20,
-  50,
-  100,
-  200,
-  500,
-  1000,
-  2000,
-  FEET_IN_MILE,
-  2 * FEET_IN_MILE,
-  5 * FEET_IN_MILE,
-  10 * FEET_IN_MILE,
-  20 * FEET_IN_MILE,
-  50 * FEET_IN_MILE,
-  100 * FEET_IN_MILE,
-  200 * FEET_IN_MILE,
-  500 * FEET_IN_MILE,
-  1000 * FEET_IN_MILE,
-  2000 * FEET_IN_MILE,
-  5000 * FEET_IN_MILE,
-  10000 * FEET_IN_MILE,
-  20000 * FEET_IN_MILE,
+private val IMPERIAL_STOPS: List<Float> = listOf(
+  1f / INCHES_IN_FOOT,
+  2f / INCHES_IN_FOOT,
+  5f / INCHES_IN_FOOT,
+  1f,
+  2f,
+  5f,
+  10f,
+  20f,
+  50f,
+  100f,
+  200f,
+  500f,
+  1000f,
+  2000f,
+  1f * FEET_IN_MILE,
+  2f * FEET_IN_MILE,
+  5f * FEET_IN_MILE,
+  10f * FEET_IN_MILE,
+  20f * FEET_IN_MILE,
+  50f * FEET_IN_MILE,
+  100f * FEET_IN_MILE,
+  200f * FEET_IN_MILE,
+  500f * FEET_IN_MILE,
+  1000f * FEET_IN_MILE,
+  2000f * FEET_IN_MILE,
+  5000f * FEET_IN_MILE,
+  10000f * FEET_IN_MILE,
+  20000f * FEET_IN_MILE,
 )
