@@ -1,20 +1,46 @@
 package dev.sargunv.maplibrenative
 
-public class ClientOptions(name: String, version: String) :
-  NativeObject(
-    constructor = { LibMaplibreNative.ClientOptions_new(name, version) },
-    destructor = { LibMaplibreNative.ClientOptions_delete(it) },
-  ) {
+import jnr.ffi.Pointer
 
-  public val name: String
+public class ClientOptions : NativeObject(C::new, C::delete) {
+
+  public var name: String
     get() {
-      assertNotDisposed()
-      return LibMaplibreNative.ClientOptions_name(nativePtr)
+      checkNotDisposed()
+      return C.name(nativePtr)
+    }
+    set(value) {
+      checkNotDisposed()
+      C.setName(nativePtr, value)
     }
 
-  public val version: String
+  public var version: String
     get() {
-      assertNotDisposed()
-      return LibMaplibreNative.ClientOptions_version(nativePtr)
+      checkNotDisposed()
+      return C.version(nativePtr)
     }
+    set(value) {
+      checkNotDisposed()
+      C.setVersion(nativePtr, value)
+    }
+
+  override fun toString(): String {
+    return "ClientOptions(name='$name', version='$version')"
+  }
+
+  internal interface C {
+    fun new(): Pointer
+
+    fun delete(nativePtr: Pointer)
+
+    fun setName(nativePtr: Pointer, name: String)
+
+    fun name(nativePtr: Pointer): String
+
+    fun setVersion(nativePtr: Pointer, version: String)
+
+    fun version(nativePtr: Pointer): String
+
+    companion object : C by loadMaplibreNativeFfi(ClientOptions::class.simpleName!!)
+  }
 }

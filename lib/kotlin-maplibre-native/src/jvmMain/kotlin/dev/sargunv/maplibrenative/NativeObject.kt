@@ -12,7 +12,7 @@ public sealed class NativeObject(constructor: () -> Pointer, destructor: (Pointe
 
   private var disposed = false
 
-  protected fun assertNotDisposed() {
+  protected fun checkNotDisposed() {
     if (disposed) error("${this::class.simpleName} is disposed")
   }
 
