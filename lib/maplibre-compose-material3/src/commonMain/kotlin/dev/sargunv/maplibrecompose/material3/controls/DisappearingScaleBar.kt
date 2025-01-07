@@ -28,9 +28,8 @@ import kotlinx.coroutines.delay
  *   [CameraState.metersPerDpAtTarget][dev.sargunv.maplibrecompose.compose.CameraState.metersPerDpAtTarget]
  * @param zoom zoom level of the map
  * @param modifier the [Modifier] to be applied to this layout node
- * @param measures which measure to show on the scale bar (feet/miles, meters/kilometers or both).
- *   If `null`, a measure will be selected based on the system settings or otherwise the user's
- *   locale.
+ * @param measures which measures to show on the scale bar. If `null`, measures will be selected
+ *   based on the system settings or otherwise the user's locale.
  * @param haloColor halo for better visibility when displayed on top of the map
  * @param color scale bar and text color.
  * @param textStyle the text style. The text size is the deciding factor how large the scale bar is

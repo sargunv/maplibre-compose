@@ -6,14 +6,14 @@ import dev.sargunv.maplibrecompose.material3.controls.ScaleBarMeasure.*
 import dev.sargunv.maplibrecompose.material3.controls.ScaleBarMeasures
 
 /** user system preference for the scale bar measure, if any */
-internal expect fun scaleBareMeasurePreference(): ScaleBarMeasure?
+internal expect fun scaleBarMeasurePreference(): ScaleBarMeasure?
 
 /**
  * default scale bar measures to use, depending on the user's locale (or system preferences, if
  * available)
  */
 internal fun defaultScaleBarMeasures(): ScaleBarMeasures =
-  scaleBareMeasurePreference()?.let { ScaleBarMeasures(it) }
+  scaleBarMeasurePreference()?.let { ScaleBarMeasures(it) }
     ?: defaultScaleBarMeasures(Locale.current.region)
 
 /** default scale bar measure to use, depending on the locale */
