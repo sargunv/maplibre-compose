@@ -29,10 +29,7 @@ import dev.sargunv.maplibrecompose.material3.generated.yards_symbol
 import org.jetbrains.compose.resources.stringResource
 
 /** Which measures to show on the scale bar. */
-public data class ScaleBarMeasures(
-  val first: ScaleBarMeasure,
-  val second: ScaleBarMeasure? = null
-)
+public data class ScaleBarMeasures(val first: ScaleBarMeasure, val second: ScaleBarMeasure? = null)
 
 /** Which measure to show on the scale bar. */
 public enum class ScaleBarMeasure {
@@ -41,7 +38,7 @@ public enum class ScaleBarMeasure {
   /** feet / miles */
   FeetAndMiles,
   /** yards / miles */
-  YardsAndMiles;
+  YardsAndMiles,
 }
 
 /**
@@ -216,7 +213,7 @@ private fun scaleBarParams(
   km: String,
   ft: String,
   yd: String,
-  mi: String
+  mi: String,
 ): ScaleBarParams =
   when (scaleBarMeasure) {
     ScaleBarMeasure.Metric -> metricBarParams(metersPerPx, maxBarLengthPx, m, km)
@@ -228,7 +225,7 @@ private fun metricBarParams(
   metersPerPx: Float,
   maxBarLengthPx: Float,
   m: String,
-  km: String
+  km: String,
 ): ScaleBarParams {
   val stop = findStop(maxBarLengthPx * metersPerPx, METRIC_STOPS)
   return ScaleBarParams(
@@ -238,7 +235,7 @@ private fun metricBarParams(
       } else {
         "${stop.toShortString()} $m"
       },
-    barLengthPx = stop / metersPerPx
+    barLengthPx = stop / metersPerPx,
   )
 }
 
@@ -246,7 +243,7 @@ private fun yardsBarParams(
   metersPerPx: Float,
   maxBarLengthPx: Float,
   yd: String,
-  mi: String
+  mi: String,
 ): ScaleBarParams {
   val stop = findStop((maxBarLengthPx * metersPerPx / METERS_IN_YARD).toFloat(), YARDS_STOPS)
   return ScaleBarParams(
@@ -256,7 +253,7 @@ private fun yardsBarParams(
       } else {
         "${stop.toShortString()} $yd"
       },
-    barLengthPx = (stop * METERS_IN_YARD / metersPerPx).toFloat()
+    barLengthPx = (stop * METERS_IN_YARD / metersPerPx).toFloat(),
   )
 }
 
@@ -264,7 +261,7 @@ private fun feetBarParams(
   metersPerPx: Float,
   maxBarLengthPx: Float,
   ft: String,
-  mi: String
+  mi: String,
 ): ScaleBarParams {
   val stop = findStop((maxBarLengthPx * metersPerPx / METERS_IN_FEET).toFloat(), FEET_STOPS)
   return ScaleBarParams(
@@ -274,7 +271,7 @@ private fun feetBarParams(
       } else {
         "${stop.toShortString()} $ft"
       },
-    barLengthPx = (stop * METERS_IN_FEET / metersPerPx).toFloat()
+    barLengthPx = (stop * METERS_IN_FEET / metersPerPx).toFloat(),
   )
 }
 

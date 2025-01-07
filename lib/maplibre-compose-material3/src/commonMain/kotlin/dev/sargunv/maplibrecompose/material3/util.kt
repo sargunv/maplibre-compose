@@ -16,7 +16,6 @@ internal fun defaultScaleBarMeasures(): ScaleBarMeasures =
   scaleBareMeasurePreference()?.let { ScaleBarMeasures(it) }
     ?: defaultScaleBarMeasures(Locale.current.region)
 
-
 /** default scale bar measure to use, depending on the locale */
 internal fun defaultScaleBarMeasures(country: String?): ScaleBarMeasures {
   if (!country.isNullOrEmpty()) {
