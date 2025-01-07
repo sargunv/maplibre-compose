@@ -17,7 +17,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
-import dev.sargunv.maplibrecompose.material3.defaultScaleBarMeasure
+import dev.sargunv.maplibrecompose.material3.defaultScaleBarMeasures
 import dev.sargunv.maplibrecompose.material3.drawPathsWithHalo
 import dev.sargunv.maplibrecompose.material3.drawTextWithHalo
 import dev.sargunv.maplibrecompose.material3.generated.Res
@@ -25,20 +25,23 @@ import dev.sargunv.maplibrecompose.material3.generated.feet_symbol
 import dev.sargunv.maplibrecompose.material3.generated.kilometers_symbol
 import dev.sargunv.maplibrecompose.material3.generated.meters_symbol
 import dev.sargunv.maplibrecompose.material3.generated.miles_symbol
+import dev.sargunv.maplibrecompose.material3.generated.yards_symbol
 import org.jetbrains.compose.resources.stringResource
+
+/** Which measures to show on the scale bar. */
+public data class ScaleBarMeasures(
+  val first: ScaleBarMeasure,
+  val second: ScaleBarMeasure? = null
+)
 
 /** Which measure to show on the scale bar. */
 public enum class ScaleBarMeasure {
   /** meters / kilometers */
   Metric,
   /** feet / miles */
-  Imperial,
-  /** both feet / miles and meters / kilometers */
-  ImperialAndMetric;
-
-  public fun isMetric(): Boolean = this != Imperial
-
-  public fun isImperial(): Boolean = this != Metric
+  FeetAndMiles,
+  /** yards / miles */
+  YardsAndMiles;
 }
 
 /**
@@ -49,19 +52,20 @@ public enum class ScaleBarMeasure {
  *   scale. See
  *   [CameraState.metersPerDpAtTarget][dev.sargunv.maplibrecompose.compose.CameraState.metersPerDpAtTarget]
  * @param modifier the [Modifier] to be applied to this layout node
- * @param measure which measure to show on the scale bar (feet/miles, meters/kilometers or both). If
- *   `null`, a measure will be selected based on the system settings or otherwise the user's locale.
+ * @param measures which measure to show on the scale bar (feet/miles, meters/kilometers or both).
+ *   If `null`, a measure will be selected based on the system settings or otherwise the user's
+ *   locale.
  * @param haloColor halo for better visibility when displayed on top of the map
  * @param color scale bar and text color.
  * @param textStyle the text style. The text size is the deciding factor how large the scale bar is
  *   is displayed.
- * @param alignment alignment of the scale bar and text
+ * @param alignment horizontal alignment of the scale bar and text
  */
 @Composable
 public fun ScaleBar(
   metersPerDp: Double,
   modifier: Modifier = Modifier,
-  measure: ScaleBarMeasure? = null,
+  measures: ScaleBarMeasures? = null,
   haloColor: Color = MaterialTheme.colorScheme.surface,
   color: Color = contentColorFor(haloColor),
   textStyle: TextStyle = MaterialTheme.typography.labelSmall,
@@ -70,15 +74,16 @@ public fun ScaleBar(
   val m = stringResource(Res.string.meters_symbol)
   val km = stringResource(Res.string.kilometers_symbol)
   val ft = stringResource(Res.string.feet_symbol)
+  val yd = stringResource(Res.string.yards_symbol)
   val mi = stringResource(Res.string.miles_symbol)
 
-  @Suppress("NAME_SHADOWING") val measure = measure ?: defaultScaleBarMeasure()
+  @Suppress("NAME_SHADOWING") val measures = measures ?: defaultScaleBarMeasures()
 
   val textMeasurer = rememberTextMeasurer()
   // longest possible text
   val maxTextSizePx =
-    remember(textMeasurer, textStyle, m, km, ft, mi) {
-      listOf(m, km, ft, mi)
+    remember(textMeasurer, textStyle, m, km, ft, yd, mi) {
+      listOf(m, km, ft, yd, mi)
         .map { textMeasurer.measure("5000 $it", textStyle).size }
         .maxBy { it.width }
     }
@@ -98,7 +103,7 @@ public fun ScaleBar(
 
   val fullStrokeWidth = haloStrokeWidth * 2 + strokeWidth
 
-  val textCount = if (measure == ScaleBarMeasure.ImperialAndMetric) 2 else 1
+  val textCount = if (measures.second != null) 2 else 1
   val totalHeight = (maxTextSize.height + textVerticalPadding) * textCount + fullStrokeWidth
 
   Canvas(modifier.size(totalMaxWidth, totalHeight)) {
@@ -113,17 +118,14 @@ public fun ScaleBar(
     val metersPerPx = metersPerDp.dp.toPx()
 
     var y = 0f
-    val paths = ArrayList<List<Offset>>(6)
+    val paths = ArrayList<List<Offset>>(2)
     val texts = ArrayList<Pair<Offset, TextLayoutResult>>(2)
 
-    if (measure.isImperial()) {
-      val maxBarWidthInFeet = (maxBarLengthPx * metersPerPx / METERS_IN_FEET).toFloat()
-      val feetStop = findStop(maxBarWidthInFeet, IMPERIAL_STOPS)
-
-      val barLengthPx = (feetStop * METERS_IN_FEET / metersPerPx).toFloat()
+    if (true) { // just want a scope here
+      val params = scaleBarParams(measures.first, metersPerPx, maxBarLengthPx, m, km, ft, yd, mi)
       val offsetX =
         alignment.align(
-          size = barLengthPx.toInt(),
+          size = params.barLengthPx.toInt(),
           space = (size.width - fullStrokeWidthPx).toInt(),
           layoutDirection = layoutDirection,
         )
@@ -131,35 +133,25 @@ public fun ScaleBar(
         listOf(
           Offset(offsetX + fullStrokeWidthPx / 2f, 0f + textHeightPx / 2f),
           Offset(0f, barEndsHeightPx),
-          Offset(barLengthPx, 0f),
+          Offset(params.barLengthPx, 0f),
           Offset(0f, -barEndsHeightPx),
         )
       )
-
-      val text =
-        if (feetStop >= FEET_IN_MILE) {
-          "${(feetStop/FEET_IN_MILE).toShortString()} $mi"
-        } else {
-          "${feetStop.toShortString()} $ft"
-        }
       texts.add(
         Pair(
           Offset(textHorizontalPaddingPx + fullStrokeWidthPx, 0f),
-          textMeasurer.measure(text, textStyle),
+          textMeasurer.measure(params.text, textStyle),
         )
       )
 
       y += textHeightPx + textVerticalPaddingPx
     }
 
-    if (measure.isMetric()) {
-      val maxBarWidthInMeters = maxBarLengthPx * metersPerPx
-      val metersStop = findStop(maxBarWidthInMeters, METRIC_STOPS)
-
-      val barLengthPx = metersStop / metersPerPx
+    if (measures.second != null) {
+      val params = scaleBarParams(measures.second, metersPerPx, maxBarLengthPx, m, km, ft, yd, mi)
       val offsetX =
         alignment.align(
-          size = barLengthPx.toInt(),
+          size = params.barLengthPx.toInt(),
           space = (size.width - fullStrokeWidthPx).toInt(),
           layoutDirection = layoutDirection,
         )
@@ -167,24 +159,17 @@ public fun ScaleBar(
         listOf(
           Offset(offsetX + fullStrokeWidthPx / 2f, y + fullStrokeWidthPx / 2f + barEndsHeightPx),
           Offset(0f, -barEndsHeightPx),
-          Offset(barLengthPx, 0f),
+          Offset(params.barLengthPx, 0f),
           Offset(0f, +barEndsHeightPx),
         )
       )
-
-      val text =
-        if (metersStop >= 1000) {
-          "${(metersStop/1000f).toShortString()} $km"
-        } else {
-          "${metersStop.toShortString()} $m"
-        }
       texts.add(
         Pair(
           Offset(
             textHorizontalPaddingPx + fullStrokeWidthPx,
             y + textVerticalPaddingPx + fullStrokeWidthPx,
           ),
-          textMeasurer.measure(text, textStyle),
+          textMeasurer.measure(params.text, textStyle),
         )
       )
     }
@@ -217,7 +202,81 @@ public fun ScaleBar(
 }
 
 private const val METERS_IN_FEET: Double = 0.3048
+private const val METERS_IN_YARD: Double = 0.9144
 private const val FEET_IN_MILE: Int = 5280
+private const val YARDS_IN_MILE: Int = 1760
+
+private data class ScaleBarParams(val barLengthPx: Float, val text: String)
+
+private fun scaleBarParams(
+  scaleBarMeasure: ScaleBarMeasure,
+  metersPerPx: Float,
+  maxBarLengthPx: Float,
+  m: String,
+  km: String,
+  ft: String,
+  yd: String,
+  mi: String
+): ScaleBarParams =
+  when (scaleBarMeasure) {
+    ScaleBarMeasure.Metric -> metricBarParams(metersPerPx, maxBarLengthPx, m, km)
+    ScaleBarMeasure.FeetAndMiles -> feetBarParams(metersPerPx, maxBarLengthPx, ft, mi)
+    ScaleBarMeasure.YardsAndMiles -> yardsBarParams(metersPerPx, maxBarLengthPx, yd, mi)
+  }
+
+private fun metricBarParams(
+  metersPerPx: Float,
+  maxBarLengthPx: Float,
+  m: String,
+  km: String
+): ScaleBarParams {
+  val stop = findStop(maxBarLengthPx * metersPerPx, METRIC_STOPS)
+  return ScaleBarParams(
+    text =
+      if (stop >= 1000) {
+        "${(stop/1000f).toShortString()} $km"
+      } else {
+        "${stop.toShortString()} $m"
+      },
+    barLengthPx = stop / metersPerPx
+  )
+}
+
+private fun yardsBarParams(
+  metersPerPx: Float,
+  maxBarLengthPx: Float,
+  yd: String,
+  mi: String
+): ScaleBarParams {
+  val stop = findStop((maxBarLengthPx * metersPerPx / METERS_IN_YARD).toFloat(), YARDS_STOPS)
+  return ScaleBarParams(
+    text =
+      if (stop >= YARDS_IN_MILE) {
+        "${(stop/YARDS_IN_MILE).toShortString()} $mi"
+      } else {
+        "${stop.toShortString()} $yd"
+      },
+    barLengthPx = (stop * METERS_IN_YARD / metersPerPx).toFloat()
+  )
+}
+
+private fun feetBarParams(
+  metersPerPx: Float,
+  maxBarLengthPx: Float,
+  ft: String,
+  mi: String
+): ScaleBarParams {
+  val stop = findStop((maxBarLengthPx * metersPerPx / METERS_IN_FEET).toFloat(), FEET_STOPS)
+  return ScaleBarParams(
+    text =
+      if (stop >= FEET_IN_MILE) {
+        "${(stop/FEET_IN_MILE).toShortString()} $mi"
+      } else {
+        "${stop.toShortString()} $ft"
+      },
+    barLengthPx = (stop * METERS_IN_FEET / metersPerPx).toFloat()
+  )
+}
 
 /**
  * find the largest stop in the list of stops (sorted in ascending order) that is below or equal
@@ -267,7 +326,7 @@ private val METRIC_STOPS: List<Float> =
   )
 
 /** list of feet stops */
-private val IMPERIAL_STOPS: List<Float> =
+private val FEET_STOPS: List<Float> =
   listOf(
     0.1f,
     0.2f,
@@ -297,4 +356,36 @@ private val IMPERIAL_STOPS: List<Float> =
     5000f * FEET_IN_MILE,
     10000f * FEET_IN_MILE,
     20000f * FEET_IN_MILE,
+  )
+
+/** list of feet stops */
+private val YARDS_STOPS: List<Float> =
+  listOf(
+    0.1f,
+    0.2f,
+    0.5f,
+    1f,
+    2f,
+    5f,
+    10f,
+    20f,
+    50f,
+    100f,
+    200f,
+    500f,
+    1000f,
+    1f * YARDS_IN_MILE,
+    2f * YARDS_IN_MILE,
+    5f * YARDS_IN_MILE,
+    10f * YARDS_IN_MILE,
+    20f * YARDS_IN_MILE,
+    50f * YARDS_IN_MILE,
+    100f * YARDS_IN_MILE,
+    200f * YARDS_IN_MILE,
+    500f * YARDS_IN_MILE,
+    1000f * YARDS_IN_MILE,
+    2000f * YARDS_IN_MILE,
+    5000f * YARDS_IN_MILE,
+    10000f * YARDS_IN_MILE,
+    20000f * YARDS_IN_MILE,
   )

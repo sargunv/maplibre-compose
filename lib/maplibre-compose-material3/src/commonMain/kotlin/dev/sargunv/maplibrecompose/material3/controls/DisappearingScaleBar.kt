@@ -28,13 +28,14 @@ import kotlinx.coroutines.delay
  *   [CameraState.metersPerDpAtTarget][dev.sargunv.maplibrecompose.compose.CameraState.metersPerDpAtTarget]
  * @param zoom zoom level of the map
  * @param modifier the [Modifier] to be applied to this layout node
- * @param measure which measure to show on the scale bar (feet/miles, meters/kilometers or both). If
- *   `null`, a measure will be selected based on the system settings or otherwise the user's locale.
+ * @param measures which measure to show on the scale bar (feet/miles, meters/kilometers or both).
+ *   If `null`, a measure will be selected based on the system settings or otherwise the user's
+ *   locale.
  * @param haloColor halo for better visibility when displayed on top of the map
  * @param color scale bar and text color.
  * @param textStyle the text style. The text size is the deciding factor how large the scale bar is
  *   is displayed.
- * @param alignment alignment of the scale bar and text
+ * @param alignment horizontal alignment of the scale bar and text
  * @param visibilityDuration how long it should be visible after the zoom changed
  * @param enterTransition EnterTransition(s) used for the appearing animation
  * @param exitTransition ExitTransition(s) used for the disappearing animation
@@ -44,7 +45,7 @@ public fun DisappearingScaleBar(
   metersPerDp: Double,
   zoom: Double,
   modifier: Modifier = Modifier,
-  measure: ScaleBarMeasure? = null,
+  measures: ScaleBarMeasures? = null,
   haloColor: Color = MaterialTheme.colorScheme.surface,
   color: Color = contentColorFor(haloColor),
   textStyle: TextStyle = MaterialTheme.typography.labelMedium,
@@ -71,7 +72,7 @@ public fun DisappearingScaleBar(
   ) {
     ScaleBar(
       metersPerDp = metersPerDp,
-      measure = measure,
+      measures = measures,
       haloColor = haloColor,
       color = color,
       textStyle = textStyle,
