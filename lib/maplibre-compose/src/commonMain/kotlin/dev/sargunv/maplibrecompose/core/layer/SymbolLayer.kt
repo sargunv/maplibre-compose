@@ -17,6 +17,7 @@ import dev.sargunv.maplibrecompose.expressions.value.ImageValue
 import dev.sargunv.maplibrecompose.expressions.value.ListValue
 import dev.sargunv.maplibrecompose.expressions.value.StringValue
 import dev.sargunv.maplibrecompose.expressions.value.SymbolAnchor
+import dev.sargunv.maplibrecompose.expressions.value.SymbolOverlap
 import dev.sargunv.maplibrecompose.expressions.value.SymbolPlacement
 import dev.sargunv.maplibrecompose.expressions.value.SymbolZOrder
 import dev.sargunv.maplibrecompose.expressions.value.TextJustify
@@ -130,7 +131,7 @@ internal expect class SymbolLayer(id: String, source: Source) : FeatureLayer {
 
   fun setTextAllowOverlap(allowOverlap: CompiledExpression<BooleanValue>)
 
-  fun setTextOverlap(overlap: CompiledExpression<StringValue>)
+  fun setTextOverlap(overlap: CompiledExpression<SymbolOverlap>)
 
   fun setTextIgnorePlacement(ignorePlacement: CompiledExpression<BooleanValue>)
 
