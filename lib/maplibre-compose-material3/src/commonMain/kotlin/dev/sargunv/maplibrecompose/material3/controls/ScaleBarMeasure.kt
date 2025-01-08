@@ -29,9 +29,9 @@ public interface ScaleBarMeasure {
     @Composable
     override fun getText(stop: Double): String =
       if (stop >= 1000) {
-        "${(stop/1000.0).toShortString()} ${stringResource(Res.string.kilometers_symbol)}"
+        (stop / 1000).formatForDisplay(stringResource(Res.string.kilometers_symbol))
       } else {
-        "${stop.toShortString()} ${stringResource(Res.string.meters_symbol)}"
+        stop.formatForDisplay(stringResource(Res.string.meters_symbol))
       }
   }
 
@@ -52,9 +52,9 @@ public interface ScaleBarMeasure {
     @Composable
     override fun getText(stop: Double): String =
       if (stop >= FEET_IN_MILE) {
-        "${(stop/FEET_IN_MILE).toShortString()} ${stringResource(Res.string.miles_symbol)}"
+        (stop / FEET_IN_MILE).formatForDisplay(stringResource(Res.string.miles_symbol))
       } else {
-        "${stop.toShortString()} ${stringResource(Res.string.feet_symbol)}"
+        stop.formatForDisplay(stringResource(Res.string.feet_symbol))
       }
   }
 
@@ -75,15 +75,16 @@ public interface ScaleBarMeasure {
     @Composable
     override fun getText(stop: Double): String =
       if (stop >= YARDS_IN_MILE) {
-        "${(stop/YARDS_IN_MILE).toShortString()} ${stringResource(Res.string.miles_symbol)}"
+        (stop / YARDS_IN_MILE).formatForDisplay(stringResource(Res.string.miles_symbol))
       } else {
-        "${stop.toShortString()} ${stringResource(Res.string.yards_symbol)}"
+        stop.formatForDisplay(stringResource(Res.string.yards_symbol))
       }
   }
 }
 
-/** format like an int if this has no decimals */
-private fun Double.toShortString() = if (this % 1 == 0.0) toInt().toString() else toString()
+/** format a number with a unit symbol, not showing the decimal point if it's an integer */
+private fun Double.formatForDisplay(symbol: String) =
+  if (this.toInt().toDouble() == this) "${this.toInt()} $symbol" else "${this} $symbol"
 
 /** build a list of stops by multiplying mantissas by 10^exponents, like scientific notation */
 private fun buildStops(mantissas: List<Int>, exponents: IntRange) = buildList {
