@@ -13,7 +13,6 @@ import cocoapods.MapLibre.MLNShapeSourceOptionSimplificationTolerance
 import dev.sargunv.maplibrecompose.core.util.toMLNShape
 import dev.sargunv.maplibrecompose.core.util.toNSExpression
 import dev.sargunv.maplibrecompose.expressions.ExpressionContext
-import dev.sargunv.maplibrecompose.expressions.ast.FunctionCall
 import dev.sargunv.maplibrecompose.expressions.dsl.Feature
 import dev.sargunv.maplibrecompose.expressions.dsl.const
 import io.github.dellisd.spatialk.geojson.GeoJson
@@ -48,7 +47,7 @@ public actual class GeoJsonSource : Source {
         options.clusterProperties.mapValues { (_, value) ->
           arrayOf(
             const(value.operator).toNSExpression(),
-            Feature.get(value.property).compile(ExpressionContext.None).toNSExpression()
+            Feature.get(value.property).compile(ExpressionContext.None).toNSExpression(),
           )
         },
       )

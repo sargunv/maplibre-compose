@@ -36,15 +36,15 @@ import androidx.compose.runtime.Immutable
  *   is enabled, aggregating values from clustered features. The keys are the property names, the
  *   values define how the value should be aggregated from the features within one cluster.
  *
- *   Example:
- *   ```kt
- *   mapOf(
- *     "totalCapacity" to ClusterAggregation("+", "capacity")
- *   )
- *   ```
- *   Let's assume a geojson source consisting of points for parking lots in which each parking lot
- *   has a `capacity` property. The code above adds the `capacity` values of all parking lots within
- *   one cluster together into a property named `totalCapacity` of the cluster point.
+ *  Example:
+ *  ```kt
+ *  mapOf(
+ *    "totalCapacity" to ClusterAggregation("+", "capacity")
+ *  )
+ *  ```
+ *  Let's assume a geojson source consisting of points for parking lots in which each parking lot
+ *  has a `capacity` property. The code above adds the `capacity` values of all parking lots within
+ *  one cluster together into a property named `totalCapacity` of the cluster point.
  *
  * @param lineMetrics Whether to calculate line distance metrics. This is required for
  *   [LineLayer][dev.sargunv.maplibrecompose.compose.layer.LineLayer]s that specify a `gradient`.
@@ -72,6 +72,6 @@ public data class GeoJsonOptions(
    *   [MapLibre Style Spec][https://maplibre.org/maplibre-style-spec/expressions/#math] for valid
    *   names for the operator.
    * @param property name of the feature property whose value should be aggregated.
-   * */
+   */
   public data class ClusterProperty(val operator: String, val property: String)
 }
