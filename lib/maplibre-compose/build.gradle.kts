@@ -74,6 +74,7 @@ kotlin {
       implementation(compose.components.resources)
       api(libs.kermit)
       api(libs.spatialk.geojson)
+      api(libs.alchemist)
       api(project(":lib:maplibre-compose-expressions"))
     }
 

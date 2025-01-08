@@ -1,4 +1,5 @@
 [versions]
+alchemist = "0.1.0"
 androidx-activity = "1.9.3"
 androidx-composeUi = "1.7.6"
 androidx-navigation = "2.8.0-alpha11"
@@ -27,6 +28,7 @@ gradle-spotless = "7.0.0.BETA4"
 tool-prettier = "3.4.2"
 
 [libraries]
+alchemist = { module = "io.github.kevincianfarini.alchemist:alchemist", version.ref = "alchemist" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-composeUi-testManifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "androidx-composeUi" }
 androidx-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
