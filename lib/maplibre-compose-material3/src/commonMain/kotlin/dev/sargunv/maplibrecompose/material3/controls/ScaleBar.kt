@@ -25,7 +25,10 @@ import dev.sargunv.maplibrecompose.material3.drawPathsWithHalo
 import dev.sargunv.maplibrecompose.material3.drawTextWithHalo
 
 /** Which measures to show on the scale bar. */
-public data class ScaleBarMeasures(val first: ScaleBarMeasure, val second: ScaleBarMeasure? = null)
+public data class ScaleBarMeasures(
+  val primary: ScaleBarMeasure,
+  val secondary: ScaleBarMeasure? = null,
+)
 
 /**
  * A scale bar composable that shows the current scale of the map in feet, meters or feet and meters
@@ -47,14 +50,12 @@ public data class ScaleBarMeasures(val first: ScaleBarMeasure, val second: Scale
 public fun ScaleBar(
   metersPerDp: Double,
   modifier: Modifier = Modifier,
-  measures: ScaleBarMeasures? = null,
+  measures: ScaleBarMeasures = defaultScaleBarMeasures(),
   haloColor: Color = MaterialTheme.colorScheme.surface,
   color: Color = contentColorFor(haloColor),
   textStyle: TextStyle = MaterialTheme.typography.labelSmall,
   alignment: Alignment.Horizontal = Alignment.Start,
 ) {
-  @Suppress("NAME_SHADOWING") val measures = measures ?: defaultScaleBarMeasures()
-
   val textMeasurer = rememberTextMeasurer()
   // longest possible text
   val maxTextSizePx =
@@ -75,15 +76,15 @@ public fun ScaleBar(
 
   val fullStrokeWidth = haloStrokeWidth * 2 + strokeWidth
 
-  val textCount = if (measures.second != null) 2 else 1
+  val textCount = if (measures.secondary != null) 2 else 1
   val totalHeight = (maxTextSize.height + textVerticalPadding) * textCount + fullStrokeWidth
 
   BoxWithConstraints(modifier.size(totalMaxWidth, totalHeight)) {
     // scale bar start/end should not overlap horizontally with canvas bounds
     val maxBarLength = maxWidth - fullStrokeWidth
 
-    val params1 = scaleBarParameters(measures.first, metersPerDp, maxBarLength)
-    val params2 = measures.second?.let { scaleBarParameters(it, metersPerDp, maxBarLength) }
+    val params1 = scaleBarParameters(measures.primary, metersPerDp, maxBarLength)
+    val params2 = measures.secondary?.let { scaleBarParameters(it, metersPerDp, maxBarLength) }
 
     Canvas(modifier.fillMaxSize()) {
       val fullStrokeWidthPx = fullStrokeWidth.toPx()
@@ -185,9 +186,9 @@ private fun scaleBarParameters(
   metersPerDp: Double,
   maxBarLength: Dp,
 ): ScaleBarParams {
-  val max = maxBarLength.value * metersPerDp / measure.unitToMeter
+  val max = maxBarLength.value * metersPerDp / measure.unitInMeters
   val stop = findStop(max, measure.stops)
-  return ScaleBarParams((stop * measure.unitToMeter / metersPerDp).dp, measure.getText(stop))
+  return ScaleBarParams((stop * measure.unitInMeters / metersPerDp).dp, measure.getText(stop))
 }
 
 /**

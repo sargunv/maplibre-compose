@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import dev.sargunv.maplibrecompose.material3.defaultScaleBarMeasures
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
@@ -44,7 +45,7 @@ public fun DisappearingScaleBar(
   metersPerDp: Double,
   zoom: Double,
   modifier: Modifier = Modifier,
-  measures: ScaleBarMeasures? = null,
+  measures: ScaleBarMeasures = defaultScaleBarMeasures(),
   haloColor: Color = MaterialTheme.colorScheme.surface,
   color: Color = contentColorFor(haloColor),
   textStyle: TextStyle = MaterialTheme.typography.labelMedium,

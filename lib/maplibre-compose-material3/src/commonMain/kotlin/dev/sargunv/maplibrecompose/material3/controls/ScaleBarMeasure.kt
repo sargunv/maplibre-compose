@@ -13,7 +13,7 @@ import org.jetbrains.compose.resources.stringResource
 /** A measure to show in the scale bar */
 public interface ScaleBarMeasure {
   /** one unit of this measure in meters */
-  public val unitToMeter: Double
+  public val unitInMeters: Double
 
   /** List of stops, sorted ascending, at which the scalebar should show */
   public val stops: List<Double>
@@ -22,7 +22,7 @@ public interface ScaleBarMeasure {
 
   /** A measure of meters and kilometers */
   public data object Metric : ScaleBarMeasure {
-    override val unitToMeter: Double = 1.0
+    override val unitInMeters: Double = 1.0
 
     override val stops: List<Double> = buildStops(mantissas = listOf(1, 2, 5), exponents = -1..7)
 
@@ -40,7 +40,7 @@ public interface ScaleBarMeasure {
 
     private const val FEET_IN_MILE: Int = 5280
 
-    override val unitToMeter: Double = 0.3048
+    override val unitInMeters: Double = 0.3048
 
     override val stops: List<Double> =
       listOf(
@@ -63,7 +63,7 @@ public interface ScaleBarMeasure {
 
     private const val YARDS_IN_MILE: Int = 1760
 
-    override val unitToMeter: Double = 0.9144
+    override val unitInMeters: Double = 0.9144
 
     override val stops: List<Double> =
       listOf(
