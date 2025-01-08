@@ -15,6 +15,11 @@ import io.github.kevincianfarini.alchemist.scalar.nanometers
 import io.github.kevincianfarini.alchemist.scalar.yards
 import io.github.kevincianfarini.alchemist.type.Length
 import io.github.kevincianfarini.alchemist.unit.LengthUnit
+import io.github.kevincianfarini.alchemist.unit.LengthUnit.International.Kilometer
+import io.github.kevincianfarini.alchemist.unit.LengthUnit.International.Meter
+import io.github.kevincianfarini.alchemist.unit.LengthUnit.UnitedStatesCustomary.Foot
+import io.github.kevincianfarini.alchemist.unit.LengthUnit.UnitedStatesCustomary.Mile
+import io.github.kevincianfarini.alchemist.unit.LengthUnit.UnitedStatesCustomary.Yard
 import kotlin.math.pow
 import kotlin.math.roundToInt
 import org.jetbrains.compose.resources.StringResource
@@ -35,9 +40,8 @@ public interface ScaleBarMeasure {
 
     @Composable
     override fun getText(stop: Length): String =
-      if (stop >= 1.kilometers)
-        stop.toDisplayString(LengthUnit.International.Kilometer, Res.string.kilometers_symbol)
-      else stop.toDisplayString(LengthUnit.International.Meter, Res.string.meters_symbol)
+      if (stop >= 1.kilometers) stop.toDisplayString(Kilometer, Res.string.kilometers_symbol)
+      else stop.toDisplayString(Meter, Res.string.meters_symbol)
   }
 
   /** A measure of international feet and miles */
@@ -52,9 +56,8 @@ public interface ScaleBarMeasure {
 
     @Composable
     override fun getText(stop: Length): String =
-      if (stop >= 1.miles)
-        stop.toDisplayString(LengthUnit.UnitedStatesCustomary.Mile, Res.string.miles_symbol)
-      else stop.toDisplayString(LengthUnit.UnitedStatesCustomary.Foot, Res.string.feet_symbol)
+      if (stop >= 1.miles) stop.toDisplayString(Mile, Res.string.miles_symbol)
+      else stop.toDisplayString(Foot, Res.string.feet_symbol)
   }
 
   /** A measure of international yard and miles */
@@ -69,9 +72,8 @@ public interface ScaleBarMeasure {
 
     @Composable
     override fun getText(stop: Length): String =
-      if (stop >= 1.miles)
-        stop.toDisplayString(LengthUnit.UnitedStatesCustomary.Mile, Res.string.miles_symbol)
-      else stop.toDisplayString(LengthUnit.UnitedStatesCustomary.Yard, Res.string.yards_symbol)
+      if (stop >= 1.miles) stop.toDisplayString(Mile, Res.string.miles_symbol)
+      else stop.toDisplayString(Yard, Res.string.yards_symbol)
   }
 }
 
