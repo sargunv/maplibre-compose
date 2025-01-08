@@ -58,9 +58,7 @@ public fun ScaleBar(
   val textMeasurer = rememberTextMeasurer()
   // longest possible text
   val maxTextSizePx =
-    remember(textMeasurer, textStyle) {
-        textMeasurer.measure("5000 km", textStyle).size
-    }
+    remember(textMeasurer, textStyle) { textMeasurer.measure("5000 km", textStyle).size }
   val maxTextSize = with(LocalDensity.current) { maxTextSizePx.toSize().toDpSize() }
 
   // bar stroke width
@@ -181,10 +179,11 @@ public fun ScaleBar(
 
 private data class ScaleBarParams(val barLength: Dp, val text: String)
 
-@Composable private fun scaleBarParameters(
+@Composable
+private fun scaleBarParameters(
   measure: ScaleBarMeasure,
   metersPerDp: Double,
-  maxBarLength: Dp
+  maxBarLength: Dp,
 ): ScaleBarParams {
   val max = maxBarLength.value * metersPerDp / measure.unitToMeter
   val stop = findStop(max.toFloat(), measure.stops)

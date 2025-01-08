@@ -9,7 +9,6 @@ import dev.sargunv.maplibrecompose.material3.generated.miles_symbol
 import dev.sargunv.maplibrecompose.material3.generated.yards_symbol
 import org.jetbrains.compose.resources.stringResource
 
-
 /** A measure to show in the scale bar */
 public interface ScaleBarMeasure {
   /** one unit of this measure in meters */
@@ -18,8 +17,7 @@ public interface ScaleBarMeasure {
   /** List of stops, sorted ascending, at which the scalebar should show */
   public val stops: List<Float>
 
-  @Composable
-  public fun getText(stop: Float): String
+  @Composable public fun getText(stop: Float): String
 
   /** A measure of meters and kilometers */
   public data object Metric : ScaleBarMeasure {
