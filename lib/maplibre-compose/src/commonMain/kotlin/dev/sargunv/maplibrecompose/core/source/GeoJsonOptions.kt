@@ -42,6 +42,7 @@ import androidx.compose.runtime.Immutable
  *   "totalCapacity" to ClusterAggregation("+", "capacity")
  * )
  * ```
+ *
  * Let's assume a geojson source consisting of points for parking lots in which each parking lot has
  * a `capacity` property. The code above adds the `capacity` values of all parking lots within one
  * cluster together into a property named `totalCapacity` of the cluster point.
