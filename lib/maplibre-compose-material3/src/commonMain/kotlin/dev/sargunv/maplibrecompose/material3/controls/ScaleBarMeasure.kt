@@ -7,6 +7,7 @@ import dev.sargunv.maplibrecompose.material3.generated.kilometers_symbol
 import dev.sargunv.maplibrecompose.material3.generated.meters_symbol
 import dev.sargunv.maplibrecompose.material3.generated.miles_symbol
 import dev.sargunv.maplibrecompose.material3.generated.yards_symbol
+import kotlin.math.pow
 import org.jetbrains.compose.resources.stringResource
 
 /** A measure to show in the scale bar */
@@ -15,49 +16,20 @@ public interface ScaleBarMeasure {
   public val unitToMeter: Double
 
   /** List of stops, sorted ascending, at which the scalebar should show */
-  public val stops: List<Float>
+  public val stops: List<Double>
 
-  @Composable public fun getText(stop: Float): String
+  @Composable public fun getText(stop: Double): String
 
   /** A measure of meters and kilometers */
   public data object Metric : ScaleBarMeasure {
     override val unitToMeter: Double = 1.0
 
-    override val stops: List<Float> =
-      listOf(
-        0.1f,
-        0.2f,
-        0.5f,
-        1f,
-        2f,
-        5f,
-        10f,
-        20f,
-        50f,
-        100f,
-        200f,
-        500f,
-        1000f,
-        2000f,
-        5000f,
-        10000f,
-        20000f,
-        50000f,
-        100000f,
-        200000f,
-        500000f,
-        1000000f,
-        2000000f,
-        5000000f,
-        10000000f,
-        20000000f,
-        40000000f,
-      )
+    override val stops: List<Double> = buildStops(mantissas = listOf(1, 2, 5), exponents = -1..7)
 
     @Composable
-    override fun getText(stop: Float): String =
+    override fun getText(stop: Double): String =
       if (stop >= 1000) {
-        "${(stop/1000f).toShortString()} ${stringResource(Res.string.kilometers_symbol)}"
+        "${(stop/1000.0).toShortString()} ${stringResource(Res.string.kilometers_symbol)}"
       } else {
         "${stop.toShortString()} ${stringResource(Res.string.meters_symbol)}"
       }
@@ -70,40 +42,15 @@ public interface ScaleBarMeasure {
 
     override val unitToMeter: Double = 0.3048
 
-    override val stops: List<Float> =
+    override val stops: List<Double> =
       listOf(
-        0.1f,
-        0.2f,
-        0.5f,
-        1f,
-        2f,
-        5f,
-        10f,
-        20f,
-        50f,
-        100f,
-        200f,
-        500f,
-        1000f,
-        2000f,
-        1f * FEET_IN_MILE,
-        2f * FEET_IN_MILE,
-        5f * FEET_IN_MILE,
-        10f * FEET_IN_MILE,
-        20f * FEET_IN_MILE,
-        50f * FEET_IN_MILE,
-        100f * FEET_IN_MILE,
-        200f * FEET_IN_MILE,
-        500f * FEET_IN_MILE,
-        1000f * FEET_IN_MILE,
-        2000f * FEET_IN_MILE,
-        5000f * FEET_IN_MILE,
-        10000f * FEET_IN_MILE,
-        20000f * FEET_IN_MILE,
-      )
+          buildStops(mantissas = listOf(1, 2, 5), exponents = -1..3).dropLast(1),
+          buildStops(mantissas = listOf(1, 2, 5), exponents = 0..4).map { it * FEET_IN_MILE },
+        )
+        .flatten()
 
     @Composable
-    override fun getText(stop: Float): String =
+    override fun getText(stop: Double): String =
       if (stop >= FEET_IN_MILE) {
         "${(stop/FEET_IN_MILE).toShortString()} ${stringResource(Res.string.miles_symbol)}"
       } else {
@@ -118,39 +65,15 @@ public interface ScaleBarMeasure {
 
     override val unitToMeter: Double = 0.9144
 
-    override val stops: List<Float> =
+    override val stops: List<Double> =
       listOf(
-        0.1f,
-        0.2f,
-        0.5f,
-        1f,
-        2f,
-        5f,
-        10f,
-        20f,
-        50f,
-        100f,
-        200f,
-        500f,
-        1000f,
-        1f * YARDS_IN_MILE,
-        2f * YARDS_IN_MILE,
-        5f * YARDS_IN_MILE,
-        10f * YARDS_IN_MILE,
-        20f * YARDS_IN_MILE,
-        50f * YARDS_IN_MILE,
-        100f * YARDS_IN_MILE,
-        200f * YARDS_IN_MILE,
-        500f * YARDS_IN_MILE,
-        1000f * YARDS_IN_MILE,
-        2000f * YARDS_IN_MILE,
-        5000f * YARDS_IN_MILE,
-        10000f * YARDS_IN_MILE,
-        20000f * YARDS_IN_MILE,
-      )
+          buildStops(mantissas = listOf(1, 2, 5), exponents = -1..3).dropLast(2),
+          buildStops(mantissas = listOf(1, 2, 5), exponents = 0..4).map { it * YARDS_IN_MILE },
+        )
+        .flatten()
 
     @Composable
-    override fun getText(stop: Float): String =
+    override fun getText(stop: Double): String =
       if (stop >= YARDS_IN_MILE) {
         "${(stop/YARDS_IN_MILE).toShortString()} ${stringResource(Res.string.miles_symbol)}"
       } else {
@@ -160,4 +83,9 @@ public interface ScaleBarMeasure {
 }
 
 /** format like an int if this has no decimals */
-private fun Float.toShortString() = if (this % 1 == 0f) toInt().toString() else toString()
+private fun Double.toShortString() = if (this % 1 == 0.0) toInt().toString() else toString()
+
+/** build a list of stops by multiplying mantissas by 10^exponents, like scientific notation */
+private fun buildStops(mantissas: List<Int>, exponents: IntRange) = buildList {
+  for (e in exponents) for (m in mantissas) add(m * 10.0.pow(e))
+}

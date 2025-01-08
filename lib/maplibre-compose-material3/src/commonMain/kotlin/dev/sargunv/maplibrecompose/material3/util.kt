@@ -22,18 +22,41 @@ internal fun defaultScaleBarMeasures(country: String?): ScaleBarMeasures {
     return when (country) {
       // United states and its unincorporated territories
       "US" -> ScaleBarMeasures(FeetAndMiles, Metric)
-      "AS", "GU", "MP", "PR", "VI" -> ScaleBarMeasures(FeetAndMiles, Metric)
+      "AS",
+      "GU",
+      "MP",
+      "PR",
+      "VI" -> ScaleBarMeasures(FeetAndMiles, Metric)
 
       // former United states territories / Compact of Free Association
-      "FM", "MH", "PW" -> ScaleBarMeasures(Metric, FeetAndMiles)
+      "FM",
+      "MH",
+      "PW" -> ScaleBarMeasures(Metric, FeetAndMiles)
 
       // United kingdom with its overseas territories and crown dependencies
       "GB" -> ScaleBarMeasures(YardsAndMiles, Metric)
-      "AI", "BM", "FK", "GG", "GI", "GS", "IM", "IO", "JE", "KY", "MS", "PN", "SH", "TC", "VG" ->
-        ScaleBarMeasures(YardsAndMiles, Metric)
+      "AI",
+      "BM",
+      "FK",
+      "GG",
+      "GI",
+      "GS",
+      "IM",
+      "IO",
+      "JE",
+      "KY",
+      "MS",
+      "PN",
+      "SH",
+      "TC",
+      "VG" -> ScaleBarMeasures(YardsAndMiles, Metric)
 
       // former British overseas territories / colonies
-      "BS", "BZ", "GD", "KN", "VC" -> ScaleBarMeasures(Metric, YardsAndMiles)
+      "BS",
+      "BZ",
+      "GD",
+      "KN",
+      "VC" -> ScaleBarMeasures(Metric, YardsAndMiles)
 
       // Myanmar
       "MM" -> ScaleBarMeasures(Metric, YardsAndMiles)

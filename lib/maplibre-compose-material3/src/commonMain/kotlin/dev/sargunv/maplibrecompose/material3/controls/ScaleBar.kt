@@ -186,7 +186,7 @@ private fun scaleBarParameters(
   maxBarLength: Dp,
 ): ScaleBarParams {
   val max = maxBarLength.value * metersPerDp / measure.unitToMeter
-  val stop = findStop(max.toFloat(), measure.stops)
+  val stop = findStop(max, measure.stops)
   return ScaleBarParams((stop * measure.unitToMeter / metersPerDp).dp, measure.getText(stop))
 }
 
@@ -194,10 +194,7 @@ private fun scaleBarParameters(
  * find the largest stop in the list of stops (sorted in ascending order) that is below or equal
  * [max].
  */
-private fun findStop(max: Float, stops: List<Float>): Float {
-  var maxStop = stops.first()
-  for (stop in stops) {
-    if (stop <= max) maxStop = stop else break
-  }
-  return maxStop
+private fun findStop(max: Double, stops: List<Double>): Double {
+  val i = stops.binarySearch { it.compareTo(max) }
+  return if (i >= 0) stops[i] else stops[(-i - 2).coerceAtLeast(0)]
 }

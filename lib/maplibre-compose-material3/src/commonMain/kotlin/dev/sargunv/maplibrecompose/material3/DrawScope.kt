@@ -77,10 +77,5 @@ internal fun DrawScope.drawTextWithHalo(
     topLeft = topLeft,
     drawStyle = stroke,
   )
-  drawText(
-    textLayoutResult = textLayoutResult,
-    color = color,
-    topLeft = topLeft,
-    drawStyle = Fill,
-  )
+  drawText(textLayoutResult = textLayoutResult, color = color, topLeft = topLeft, drawStyle = Fill)
 }
