@@ -34,6 +34,7 @@ import dev.sargunv.maplibrecompose.expressions.value.ImageValue
 import dev.sargunv.maplibrecompose.expressions.value.ListValue
 import dev.sargunv.maplibrecompose.expressions.value.StringValue
 import dev.sargunv.maplibrecompose.expressions.value.SymbolAnchor
+import dev.sargunv.maplibrecompose.expressions.value.SymbolOverlap
 import dev.sargunv.maplibrecompose.expressions.value.SymbolPlacement
 import dev.sargunv.maplibrecompose.expressions.value.SymbolZOrder
 import dev.sargunv.maplibrecompose.expressions.value.TextJustify
@@ -344,8 +345,8 @@ import dev.sargunv.maplibrecompose.expressions.value.TranslateAnchor
  *   Ignored if [textField] is not specified.
  *
  * @param textOverlap Controls whether to show an icon/text when it overlaps other symbols on the
- *   map. See [SymbolOverlap][dev.sargunv.maplibrecompose.expressions.SymbolOverlap]. Overrides
- *   [textAllowOverlap].
+ *   map. See [SymbolOverlap][dev.sargunv.maplibrecompose.expressions.value.SymbolOverlap].
+ *   Overrides [textAllowOverlap].
  *
  *   Ignored if [textField] is not specified.
  *
@@ -462,7 +463,7 @@ public fun SymbolLayer(
   // text collision
   textPadding: Expression<DpValue> = const(2.dp),
   textAllowOverlap: Expression<BooleanValue> = const(false),
-  textOverlap: Expression<StringValue> = nil(),
+  textOverlap: Expression<SymbolOverlap> = nil(),
   textIgnorePlacement: Expression<BooleanValue> = const(false),
   textOptional: Expression<BooleanValue> = const(false),
 

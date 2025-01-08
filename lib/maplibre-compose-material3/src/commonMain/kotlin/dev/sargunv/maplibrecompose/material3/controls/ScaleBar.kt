@@ -1,253 +1,201 @@
 package dev.sargunv.maplibrecompose.material3.controls
 
-// Based on the scale bar from Google Maps Compose.
-
-// Copyright 2022 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import dev.sargunv.maplibrecompose.compose.CameraState
-import dev.sargunv.maplibrecompose.material3.generated.Res
-import dev.sargunv.maplibrecompose.material3.generated.feet_symbol
-import dev.sargunv.maplibrecompose.material3.generated.kilometers_symbol
-import dev.sargunv.maplibrecompose.material3.generated.meters_symbol
-import dev.sargunv.maplibrecompose.material3.generated.miles_symbol
-import kotlin.math.roundToInt
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
-import kotlinx.coroutines.delay
-import org.jetbrains.compose.resources.stringResource
+import androidx.compose.ui.unit.toSize
+import dev.sargunv.maplibrecompose.material3.defaultScaleBarMeasures
+import dev.sargunv.maplibrecompose.material3.drawPathsWithHalo
+import dev.sargunv.maplibrecompose.material3.drawTextWithHalo
 
-public data class ScaleBarColors(
-  val textColor: Color,
-  val lineColor: Color,
-  val shadowColor: Color,
+/** Which measures to show on the scale bar. */
+public data class ScaleBarMeasures(
+  val primary: ScaleBarMeasure,
+  val secondary: ScaleBarMeasure? = null,
 )
 
-public object ScaleBarDefaults {
-  public val width: Dp = 65.dp
-  public val height: Dp = 50.dp
-
-  @Composable
-  public fun colors(): ScaleBarColors =
-    ScaleBarColors(
-      textColor = MaterialTheme.colorScheme.onSurface,
-      lineColor = MaterialTheme.colorScheme.onSurface,
-      shadowColor = MaterialTheme.colorScheme.surface,
-    )
-}
-
 /**
- * A scale bar composable that shows the current scale of the map in feet and meters when zoomed in
- * to the map, changing to miles and kilometers, respectively, when zooming out.
+ * A scale bar composable that shows the current scale of the map in feet, meters or feet and meters
+ * when zoomed in to the map, changing to miles and kilometers, respectively, when zooming out.
+ *
+ * @param metersPerDp how many meters are displayed in one device independent pixel (dp), i.e. the
+ *   scale. See
+ *   [CameraState.metersPerDpAtTarget][dev.sargunv.maplibrecompose.compose.CameraState.metersPerDpAtTarget]
+ * @param modifier the [Modifier] to be applied to this layout node
+ * @param measures which measures to show on the scale bar. If `null`, measures will be selected
+ *   based on the system settings or otherwise the user's locale.
+ * @param haloColor halo for better visibility when displayed on top of the map
+ * @param color scale bar and text color.
+ * @param textStyle the text style. The text size is the deciding factor how large the scale bar is
+ *   is displayed.
+ * @param alignment horizontal alignment of the scale bar and text
  */
 @Composable
 public fun ScaleBar(
-  cameraState: CameraState,
+  metersPerDp: Double,
   modifier: Modifier = Modifier,
-  width: Dp = ScaleBarDefaults.width,
-  height: Dp = ScaleBarDefaults.height,
-  colors: ScaleBarColors = ScaleBarDefaults.colors(),
+  measures: ScaleBarMeasures = defaultScaleBarMeasures(),
+  haloColor: Color = MaterialTheme.colorScheme.surface,
+  color: Color = contentColorFor(haloColor),
+  textStyle: TextStyle = MaterialTheme.typography.labelSmall,
+  alignment: Alignment.Horizontal = Alignment.Start,
 ) {
-  Box(modifier = modifier.size(width = width, height = height)) {
-    var horizontalLineWidthMeters by remember { mutableDoubleStateOf(0.0) }
+  val textMeasurer = rememberTextMeasurer()
+  // longest possible text
+  val maxTextSizePx =
+    remember(textMeasurer, textStyle) { textMeasurer.measure("5000 km", textStyle).size }
+  val maxTextSize = with(LocalDensity.current) { maxTextSizePx.toSize().toDpSize() }
 
-    Canvas(
-      modifier = Modifier.fillMaxSize(),
-      onDraw = {
-        horizontalLineWidthMeters = cameraState.metersPerDpAtTarget * size.width.toDp().value
+  // bar stroke width
+  val strokeWidth = 2.dp
+  val haloStrokeWidth = 1.dp
+  // padding of text to bar stroke
+  val textHorizontalPadding = 4.dp
+  val textVerticalPadding = 0.dp
 
-        val start =
-          when (layoutDirection) {
-            LayoutDirection.Ltr -> 0f
-            LayoutDirection.Rtl -> size.width
-          }
-        val midHeight = size.height / 2
-        val oneThirdHeight = size.height / 3
-        val twoThirdsHeight = size.height * 2 / 3
-        val strokeWidth = 2f * density
-        val shadowStrokeWidth = strokeWidth + 2f * density
+  // multiplied by 2.5 because the next stop can be the x2.5 of a previous stop (e.g. 2km -> 5km),
+  // so the bar can end at approx 1/2.5th of the total width. We want to avoid that the bar
+  // intersects with the text, i.e. is drawn behind the text
+  val totalMaxWidth = maxTextSize.width * 2.5f + (textHorizontalPadding + strokeWidth) * 2f
 
-        // Middle horizontal line shadow (drawn under main lines)
-        drawLine(
-          color = colors.shadowColor,
-          start = Offset(0f, midHeight),
-          end = Offset(size.width, midHeight),
-          strokeWidth = shadowStrokeWidth,
-          cap = StrokeCap.Round,
+  val fullStrokeWidth = haloStrokeWidth * 2 + strokeWidth
+
+  val textCount = if (measures.secondary != null) 2 else 1
+  val totalHeight = (maxTextSize.height + textVerticalPadding) * textCount + fullStrokeWidth
+
+  BoxWithConstraints(modifier.size(totalMaxWidth, totalHeight)) {
+    // scale bar start/end should not overlap horizontally with canvas bounds
+    val maxBarLength = maxWidth - fullStrokeWidth
+
+    val params1 = scaleBarParameters(measures.primary, metersPerDp, maxBarLength)
+    val params2 = measures.secondary?.let { scaleBarParameters(it, metersPerDp, maxBarLength) }
+
+    Canvas(modifier.fillMaxSize()) {
+      val fullStrokeWidthPx = fullStrokeWidth.toPx()
+      val textHeightPx = maxTextSizePx.height
+      val textHorizontalPaddingPx = textHorizontalPadding.toPx()
+      val textVerticalPaddingPx = textVerticalPadding.toPx()
+
+      // bar ends should go to the vertical center of the text
+      val barEndsHeightPx = textHeightPx / 2f + textVerticalPadding.toPx() + fullStrokeWidthPx / 2f
+
+      var y = 0f
+      val paths = ArrayList<List<Offset>>(2)
+      val texts = ArrayList<Pair<Offset, TextLayoutResult>>(2)
+
+      if (true) { // just want a scope here
+        val offsetX =
+          alignment.align(
+            size = params1.barLength.toPx().toInt(),
+            space = (size.width - fullStrokeWidthPx).toInt(),
+            layoutDirection = layoutDirection,
+          )
+        paths.add(
+          listOf(
+            Offset(offsetX + fullStrokeWidthPx / 2f, 0f + textHeightPx / 2f),
+            Offset(0f, barEndsHeightPx),
+            Offset(params1.barLength.toPx(), 0f),
+            Offset(0f, -barEndsHeightPx),
+          )
         )
-        // Top vertical line shadow (drawn under main lines)
-        drawLine(
-          color = colors.shadowColor,
-          start = Offset(start, oneThirdHeight),
-          end = Offset(start, midHeight),
-          strokeWidth = shadowStrokeWidth,
-          cap = StrokeCap.Round,
-        )
-        // Bottom vertical line shadow (drawn under main lines)
-        drawLine(
-          color = colors.shadowColor,
-          start = Offset(start, midHeight),
-          end = Offset(start, twoThirdsHeight),
-          strokeWidth = shadowStrokeWidth,
-          cap = StrokeCap.Round,
+        texts.add(
+          Pair(
+            Offset(textHorizontalPaddingPx + fullStrokeWidthPx, 0f),
+            textMeasurer.measure(params1.text, textStyle),
+          )
         )
 
-        // Middle horizontal line
-        drawLine(
-          color = colors.lineColor,
-          start = Offset(0f, midHeight),
-          end = Offset(size.width, midHeight),
-          strokeWidth = strokeWidth,
-          cap = StrokeCap.Round,
-        )
-        // Top vertical line
-        drawLine(
-          color = colors.lineColor,
-          start = Offset(start, oneThirdHeight),
-          end = Offset(start, midHeight),
-          strokeWidth = strokeWidth,
-          cap = StrokeCap.Round,
-        )
-        // Bottom vertical line
-        drawLine(
-          color = colors.lineColor,
-          start = Offset(start, midHeight),
-          end = Offset(start, twoThirdsHeight),
-          strokeWidth = strokeWidth,
-          cap = StrokeCap.Round,
-        )
-      },
-    )
-    Column(
-      modifier = Modifier.fillMaxSize(),
-      horizontalAlignment = Alignment.End,
-      verticalArrangement = Arrangement.SpaceAround,
-    ) {
-      var metricUnits = stringResource(Res.string.meters_symbol)
-      var metricDistance = horizontalLineWidthMeters
-      if (horizontalLineWidthMeters > METERS_IN_KILOMETER) {
-        // Switch from meters to kilometers as unit
-        metricUnits = stringResource(Res.string.kilometers_symbol)
-        metricDistance /= METERS_IN_KILOMETER.toInt()
+        y += textHeightPx + textVerticalPaddingPx
       }
 
-      var imperialUnits = stringResource(Res.string.feet_symbol)
-      var imperialDistance = horizontalLineWidthMeters.toFeet()
-      if (imperialDistance > FEET_IN_MILE) {
-        // Switch from ft to miles as unit
-        imperialUnits = stringResource(Res.string.miles_symbol)
-        imperialDistance = imperialDistance.toMiles()
+      if (params2 != null) {
+        val offsetX =
+          alignment.align(
+            size = params2.barLength.toPx().toInt(),
+            space = (size.width - fullStrokeWidthPx).toInt(),
+            layoutDirection = layoutDirection,
+          )
+        paths.add(
+          listOf(
+            Offset(offsetX + fullStrokeWidthPx / 2f, y + fullStrokeWidthPx / 2f + barEndsHeightPx),
+            Offset(0f, -barEndsHeightPx),
+            Offset(params2.barLength.toPx(), 0f),
+            Offset(0f, +barEndsHeightPx),
+          )
+        )
+        texts.add(
+          Pair(
+            Offset(
+              textHorizontalPaddingPx + fullStrokeWidthPx,
+              y + textVerticalPaddingPx + fullStrokeWidthPx,
+            ),
+            textMeasurer.measure(params2.text, textStyle),
+          )
+        )
       }
 
-      TextWithHalo(
-        text = "${imperialDistance.roundToInt()} $imperialUnits",
-        haloColor = colors.shadowColor,
-        color = colors.textColor,
-        style = MaterialTheme.typography.labelMedium,
+      drawPathsWithHalo(
+        color = color,
+        haloColor = haloColor,
+        paths = paths,
+        strokeWidth = strokeWidth.toPx(),
+        haloWidth = haloStrokeWidth.toPx(),
+        cap = StrokeCap.Round,
       )
-      TextWithHalo(
-        text = "${metricDistance.roundToInt()} $metricUnits",
-        haloColor = colors.shadowColor,
-        color = colors.textColor,
-        style = MaterialTheme.typography.labelMedium,
-      )
+
+      for ((offset, textLayoutResult) in texts) {
+        val offsetX =
+          alignment.align(
+            size = textLayoutResult.size.width,
+            space = (size.width - 2 * offset.x).toInt(),
+            layoutDirection = layoutDirection,
+          ) + offset.x
+        drawTextWithHalo(
+          textLayoutResult = textLayoutResult,
+          topLeft = Offset(offsetX, offset.y),
+          color = color,
+          haloColor = haloColor,
+          haloWidth = haloStrokeWidth.toPx(),
+        )
+      }
     }
   }
 }
 
-/**
- * An animated scale bar that appears when the zoom level of the map changes, and then disappears
- * after [visibilityDuration]. This composable wraps [ScaleBar] with visibility animations.
- */
+private data class ScaleBarParams(val barLength: Dp, val text: String)
+
 @Composable
-public fun DisappearingScaleBar(
-  cameraState: CameraState,
-  modifier: Modifier = Modifier,
-  width: Dp = ScaleBarDefaults.width,
-  height: Dp = ScaleBarDefaults.height,
-  colors: ScaleBarColors = ScaleBarDefaults.colors(),
-  visibilityDuration: Duration = 3.seconds,
-  enterTransition: EnterTransition = fadeIn(),
-  exitTransition: ExitTransition = fadeOut(),
-) {
-  val visible = remember { MutableTransitionState(true) }
-
-  LaunchedEffect(key1 = cameraState.position.zoom) {
-    // Show ScaleBar
-    visible.targetState = true
-    delay(visibilityDuration)
-    // Hide ScaleBar after timeout period
-    visible.targetState = false
-  }
-
-  AnimatedVisibility(
-    visibleState = visible,
-    modifier = modifier,
-    enter = enterTransition,
-    exit = exitTransition,
-  ) {
-    ScaleBar(width = width, height = height, cameraState = cameraState, colors = colors)
-  }
+private fun scaleBarParameters(
+  measure: ScaleBarMeasure,
+  metersPerDp: Double,
+  maxBarLength: Dp,
+): ScaleBarParams {
+  val max = maxBarLength.value * metersPerDp / measure.unitInMeters
+  val stop = findStop(max, measure.stops)
+  return ScaleBarParams((stop * measure.unitInMeters / metersPerDp).dp, measure.getText(stop))
 }
 
 /**
- * Converts [this] value in meters to the corresponding value in feet
- *
- * @return [this] meters value converted to feet
+ * find the largest stop in the list of stops (sorted in ascending order) that is below or equal
+ * [max].
  */
-private fun Double.toFeet(): Double {
-  return this * CENTIMETERS_IN_METER / CENTIMETERS_IN_INCH / INCHES_IN_FOOT
+private fun findStop(max: Double, stops: List<Double>): Double {
+  val i = stops.binarySearch { it.compareTo(max) }
+  return if (i >= 0) stops[i] else stops[(-i - 2).coerceAtLeast(0)]
 }
-
-/**
- * Converts [this] value in feet to the corresponding value in miles
- *
- * @return [this] feet value converted to miles
- */
-private fun Double.toMiles(): Double {
-  return this / FEET_IN_MILE
-}
-
-private const val CENTIMETERS_IN_METER: Double = 100.0
-private const val METERS_IN_KILOMETER: Double = 1000.0
-private const val CENTIMETERS_IN_INCH: Double = 2.54
-private const val INCHES_IN_FOOT: Double = 12.0
-private const val FEET_IN_MILE: Double = 5280.0

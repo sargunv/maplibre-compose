@@ -18,6 +18,7 @@ import dev.sargunv.maplibrecompose.expressions.value.ImageValue
 import dev.sargunv.maplibrecompose.expressions.value.ListValue
 import dev.sargunv.maplibrecompose.expressions.value.StringValue
 import dev.sargunv.maplibrecompose.expressions.value.SymbolAnchor
+import dev.sargunv.maplibrecompose.expressions.value.SymbolOverlap
 import dev.sargunv.maplibrecompose.expressions.value.SymbolPlacement
 import dev.sargunv.maplibrecompose.expressions.value.SymbolZOrder
 import dev.sargunv.maplibrecompose.expressions.value.TextJustify
@@ -242,7 +243,7 @@ internal actual class SymbolLayer actual constructor(id: String, source: Source)
     impl.setProperties(PropertyFactory.textAllowOverlap(allowOverlap.toMLNExpression()))
   }
 
-  actual fun setTextOverlap(overlap: CompiledExpression<StringValue>) {
+  actual fun setTextOverlap(overlap: CompiledExpression<SymbolOverlap>) {
     // not implemented by MapLibre-native Android yet
     // impl.setProperties(PropertyFactory.textOverlap(overlap.toMLNExpression()))
   }

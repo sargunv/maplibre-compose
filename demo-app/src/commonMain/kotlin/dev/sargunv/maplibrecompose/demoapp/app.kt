@@ -156,7 +156,11 @@ fun DemoMapControls(
 ) {
   if (Platform.supportsBlending) {
     Box(modifier = modifier.fillMaxSize().padding(8.dp)) {
-      DisappearingScaleBar(cameraState, modifier = Modifier.align(Alignment.TopStart))
+      DisappearingScaleBar(
+        metersPerDp = cameraState.metersPerDpAtTarget,
+        zoom = cameraState.position.zoom,
+        modifier = Modifier.align(Alignment.TopStart),
+      )
       DisappearingCompassButton(
         cameraState,
         modifier = Modifier.align(Alignment.TopEnd),
