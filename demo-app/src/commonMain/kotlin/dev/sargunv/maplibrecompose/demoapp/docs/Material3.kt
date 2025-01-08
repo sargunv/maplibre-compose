@@ -33,7 +33,7 @@ fun Material3() {
     )
 
     Box(modifier = Modifier.fillMaxSize().padding(8.dp)) {
-      ScaleBar(cameraState.metersPerDpAtTarget, modifier = Modifier.align(Alignment.TopStart))
+      ScaleBar(cameraState.lengthPerDpAtTarget, modifier = Modifier.align(Alignment.TopStart))
       CompassButton(cameraState, modifier = Modifier.align(Alignment.TopEnd))
       AttributionButton(styleState, modifier = Modifier.align(Alignment.BottomEnd))
     }
@@ -50,7 +50,7 @@ fun Material3() {
 
     Box(modifier = Modifier.fillMaxSize().padding(8.dp)) {
       DisappearingScaleBar(
-        metersPerDp = cameraState.metersPerDpAtTarget,
+        lengthPerDp = cameraState.lengthPerDpAtTarget,
         zoom = cameraState.position.zoom,
         modifier = Modifier.align(Alignment.TopStart),
       ) // (1)!

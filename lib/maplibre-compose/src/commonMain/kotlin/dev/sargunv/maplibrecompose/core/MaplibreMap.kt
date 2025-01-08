@@ -7,6 +7,7 @@ import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
+import io.github.kevincianfarini.alchemist.type.Length
 import kotlin.time.Duration
 
 internal interface MaplibreMap {
@@ -54,7 +55,7 @@ internal interface MaplibreMap {
     predicate: CompiledExpression<BooleanValue>? = null,
   ): List<Feature>
 
-  suspend fun asyncMetersPerDpAtLatitude(latitude: Double): Double
+  suspend fun asyncLengthPerDpAtLatitude(latitude: Double): Length
 
   interface Callbacks {
     fun onStyleChanged(map: MaplibreMap, style: Style?)
@@ -120,8 +121,8 @@ internal interface StandardMaplibreMap : MaplibreMap {
     predicate: CompiledExpression<BooleanValue>?,
   ): List<Feature> = queryRenderedFeatures(rect, layerIds, predicate)
 
-  override suspend fun asyncMetersPerDpAtLatitude(latitude: Double): Double =
-    metersPerDpAtLatitude(latitude)
+  override suspend fun asyncLengthPerDpAtLatitude(latitude: Double): Length =
+    lengthPerDpAtLatitude(latitude)
 
   fun setStyleUri(styleUri: String)
 
@@ -165,5 +166,5 @@ internal interface StandardMaplibreMap : MaplibreMap {
     predicate: CompiledExpression<BooleanValue>? = null,
   ): List<Feature>
 
-  fun metersPerDpAtLatitude(latitude: Double): Double
+  fun lengthPerDpAtLatitude(latitude: Double): Length
 }

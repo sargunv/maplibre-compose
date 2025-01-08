@@ -17,6 +17,9 @@ import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
+import io.github.kevincianfarini.alchemist.scalar.toLength
+import io.github.kevincianfarini.alchemist.type.Length
+import io.github.kevincianfarini.alchemist.unit.LengthUnit.International.Meter
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.channels.Channel
@@ -42,7 +45,8 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
 
   internal val positionState = mutableStateOf(firstPosition)
   internal val moveReasonState = mutableStateOf(CameraMoveReason.NONE)
-  internal val metersPerDpAtTargetState = mutableStateOf(0.0)
+  // https://github.com/kevincianfarini/alchemist/issues/54
+  internal val lengthPerDpAtTargetState = mutableStateOf(0.toLength(Meter))
 
   /** how the camera is oriented towards the map */
   // if the map is not yet initialized, we store the value to apply it later
@@ -57,9 +61,9 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
   public val moveReason: CameraMoveReason
     get() = moveReasonState.value
 
-  /** meters per dp at the target position */
-  public val metersPerDpAtTarget: Double
-    get() = metersPerDpAtTargetState.value
+  /** real world distance per dp at the target position */
+  public val lengthPerDpAtTarget: Length
+    get() = lengthPerDpAtTargetState.value
 
   /** suspends until the map has been initialized */
   public suspend fun awaitInitialized() {

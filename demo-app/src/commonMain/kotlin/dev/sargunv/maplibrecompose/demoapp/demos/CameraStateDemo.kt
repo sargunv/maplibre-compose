@@ -25,7 +25,7 @@ import dev.sargunv.maplibrecompose.demoapp.DemoOrnamentSettings
 import dev.sargunv.maplibrecompose.demoapp.DemoScaffold
 import dev.sargunv.maplibrecompose.demoapp.format
 import io.github.dellisd.spatialk.geojson.Position
-import kotlin.math.roundToInt
+import io.github.kevincianfarini.alchemist.unit.LengthUnit.International.Meter
 
 private val CHICAGO = Position(latitude = 41.878, longitude = -87.626)
 
@@ -53,14 +53,14 @@ object CameraStateDemo : Demo {
 
         Row(modifier = Modifier.safeDrawingPadding().wrapContentSize(Alignment.Center)) {
           val pos = cameraState.position
-          val scale = cameraState.metersPerDpAtTarget
+          val scale = cameraState.lengthPerDpAtTarget
 
           Cell("Latitude", pos.target.latitude.format(3), Modifier.weight(1.4f))
           Cell("Longitude", pos.target.longitude.format(3), Modifier.weight(1.4f))
           Cell("Zoom", pos.zoom.format(2), Modifier.weight(1f))
           Cell("Bearing", pos.bearing.format(2), Modifier.weight(1f))
           Cell("Tilt", pos.tilt.format(2), Modifier.weight(1f))
-          Cell("Scale", "${scale.roundToInt()}m", Modifier.weight(1f))
+          Cell("Scale", "${scale.toLong(Meter)}m", Modifier.weight(1f))
         }
       }
     }

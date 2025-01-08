@@ -8,6 +8,9 @@ import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
+import io.github.kevincianfarini.alchemist.scalar.toLength
+import io.github.kevincianfarini.alchemist.type.Length
+import io.github.kevincianfarini.alchemist.unit.LengthUnit.International.Meter
 import kotlin.time.Duration
 
 internal class WebviewMap(private val bridge: WebviewBridge) : MaplibreMap {
@@ -139,7 +142,8 @@ internal class WebviewMap(private val bridge: WebviewBridge) : MaplibreMap {
     return emptyList()
   }
 
-  override suspend fun asyncMetersPerDpAtLatitude(latitude: Double): Double {
-    return 0.0
+  override suspend fun asyncLengthPerDpAtLatitude(latitude: Double): Length {
+    // https://github.com/kevincianfarini/alchemist/issues/54
+    return 0.0.toLength(Meter)
   }
 }

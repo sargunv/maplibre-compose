@@ -7,21 +7,17 @@ import dev.sargunv.maplibrecompose.material3.generated.kilometers_symbol
 import dev.sargunv.maplibrecompose.material3.generated.meters_symbol
 import dev.sargunv.maplibrecompose.material3.generated.miles_symbol
 import dev.sargunv.maplibrecompose.material3.generated.yards_symbol
-import io.github.kevincianfarini.alchemist.scalar.feet
-import io.github.kevincianfarini.alchemist.scalar.kilometers
-import io.github.kevincianfarini.alchemist.scalar.meters
-import io.github.kevincianfarini.alchemist.scalar.miles
-import io.github.kevincianfarini.alchemist.scalar.nanometers
-import io.github.kevincianfarini.alchemist.scalar.yards
+import io.github.kevincianfarini.alchemist.scalar.toLength
 import io.github.kevincianfarini.alchemist.type.Length
 import io.github.kevincianfarini.alchemist.unit.LengthUnit
 import io.github.kevincianfarini.alchemist.unit.LengthUnit.International.Kilometer
 import io.github.kevincianfarini.alchemist.unit.LengthUnit.International.Meter
+import io.github.kevincianfarini.alchemist.unit.LengthUnit.International.Nanometer
 import io.github.kevincianfarini.alchemist.unit.LengthUnit.UnitedStatesCustomary.Foot
 import io.github.kevincianfarini.alchemist.unit.LengthUnit.UnitedStatesCustomary.Mile
 import io.github.kevincianfarini.alchemist.unit.LengthUnit.UnitedStatesCustomary.Yard
 import kotlin.math.pow
-import kotlin.math.roundToInt
+import kotlin.math.roundToLong
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -36,11 +32,12 @@ public interface ScaleBarMeasure {
   public data object Metric : ScaleBarMeasure {
 
     override val stops: List<Length> =
-      buildStops(mantissas = listOf(1, 2, 5).map { it.meters }, exponents = -1..7)
+      buildStops(mantissas = listOf(1, 2, 5).map { it.toLength(Meter) }, exponents = -1..7)
 
     @Composable
     override fun getText(stop: Length): String =
-      if (stop >= 1.kilometers) stop.toDisplayString(Kilometer, Res.string.kilometers_symbol)
+      if (stop >= 1.toLength(Kilometer))
+        stop.toDisplayString(Kilometer, Res.string.kilometers_symbol)
       else stop.toDisplayString(Meter, Res.string.meters_symbol)
   }
 
@@ -49,14 +46,15 @@ public interface ScaleBarMeasure {
 
     override val stops: List<Length> =
       listOf(
-          buildStops(mantissas = listOf(1, 2, 5).map { it.feet }, exponents = -1..3).dropLast(1),
-          buildStops(mantissas = listOf(1, 2, 5).map { it.miles }, exponents = 0..4),
+          buildStops(mantissas = listOf(1, 2, 5).map { it.toLength(Foot) }, exponents = -1..3)
+            .dropLast(1),
+          buildStops(mantissas = listOf(1, 2, 5).map { it.toLength(Mile) }, exponents = 0..4),
         )
         .flatten()
 
     @Composable
     override fun getText(stop: Length): String =
-      if (stop >= 1.miles) stop.toDisplayString(Mile, Res.string.miles_symbol)
+      if (stop >= 1.toLength(Mile)) stop.toDisplayString(Mile, Res.string.miles_symbol)
       else stop.toDisplayString(Foot, Res.string.feet_symbol)
   }
 
@@ -65,14 +63,15 @@ public interface ScaleBarMeasure {
 
     override val stops: List<Length> =
       listOf(
-          buildStops(mantissas = listOf(1, 2, 5).map { it.yards }, exponents = -1..3).dropLast(2),
-          buildStops(mantissas = listOf(1, 2, 5).map { it.miles }, exponents = 0..4),
+          buildStops(mantissas = listOf(1, 2, 5).map { it.toLength(Yard) }, exponents = -1..3)
+            .dropLast(2),
+          buildStops(mantissas = listOf(1, 2, 5).map { it.toLength(Mile) }, exponents = 0..4),
         )
         .flatten()
 
     @Composable
     override fun getText(stop: Length): String =
-      if (stop >= 1.miles) stop.toDisplayString(Mile, Res.string.miles_symbol)
+      if (stop >= 1.toLength(Mile)) stop.toDisplayString(Mile, Res.string.miles_symbol)
       else stop.toDisplayString(Yard, Res.string.yards_symbol)
   }
 }
@@ -92,5 +91,6 @@ private fun buildStops(mantissas: List<Length>, exponents: IntRange) = buildList
 }
 
 // https://github.com/kevincianfarini/alchemist/issues/53
+// https://github.com/kevincianfarini/alchemist/issues/54
 private operator fun Length.times(other: Double) =
-  (this.toDouble(LengthUnit.International.Nanometer) * other).roundToInt().nanometers
+  (this.toLong(Nanometer) * other).roundToLong().toLength(Nanometer)

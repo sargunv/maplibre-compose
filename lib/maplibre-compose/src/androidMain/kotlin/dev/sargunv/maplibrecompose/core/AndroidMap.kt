@@ -24,6 +24,9 @@ import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
+import io.github.kevincianfarini.alchemist.scalar.toLength
+import io.github.kevincianfarini.alchemist.type.Length
+import io.github.kevincianfarini.alchemist.unit.LengthUnit.International.Meter
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
@@ -335,8 +338,10 @@ internal class AndroidMap(
       .map { Feature.fromJson(it.toJson()) }
   }
 
-  override fun metersPerDpAtLatitude(latitude: Double) =
-    map.projection.getMetersPerPixelAtLatitude(latitude)
+  override fun lengthPerDpAtLatitude(latitude: Double): Length {
+    // https://github.com/kevincianfarini/alchemist/issues/54
+    return map.projection.getMetersPerPixelAtLatitude(latitude).toLength(Meter)
+  }
 }
 
 private fun MLNVisibleRegion.toVisibleRegion() =

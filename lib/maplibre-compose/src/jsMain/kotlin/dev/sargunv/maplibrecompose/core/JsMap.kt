@@ -32,6 +32,8 @@ import dev.sargunv.maplibrejs.ScaleControl
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
+import io.github.kevincianfarini.alchemist.scalar.meters
+import io.github.kevincianfarini.alchemist.type.Length
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.TimeSource
@@ -296,8 +298,8 @@ internal class JsMap(
       .map { Feature.fromJson(JSON.stringify(it)) }
   }
 
-  override fun metersPerDpAtLatitude(latitude: Double): Double {
+  override fun lengthPerDpAtLatitude(latitude: Double): Length {
     val point = impl.project(LngLat(impl.getCenter().lng, latitude))
-    return impl.unproject(point).distanceTo(impl.unproject(Point(point.x + 1, point.y)))
+    return impl.unproject(point).distanceTo(impl.unproject(Point(point.x + 1, point.y))).meters
   }
 }

@@ -56,6 +56,7 @@ import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
+import io.github.kevincianfarini.alchemist.scalar.meters
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
@@ -474,5 +475,6 @@ internal class IosMap(
       )
       .map { (it as MLNFeatureProtocol).toFeature() }
 
-  override fun metersPerDpAtLatitude(latitude: Double) = mapView.metersPerPointAtLatitude(latitude)
+  override fun lengthPerDpAtLatitude(latitude: Double) =
+    mapView.metersPerPointAtLatitude(latitude).meters
 }

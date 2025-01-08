@@ -115,8 +115,8 @@ public fun MaplibreMap(
           map as StandardMaplibreMap
           styleState.attach(style)
           rememberedStyle = style
-          cameraState.metersPerDpAtTargetState.value =
-            map.metersPerDpAtLatitude(map.getCameraPosition().target.latitude)
+          cameraState.lengthPerDpAtTargetState.value =
+            map.lengthPerDpAtLatitude(map.getCameraPosition().target.latitude)
         }
 
         override fun onCameraMoveStarted(map: MaplibreMap, reason: CameraMoveReason) {
@@ -126,8 +126,8 @@ public fun MaplibreMap(
         override fun onCameraMoved(map: MaplibreMap) {
           map as StandardMaplibreMap
           cameraState.positionState.value = map.getCameraPosition()
-          cameraState.metersPerDpAtTargetState.value =
-            map.metersPerDpAtLatitude(map.getCameraPosition().target.latitude)
+          cameraState.lengthPerDpAtTargetState.value =
+            map.lengthPerDpAtLatitude(map.getCameraPosition().target.latitude)
         }
 
         override fun onCameraMoveEnded(map: MaplibreMap) {}
