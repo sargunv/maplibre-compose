@@ -91,7 +91,7 @@ public object Feature {
    * layer, see [LineLayer][dev.sargunv.maplibrecompose.compose.layer.LineLayer].
    */
   public fun lineProgress(value: Float): Expression<FloatValue> = lineProgress(const(value))
-  
+
   /**
    * Gets the value of a cluster property accumulated so far. Can only be used in the
    * `clusterProperties` option of a clustered GeoJSON source, see
