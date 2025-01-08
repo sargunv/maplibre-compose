@@ -16,6 +16,7 @@ import dev.sargunv.maplibrecompose.expressions.dsl.format
 import dev.sargunv.maplibrecompose.expressions.dsl.image
 import dev.sargunv.maplibrecompose.expressions.dsl.linear
 import dev.sargunv.maplibrecompose.expressions.dsl.offset
+import io.github.kevincianfarini.alchemist.type.Length
 import kotlin.time.Duration
 
 /**
@@ -66,6 +67,9 @@ public typealias TextUnitValue = NumberValue<TextUnit>
  * ([Duration]). See [const].
  */
 public typealias MillisecondsValue = NumberValue<Duration>
+
+/** Represents an [ExpressionValue] that resolves to a [Length] in meters. See [const]. */
+public typealias MetersValue = NumberValue<Length>
 
 /** Represents an [ExpressionValue] that resolves to a string value. See [const]. */
 public sealed interface StringValue :

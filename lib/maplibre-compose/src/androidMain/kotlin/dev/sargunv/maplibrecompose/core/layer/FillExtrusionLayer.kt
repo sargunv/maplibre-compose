@@ -8,6 +8,7 @@ import dev.sargunv.maplibrecompose.expressions.value.ColorValue
 import dev.sargunv.maplibrecompose.expressions.value.DpOffsetValue
 import dev.sargunv.maplibrecompose.expressions.value.FloatValue
 import dev.sargunv.maplibrecompose.expressions.value.ImageValue
+import dev.sargunv.maplibrecompose.expressions.value.MetersValue
 import dev.sargunv.maplibrecompose.expressions.value.TranslateAnchor
 import org.maplibre.android.style.expressions.Expression as MLNExpression
 import org.maplibre.android.style.layers.FillExtrusionLayer as MLNFillExtrusionLayer
@@ -43,11 +44,11 @@ internal actual class FillExtrusionLayer actual constructor(id: String, source: 
     impl.setProperties(PropertyFactory.fillExtrusionPattern(pattern.toMLNExpression()))
   }
 
-  actual fun setFillExtrusionHeight(height: CompiledExpression<FloatValue>) {
+  actual fun setFillExtrusionHeight(height: CompiledExpression<MetersValue>) {
     impl.setProperties(PropertyFactory.fillExtrusionHeight(height.toMLNExpression()))
   }
 
-  actual fun setFillExtrusionBase(base: CompiledExpression<FloatValue>) {
+  actual fun setFillExtrusionBase(base: CompiledExpression<MetersValue>) {
     impl.setProperties(PropertyFactory.fillExtrusionBase(base.toMLNExpression()))
   }
 
