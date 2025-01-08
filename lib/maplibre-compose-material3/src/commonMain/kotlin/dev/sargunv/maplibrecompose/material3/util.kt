@@ -34,7 +34,7 @@ internal fun defaultSecondaryMeasure(primary: ScaleBarMeasure, region: String?):
   }
 
 internal val regionsUsingFeetAndMiles =
-  listOf(
+  setOf(
     // United states and its unincorporated territories
     "US",
     "AS",
@@ -51,7 +51,7 @@ internal val regionsUsingFeetAndMiles =
   )
 
 internal val regionsUsingYardsAndMiles =
-  listOf(
+  setOf(
     // United kingdom with its overseas territories and crown dependencies
     "GB",
     "AI",
