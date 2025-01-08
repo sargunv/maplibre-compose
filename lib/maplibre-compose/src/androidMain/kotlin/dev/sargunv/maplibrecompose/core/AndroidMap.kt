@@ -10,7 +10,9 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Logger
+import dev.sargunv.maplibrecompose.core.util.MapScale
 import dev.sargunv.maplibrecompose.core.util.correctedAndroidUri
+import dev.sargunv.maplibrecompose.core.util.div
 import dev.sargunv.maplibrecompose.core.util.toBoundingBox
 import dev.sargunv.maplibrecompose.core.util.toGravity
 import dev.sargunv.maplibrecompose.core.util.toLatLng
@@ -25,7 +27,6 @@ import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
 import io.github.kevincianfarini.alchemist.scalar.toLength
-import io.github.kevincianfarini.alchemist.type.Length
 import io.github.kevincianfarini.alchemist.unit.LengthUnit.International.Meter
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -338,9 +339,9 @@ internal class AndroidMap(
       .map { Feature.fromJson(it.toJson()) }
   }
 
-  override fun lengthPerDpAtLatitude(latitude: Double): Length {
+  override fun scaleAtLatitude(latitude: Double): MapScale {
     // https://github.com/kevincianfarini/alchemist/issues/54
-    return map.projection.getMetersPerPixelAtLatitude(latitude).toLength(Meter)
+    return map.projection.getMetersPerPixelAtLatitude(latitude).toLength(Meter) / 1.dp
   }
 }
 

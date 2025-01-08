@@ -4,7 +4,10 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Logger
+import dev.sargunv.maplibrecompose.core.util.MapScale
+import dev.sargunv.maplibrecompose.core.util.div
 import dev.sargunv.maplibrecompose.core.util.toBoundingBox
 import dev.sargunv.maplibrecompose.core.util.toControlPosition
 import dev.sargunv.maplibrecompose.core.util.toDpOffset
@@ -33,7 +36,6 @@ import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
 import io.github.kevincianfarini.alchemist.scalar.meters
-import io.github.kevincianfarini.alchemist.type.Length
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.TimeSource
@@ -298,8 +300,9 @@ internal class JsMap(
       .map { Feature.fromJson(JSON.stringify(it)) }
   }
 
-  override fun lengthPerDpAtLatitude(latitude: Double): Length {
+  override fun scaleAtLatitude(latitude: Double): MapScale {
     val point = impl.project(LngLat(impl.getCenter().lng, latitude))
-    return impl.unproject(point).distanceTo(impl.unproject(Point(point.x + 1, point.y))).meters
+    return impl.unproject(point).distanceTo(impl.unproject(Point(point.x + 1, point.y))).meters /
+      1.dp
   }
 }

@@ -2,12 +2,12 @@ package dev.sargunv.maplibrecompose.core
 
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpRect
+import dev.sargunv.maplibrecompose.core.util.MapScale
 import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
 import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
-import io.github.kevincianfarini.alchemist.type.Length
 import kotlin.time.Duration
 
 internal interface MaplibreMap {
@@ -55,7 +55,7 @@ internal interface MaplibreMap {
     predicate: CompiledExpression<BooleanValue>? = null,
   ): List<Feature>
 
-  suspend fun asyncLengthPerDpAtLatitude(latitude: Double): Length
+  suspend fun asyncScaleAtLatitude(latitude: Double): MapScale
 
   interface Callbacks {
     fun onStyleChanged(map: MaplibreMap, style: Style?)
@@ -121,8 +121,7 @@ internal interface StandardMaplibreMap : MaplibreMap {
     predicate: CompiledExpression<BooleanValue>?,
   ): List<Feature> = queryRenderedFeatures(rect, layerIds, predicate)
 
-  override suspend fun asyncLengthPerDpAtLatitude(latitude: Double): Length =
-    lengthPerDpAtLatitude(latitude)
+  override suspend fun asyncScaleAtLatitude(latitude: Double): MapScale = scaleAtLatitude(latitude)
 
   fun setStyleUri(styleUri: String)
 
@@ -166,5 +165,5 @@ internal interface StandardMaplibreMap : MaplibreMap {
     predicate: CompiledExpression<BooleanValue>? = null,
   ): List<Feature>
 
-  fun lengthPerDpAtLatitude(latitude: Double): Length
+  fun scaleAtLatitude(latitude: Double): MapScale
 }

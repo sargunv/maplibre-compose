@@ -20,6 +20,8 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import dev.sargunv.maplibrecompose.core.util.MapScale
+import dev.sargunv.maplibrecompose.core.util.div
 import dev.sargunv.maplibrecompose.material3.defaultScaleBarMeasures
 import dev.sargunv.maplibrecompose.material3.drawPathsWithHalo
 import dev.sargunv.maplibrecompose.material3.drawTextWithHalo
@@ -38,9 +40,8 @@ public data class ScaleBarMeasures(
  * A scale bar composable that shows the current scale of the map in feet, yards, or meters when
  * zoomed in to the map, changing to miles and kilometers when zooming out.
  *
- * @param lengthPerDp the real world distance in one device independent pixel (dp), i.e. the scale.
- *   See
- *   [CameraState.lengthPerDpAtTarget][dev.sargunv.maplibrecompose.compose.CameraState.lengthPerDpAtTarget]
+ * @param scale the ratio of real world distance [Length] to [Dp], i.e. the scale. See
+ *   [CameraState.scaleAtTarget][dev.sargunv.maplibrecompose.compose.CameraState.scaleAtTarget]
  * @param modifier the [Modifier] to be applied to this layout node
  * @param measures which measures to show on the scale bar. If `null`, measures will be selected
  *   based on the system settings or otherwise the user's locale.
@@ -52,7 +53,7 @@ public data class ScaleBarMeasures(
  */
 @Composable
 public fun ScaleBar(
-  lengthPerDp: Length,
+  scale: MapScale,
   modifier: Modifier = Modifier,
   measures: ScaleBarMeasures = defaultScaleBarMeasures(),
   haloColor: Color = MaterialTheme.colorScheme.surface,
@@ -61,6 +62,7 @@ public fun ScaleBar(
   alignment: Alignment.Horizontal = Alignment.Start,
 ) {
   val textMeasurer = rememberTextMeasurer()
+
   // longest possible text
   val maxTextSizePx =
     remember(textMeasurer, textStyle) { textMeasurer.measure("5000 km", textStyle).size }
@@ -87,8 +89,8 @@ public fun ScaleBar(
     // scale bar start/end should not overlap horizontally with canvas bounds
     val maxBarLength = maxWidth - fullStrokeWidth
 
-    val params1 = scaleBarParameters(measures.primary, lengthPerDp, maxBarLength)
-    val params2 = measures.secondary?.let { scaleBarParameters(it, lengthPerDp, maxBarLength) }
+    val params1 = scaleBarParameters(measures.primary, scale, maxBarLength)
+    val params2 = measures.secondary?.let { scaleBarParameters(it, scale, maxBarLength) }
 
     Canvas(modifier.fillMaxSize()) {
       val fullStrokeWidthPx = fullStrokeWidth.toPx()
@@ -187,12 +189,12 @@ private data class ScaleBarParams(val barWidth: Dp, val text: String)
 @Composable
 private fun scaleBarParameters(
   measure: ScaleBarMeasure,
-  lengthPerDp: Length,
+  scale: MapScale,
   maxBarLength: Dp,
 ): ScaleBarParams {
-  val max = lengthPerDp * maxBarLength.value.toDouble()
+  val max = scale * maxBarLength
   val stop = findStop(max, measure.stops)
-  return ScaleBarParams(barWidth = (stop / lengthPerDp).dp, text = measure.getText(stop))
+  return ScaleBarParams(barWidth = (stop / scale), text = measure.getText(stop))
 }
 
 /**

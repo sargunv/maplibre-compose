@@ -53,7 +53,7 @@ object CameraStateDemo : Demo {
 
         Row(modifier = Modifier.safeDrawingPadding().wrapContentSize(Alignment.Center)) {
           val pos = cameraState.position
-          val scale = cameraState.lengthPerDpAtTarget
+          val scale = cameraState.scaleAtTarget
 
           Cell("Latitude", pos.target.latitude.format(3), Modifier.weight(1.4f))
           Cell("Longitude", pos.target.longitude.format(3), Modifier.weight(1.4f))
