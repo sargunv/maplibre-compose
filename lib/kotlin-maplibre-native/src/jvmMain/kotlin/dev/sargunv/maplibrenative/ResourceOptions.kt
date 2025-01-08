@@ -55,6 +55,6 @@ public class ResourceOptions : NativeObject(C::new, C::delete) {
 
     fun maximumCacheSize(nativePtr: Pointer): Long
 
-    companion object : C by loadMaplibreNativeFfi(ResourceOptions::class.simpleName!!)
+    companion object : C by loadMaplibreNative(ResourceOptions::class.simpleName!!)
   }
 }

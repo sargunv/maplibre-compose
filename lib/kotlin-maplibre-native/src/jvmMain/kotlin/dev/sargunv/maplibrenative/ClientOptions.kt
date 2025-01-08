@@ -41,6 +41,6 @@ public class ClientOptions : NativeObject(C::new, C::delete) {
 
     fun version(nativePtr: Pointer): String
 
-    companion object : C by loadMaplibreNativeFfi(ClientOptions::class.simpleName!!)
+    companion object : C by loadMaplibreNative(ClientOptions::class.simpleName!!)
   }
 }
