@@ -34,7 +34,7 @@ public actual class GeoJsonSource : Source {
         withClusterProperty(
           key,
           const(value.operator).toMLNExpression()!!,
-          Feature.get(value.featureProperty).compile(ExpressionContext.None).toMLNExpression()!!,
+          Feature.get(value.property).compile(ExpressionContext.None).toMLNExpression()!!,
         )
       }
     }

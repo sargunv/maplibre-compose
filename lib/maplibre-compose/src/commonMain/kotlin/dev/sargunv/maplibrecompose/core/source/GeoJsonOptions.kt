@@ -59,7 +59,7 @@ public data class GeoJsonOptions(
   val clusterRadius: Int = 50,
   val clusterMinPoints: Int = 2,
   val clusterMaxZoom: Int = maxZoom - 1,
-  val clusterProperties: Map<String, ClusterAggregation> = emptyMap(),
+  val clusterProperties: Map<String, ClusterProperty> = emptyMap(),
   val lineMetrics: Boolean = false,
 ) {
   /**
@@ -71,7 +71,7 @@ public data class GeoJsonOptions(
    *   like `"+"` or `"max"`. See
    *   [MapLibre Style Spec][https://maplibre.org/maplibre-style-spec/expressions/#math] for valid
    *   names for the operator.
-   * @param featureProperty name of the feature property whose value should be aggregated.
+   * @param property name of the feature property whose value should be aggregated.
    * */
-  public data class ClusterAggregation(val operator: String, val featureProperty: String)
+  public data class ClusterProperty(val operator: String, val property: String)
 }

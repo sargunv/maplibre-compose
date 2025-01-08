@@ -48,7 +48,7 @@ public actual class GeoJsonSource : Source {
         options.clusterProperties.mapValues { (_, value) ->
           arrayOf(
             const(value.operator).toNSExpression(),
-            Feature.get(value.featureProperty).compile(ExpressionContext.None).toNSExpression()
+            Feature.get(value.property).compile(ExpressionContext.None).toNSExpression()
           )
         },
       )
