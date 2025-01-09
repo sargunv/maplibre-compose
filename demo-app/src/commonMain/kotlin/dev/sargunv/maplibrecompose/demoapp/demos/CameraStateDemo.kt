@@ -60,7 +60,7 @@ object CameraStateDemo : Demo {
           Cell("Zoom", pos.zoom.format(2), Modifier.weight(1f))
           Cell("Bearing", pos.bearing.format(2), Modifier.weight(1f))
           Cell("Tilt", pos.tilt.format(2), Modifier.weight(1f))
-          Cell("Scale", "${scale.toLong(Meter)}m", Modifier.weight(1f))
+          Cell("Scale", "${scale.lengthPerDp.toLong(Meter)}m", Modifier.weight(1f))
         }
       }
     }

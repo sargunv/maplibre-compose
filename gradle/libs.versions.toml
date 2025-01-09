@@ -1,5 +1,5 @@
 [versions]
-alchemist = "0.1.0"
+alchemist = "0.1.1"
 androidx-activity = "1.9.3"
 androidx-composeUi = "1.7.6"
 androidx-navigation = "2.8.0-alpha11"

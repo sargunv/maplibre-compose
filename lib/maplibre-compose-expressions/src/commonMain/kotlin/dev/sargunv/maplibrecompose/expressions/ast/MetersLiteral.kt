@@ -2,7 +2,7 @@ package dev.sargunv.maplibrecompose.expressions.ast
 
 import dev.sargunv.maplibrecompose.expressions.ExpressionContext
 import dev.sargunv.maplibrecompose.expressions.value.MetersValue
-import io.github.kevincianfarini.alchemist.scalar.toLength
+import io.github.kevincianfarini.alchemist.scalar.meters
 import io.github.kevincianfarini.alchemist.type.Length
 import io.github.kevincianfarini.alchemist.unit.LengthUnit.International.Meter
 
@@ -16,7 +16,7 @@ public data class MetersLiteral private constructor(override val value: Length) 
   override fun visit(block: (Expression<*>) -> Unit): Unit = block(this)
 
   public companion object {
-    private val cache = FloatCache { MetersLiteral(it.toDouble().toLength(Meter)) }
+    private val cache = FloatCache { MetersLiteral(it.toDouble().meters) }
 
     public fun of(value: Length): MetersLiteral = cache[value.toDouble(Meter).toFloat()]
   }

@@ -2,17 +2,17 @@ package dev.sargunv.maplibrecompose.material3
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.intl.Locale
-import dev.sargunv.maplibrecompose.material3.controls.ScaleBarMeasure
-import dev.sargunv.maplibrecompose.material3.controls.ScaleBarMeasure.FeetAndMiles
-import dev.sargunv.maplibrecompose.material3.controls.ScaleBarMeasure.Metric
-import dev.sargunv.maplibrecompose.material3.controls.ScaleBarMeasure.YardsAndMiles
+import dev.sargunv.maplibrecompose.material3.controls.ScaleBarMeasurementSystem
+import dev.sargunv.maplibrecompose.material3.controls.ScaleBarMeasurementSystem.FeetAndMiles
+import dev.sargunv.maplibrecompose.material3.controls.ScaleBarMeasurementSystem.Metric
+import dev.sargunv.maplibrecompose.material3.controls.ScaleBarMeasurementSystem.YardsAndMiles
 import dev.sargunv.maplibrecompose.material3.controls.ScaleBarMeasures
 
 /** use system locale APIs for the primary scale bar measure */
-@Composable internal expect fun systemDefaultPrimaryMeasure(): ScaleBarMeasure?
+@Composable internal expect fun systemDefaultPrimaryMeasure(): ScaleBarMeasurementSystem?
 
 /** if the system APIs don't provide a primary measure, fall back to our hardcoded lists */
-internal fun fallbackDefaultPrimaryMeasure(region: String?): ScaleBarMeasure =
+internal fun fallbackDefaultPrimaryMeasure(region: String?): ScaleBarMeasurementSystem =
   when (region) {
     in regionsUsingFeetAndMiles -> FeetAndMiles
     in regionsUsingYardsAndMiles -> YardsAndMiles
@@ -20,7 +20,10 @@ internal fun fallbackDefaultPrimaryMeasure(region: String?): ScaleBarMeasure =
   }
 
 /** countries using non-metric units will see both systems by default */
-internal fun defaultSecondaryMeasure(primary: ScaleBarMeasure, region: String?): ScaleBarMeasure? =
+internal fun defaultSecondaryMeasure(
+  primary: ScaleBarMeasurementSystem,
+  region: String?,
+): ScaleBarMeasurementSystem? =
   when (primary) {
     FeetAndMiles -> Metric
     YardsAndMiles -> Metric

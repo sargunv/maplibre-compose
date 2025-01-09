@@ -20,8 +20,7 @@ import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
-import io.github.kevincianfarini.alchemist.scalar.toLength
-import io.github.kevincianfarini.alchemist.unit.LengthUnit.International.Meter
+import io.github.kevincianfarini.alchemist.scalar.meters
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.channels.Channel
@@ -47,8 +46,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
 
   internal val positionState = mutableStateOf(firstPosition)
   internal val moveReasonState = mutableStateOf(CameraMoveReason.NONE)
-  // https://github.com/kevincianfarini/alchemist/issues/54
-  internal val scaleAtTargetState = mutableStateOf(0.toLength(Meter) / 1.dp)
+  internal val scaleAtTargetState = mutableStateOf(0.meters / 1.dp)
 
   /** how the camera is oriented towards the map */
   // if the map is not yet initialized, we store the value to apply it later

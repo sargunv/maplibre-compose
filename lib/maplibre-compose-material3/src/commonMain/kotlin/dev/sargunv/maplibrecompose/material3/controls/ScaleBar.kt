@@ -25,15 +25,15 @@ import dev.sargunv.maplibrecompose.core.util.div
 import dev.sargunv.maplibrecompose.material3.defaultScaleBarMeasures
 import dev.sargunv.maplibrecompose.material3.drawPathsWithHalo
 import dev.sargunv.maplibrecompose.material3.drawTextWithHalo
-import io.github.kevincianfarini.alchemist.scalar.toLength
+import io.github.kevincianfarini.alchemist.scalar.nanometers
 import io.github.kevincianfarini.alchemist.type.Length
 import io.github.kevincianfarini.alchemist.unit.LengthUnit.International.Nanometer
 import kotlin.math.roundToLong
 
 /** Which measures to show on the scale bar. */
 public data class ScaleBarMeasures(
-  val primary: ScaleBarMeasure,
-  val secondary: ScaleBarMeasure? = null,
+  val primary: ScaleBarMeasurementSystem,
+  val secondary: ScaleBarMeasurementSystem? = null,
 )
 
 /**
@@ -105,7 +105,8 @@ public fun ScaleBar(
       val paths = ArrayList<List<Offset>>(2)
       val texts = ArrayList<Pair<Offset, TextLayoutResult>>(2)
 
-      if (true) { // just want a scope here
+      @Suppress("ConstantConditionIf") // just want a scope here
+      if (true) {
         val offsetX =
           alignment.align(
             size = params1.barWidth.toPx().toInt(),
@@ -188,7 +189,7 @@ private data class ScaleBarParams(val barWidth: Dp, val text: String)
 
 @Composable
 private fun scaleBarParameters(
-  measure: ScaleBarMeasure,
+  measure: ScaleBarMeasurementSystem,
   scale: MapScale,
   maxBarLength: Dp,
 ): ScaleBarParams {
@@ -207,6 +208,5 @@ private fun findStop(max: Length, stops: List<Length>): Length {
 }
 
 // https://github.com/kevincianfarini/alchemist/issues/53
-// https://github.com/kevincianfarini/alchemist/issues/54
 private operator fun Length.times(other: Double) =
-  (this.toLong(Nanometer) * other).roundToLong().toLength(Nanometer)
+  (this.toLong(Nanometer) * other).roundToLong().nanometers
