@@ -6,14 +6,13 @@ kermit = "2.0.5"
 kotlinx-browser = "0.3"
 kotlinx-coroutines = "1.10.1"
 ktor = "3.0.3"
+lwjgl = "3.3.5"
+lwjglx-awt = "0.2.3"
 maplibre-android-sdk = "11.7.1"
 maplibre-android-plugins = "3.0.2"
 maplibre-ios = "6.9.0"
 maplibre-js = "4.7.1"
 spatialk = "0.3.0"
-webpack-html = "5.6.3"
-webpack-htmlInlineScript = "3.2.1"
-webview = "1.9.40"
 
 gradle-android = "8.7.3"
 gradle-compose = "1.7.3"
@@ -31,7 +30,6 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 androidx-composeUi-testManifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "androidx-composeUi" }
 androidx-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
 kotlinx-browser = { module = "org.jetbrains.kotlinx:kotlinx-browser", version.ref = "kotlinx-browser" }
-webview = { module = "io.github.kevinnzou:compose-webview-multiplatform", version.ref = "webview" }
 kermit = { group = "co.touchlab", name = "kermit", version.ref = "kermit" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
@@ -41,6 +39,11 @@ ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-kotlinxJson = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+lwjgl-core = { module = "org.lwjgl:lwjgl", version.ref = "lwjgl" }
+lwjgl-jawt = { module = "org.lwjgl:lwjgl-jawt", version.ref = "lwjgl" }
+lwjgl-opengl = { module = "org.lwjgl:lwjgl-opengl", version.ref = "lwjgl" }
+lwjgl-vulkan = { module = "org.lwjgl:lwjgl-vulkan", version.ref = "lwjgl" }
+lwjglx-awt = { module = "org.lwjglx:lwjgl3-awt", version.ref = "lwjglx-awt" }
 maplibre-android = { module = "org.maplibre.gl:android-sdk", version.ref = "maplibre-android-sdk" }
 maplibre-android-scalebar = { module = "org.maplibre.gl:android-plugin-scalebar-v9", version.ref = "maplibre-android-plugins" }
 spatialk-geojson = { group = "io.github.dellisd.spatialk", name = "geojson", version.ref = "spatialk" }

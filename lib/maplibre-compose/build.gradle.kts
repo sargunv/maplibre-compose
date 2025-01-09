@@ -25,25 +25,6 @@ mavenPublishing {
   }
 }
 
-val desktopResources: Configuration by
-  configurations.creating {
-    isCanBeConsumed = false
-    isCanBeResolved = true
-  }
-
-dependencies {
-  desktopResources(
-    project(path = ":lib:maplibre-compose-webview", configuration = "jsBrowserDistribution")
-  )
-}
-
-val copyDesktopResources by
-  tasks.registering(Copy::class) {
-    from(desktopResources)
-    eachFile { path = "files/${path}" }
-    into(project.layout.buildDirectory.dir(desktopResources.name))
-  }
-
 kotlin {
   androidTarget {
     compilerOptions { jvmTarget = project.getJvmTarget() }
@@ -85,7 +66,27 @@ kotlin {
     desktopMain.dependencies {
       implementation(compose.desktop.common)
       implementation(libs.kotlinx.coroutines.swing)
-      implementation(libs.webview)
+      implementation(libs.lwjglx.awt.get().toString()) { exclude(group = "org.lwjgl") }
+
+      implementation(libs.lwjgl.core)
+      implementation(libs.lwjgl.jawt)
+      implementation(libs.lwjgl.opengl)
+      implementation(libs.lwjgl.vulkan)
+
+      fun lwjglNatives(left: Set<String>, right: Set<String>) = buildList {
+        for (l in left) for (r in right) add("natives-$l$r")
+      }
+
+      lwjglNatives(setOf("linux", "macos", "windows"), setOf("", "-arm64")).forEach {
+        runtimeOnly(project.dependencies.variantOf(libs.lwjgl.core) { classifier(it) })
+        runtimeOnly(project.dependencies.variantOf(libs.lwjgl.opengl) { classifier(it) })
+      }
+
+      lwjglNatives(setOf("macos"), setOf("", "-arm64")).forEach {
+        runtimeOnly(project.dependencies.variantOf(libs.lwjgl.vulkan) { classifier(it) })
+      }
+
+      implementation(project(":lib:kotlin-maplibre-native"))
     }
 
     jsMain.dependencies {
@@ -110,11 +111,4 @@ kotlin {
   }
 }
 
-compose.resources {
-  packageOfResClass = "dev.sargunv.maplibrecompose.generated"
-
-  customDirectory(
-    sourceSetName = "desktopMain",
-    directoryProvider = layout.dir(copyDesktopResources.map { it.destinationDir }),
-  )
-}
+compose.resources { packageOfResClass = "dev.sargunv.maplibrecompose.generated" }
