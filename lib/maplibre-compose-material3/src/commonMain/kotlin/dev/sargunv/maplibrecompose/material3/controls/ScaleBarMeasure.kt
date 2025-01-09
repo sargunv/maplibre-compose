@@ -104,7 +104,7 @@ public interface ScaleBarMeasure {
       if (this % 1.0 == 0.0) this.toLong().toString() else this.toString()
   }
 
-  public data object Metric : Default(setOf(Meter, Kilometer)) {
+  public data object Metric : Default(Meter, Kilometer) {
     @Composable
     override fun getText(stop: Double, unit: LengthUnit): String {
       val symbol =
@@ -117,7 +117,7 @@ public interface ScaleBarMeasure {
     }
   }
 
-  public data object FeetAndMiles : Default(setOf(Foot, Mile)) {
+  public data object FeetAndMiles : Default(Foot, Mile) {
     @Composable
     override fun getText(stop: Double, unit: LengthUnit): String {
       val symbol =
@@ -130,7 +130,7 @@ public interface ScaleBarMeasure {
     }
   }
 
-  public data object YardsAndMiles : Default(setOf(Yard, Mile)) {
+  public data object YardsAndMiles : Default(Yard, Mile) {
     @Composable
     override fun getText(stop: Double, unit: LengthUnit): String {
       val symbol =
