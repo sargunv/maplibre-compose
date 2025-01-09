@@ -50,6 +50,13 @@ import dev.sargunv.maplibrecompose.demoapp.demos.StyleSwitcherDemo
 import dev.sargunv.maplibrecompose.material3.controls.AttributionButton
 import dev.sargunv.maplibrecompose.material3.controls.DisappearingCompassButton
 import dev.sargunv.maplibrecompose.material3.controls.DisappearingScaleBar
+import dev.sargunv.maplibrecompose.material3.controls.ScaleBar
+import dev.sargunv.maplibrecompose.material3.controls.ScaleBarMeasure
+import dev.sargunv.maplibrecompose.material3.controls.ScaleBarMeasures
+import io.github.kevincianfarini.alchemist.scalar.centimeters
+import io.github.kevincianfarini.alchemist.unit.LengthUnit
+import io.github.kevincianfarini.alchemist.unit.LengthUnit.International.Nanometer
+import io.github.kevincianfarini.alchemist.unit.LengthUnit.UnitedStatesCustomary.Yard
 
 private val DEMOS = buildList {
   add(StyleSwitcherDemo)
@@ -158,8 +165,16 @@ fun DemoMapControls(
     Box(modifier = modifier.fillMaxSize().padding(8.dp)) {
       DisappearingScaleBar(
         scale = cameraState.scaleAtTarget,
-        zoom = cameraState.position.zoom,
         modifier = Modifier.align(Alignment.TopStart),
+      )
+      ScaleBar(
+        scale = cameraState.scaleAtTarget,
+        measures =
+          ScaleBarMeasures(
+            primary = ScaleBarMeasure.Default(Banana, Kilobanana),
+            secondary = ScaleBarMeasure.Default(FootballField),
+          ),
+        modifier = Modifier.align(Alignment.BottomStart),
       )
       DisappearingCompassButton(
         cameraState,
@@ -175,7 +190,22 @@ fun DemoOrnamentSettings(padding: PaddingValues = PaddingValues(0.dp)) =
   if (Platform.supportsBlending)
     OrnamentSettings.AllDisabled.copy(
       padding = padding,
-      isLogoEnabled = true,
+      isLogoEnabled = false,
       logoAlignment = Alignment.BottomStart,
     )
   else OrnamentSettings.AllEnabled
+
+data object Banana : LengthUnit {
+  override val nanometerScale: Long = 19.centimeters.toLong(Nanometer)
+  override val symbol: String = "🍌"
+}
+
+data object Kilobanana : LengthUnit {
+  override val nanometerScale: Long = 1000 * Banana.nanometerScale
+  override val symbol: String = "K🍌"
+}
+
+data object FootballField : LengthUnit {
+  override val nanometerScale: Long = 100 * Yard.nanometerScale
+  override val symbol: String = "🏈"
+}

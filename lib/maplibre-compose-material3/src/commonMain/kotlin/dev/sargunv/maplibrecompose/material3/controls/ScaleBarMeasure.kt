@@ -24,7 +24,7 @@ import kotlin.math.roundToLong
 import org.jetbrains.compose.resources.stringResource
 
 /** A measurement system to show in the scale bar. */
-public interface ScaleBarMeasurementSystem {
+public interface ScaleBarMeasure {
   /**
    * List of stops, sorted ascending, at which the scalebar should show. For best results, each stop
    * should be no more than 2.5x times as big as the one before.
@@ -44,12 +44,14 @@ public interface ScaleBarMeasurementSystem {
    * @param units the units to generate stops for.
    * @param mantissas the mantissas to generate stops for. Must be single digit positive integers.
    */
-  public abstract class Default(
+  public open class Default(
     units: Set<LengthUnit>,
     mantissas: Set<Int> = setOf(1, 2, 5),
     lowerBound: Length = 100.centimeters,
     upperBound: Length = 50000.kilometers,
-  ) : ScaleBarMeasurementSystem {
+  ) : ScaleBarMeasure {
+
+    public constructor(vararg units: LengthUnit) : this(units.toSet())
 
     init {
       require(units.isNotEmpty()) { "At least one unit must be provided" }

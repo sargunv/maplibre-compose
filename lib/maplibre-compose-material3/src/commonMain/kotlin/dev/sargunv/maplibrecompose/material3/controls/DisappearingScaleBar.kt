@@ -15,19 +15,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Dp
 import dev.sargunv.maplibrecompose.core.util.MapScale
 import dev.sargunv.maplibrecompose.material3.defaultScaleBarMeasures
+import io.github.kevincianfarini.alchemist.type.Length
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 
 /**
- * An animated scale bar that appears when the [zoom] level of the map changes, and then disappears
+ * An animated scale bar that appears when the [scale] level of the map changes, and then disappears
  * after [visibilityDuration]. This composable wraps [ScaleBar] with visibility animations.
  *
  * @param scale the ratio of real world distance [Length] to [Dp], i.e. the scale. See
  *   [CameraState.scaleAtTarget][dev.sargunv.maplibrecompose.compose.CameraState.scaleAtTarget]
- * @param zoom zoom level of the map
  * @param modifier the [Modifier] to be applied to this layout node
  * @param measures which measures to show on the scale bar. If `null`, measures will be selected
  *   based on the system settings or otherwise the user's locale.
@@ -43,7 +44,6 @@ import kotlinx.coroutines.delay
 @Composable
 public fun DisappearingScaleBar(
   scale: MapScale,
-  zoom: Double,
   modifier: Modifier = Modifier,
   measures: ScaleBarMeasures = defaultScaleBarMeasures(),
   haloColor: Color = MaterialTheme.colorScheme.surface,
@@ -56,7 +56,7 @@ public fun DisappearingScaleBar(
 ) {
   val visible = remember { MutableTransitionState(true) }
 
-  LaunchedEffect(zoom) {
+  LaunchedEffect(scale) {
     // Show ScaleBar
     visible.targetState = true
     delay(visibilityDuration)

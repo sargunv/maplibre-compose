@@ -30,10 +30,10 @@ import io.github.kevincianfarini.alchemist.type.Length
 import io.github.kevincianfarini.alchemist.unit.LengthUnit.International.Nanometer
 import kotlin.math.roundToLong
 
-/** Which measures to show on the scale bar. */
+/** Which measurement systems to show on the scale bar. */
 public data class ScaleBarMeasures(
-  val primary: ScaleBarMeasurementSystem,
-  val secondary: ScaleBarMeasurementSystem? = null,
+  val primary: ScaleBarMeasure,
+  val secondary: ScaleBarMeasure? = null,
 )
 
 /**
@@ -189,7 +189,7 @@ private data class ScaleBarParams(val barWidth: Dp, val text: String)
 
 @Composable
 private fun scaleBarParameters(
-  measure: ScaleBarMeasurementSystem,
+  measure: ScaleBarMeasure,
   scale: MapScale,
   maxBarLength: Dp,
 ): ScaleBarParams {

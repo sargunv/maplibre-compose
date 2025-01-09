@@ -51,7 +51,6 @@ fun Material3() {
     Box(modifier = Modifier.fillMaxSize().padding(8.dp)) {
       DisappearingScaleBar(
         scale = cameraState.scaleAtTarget,
-        zoom = cameraState.position.zoom,
         modifier = Modifier.align(Alignment.TopStart),
       ) // (1)!
       DisappearingCompassButton(cameraState, modifier = Modifier.align(Alignment.TopEnd)) // (2)!
