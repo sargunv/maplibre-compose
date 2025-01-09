@@ -10,7 +10,9 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Logger
+import dev.sargunv.maplibrecompose.core.util.MapScale
 import dev.sargunv.maplibrecompose.core.util.correctedAndroidUri
+import dev.sargunv.maplibrecompose.core.util.div
 import dev.sargunv.maplibrecompose.core.util.toBoundingBox
 import dev.sargunv.maplibrecompose.core.util.toGravity
 import dev.sargunv.maplibrecompose.core.util.toLatLng
@@ -24,6 +26,7 @@ import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
+import io.github.kevincianfarini.alchemist.scalar.meters
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
@@ -335,8 +338,9 @@ internal class AndroidMap(
       .map { Feature.fromJson(it.toJson()) }
   }
 
-  override fun metersPerDpAtLatitude(latitude: Double) =
-    map.projection.getMetersPerPixelAtLatitude(latitude)
+  override fun scaleAtLatitude(latitude: Double): MapScale {
+    return map.projection.getMetersPerPixelAtLatitude(latitude).meters / 1.dp
+  }
 }
 
 private fun MLNVisibleRegion.toVisibleRegion() =

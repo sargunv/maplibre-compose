@@ -15,7 +15,9 @@ import dev.sargunv.maplibrecompose.expressions.value.ColorValue
 import dev.sargunv.maplibrecompose.expressions.value.DpOffsetValue
 import dev.sargunv.maplibrecompose.expressions.value.FloatValue
 import dev.sargunv.maplibrecompose.expressions.value.ImageValue
+import dev.sargunv.maplibrecompose.expressions.value.MetersValue
 import dev.sargunv.maplibrecompose.expressions.value.TranslateAnchor
+import io.github.kevincianfarini.alchemist.scalar.meters
 
 /**
  * A fill extrusion layer draws polygons from the [sourceLayer] in the given [source] in the given
@@ -73,8 +75,8 @@ public fun FillExtrusionLayer(
   opacity: Expression<FloatValue> = const(1f),
   color: Expression<ColorValue> = const(Color.Black),
   pattern: Expression<ImageValue> = nil(),
-  height: Expression<FloatValue> = const(0f),
-  base: Expression<FloatValue> = const(0f),
+  height: Expression<MetersValue> = const(0.meters),
+  base: Expression<MetersValue> = const(0.meters),
   verticalGradient: Expression<BooleanValue> = const(true),
   onClick: FeaturesClickHandler? = null,
   onLongClick: FeaturesClickHandler? = null,

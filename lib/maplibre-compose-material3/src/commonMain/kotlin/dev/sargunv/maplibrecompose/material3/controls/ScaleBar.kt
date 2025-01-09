@@ -20,23 +20,28 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import dev.sargunv.maplibrecompose.core.util.MapScale
+import dev.sargunv.maplibrecompose.core.util.div
 import dev.sargunv.maplibrecompose.material3.defaultScaleBarMeasures
 import dev.sargunv.maplibrecompose.material3.drawPathsWithHalo
 import dev.sargunv.maplibrecompose.material3.drawTextWithHalo
+import io.github.kevincianfarini.alchemist.scalar.nanometers
+import io.github.kevincianfarini.alchemist.type.Length
+import io.github.kevincianfarini.alchemist.unit.LengthUnit.International.Nanometer
+import kotlin.math.roundToLong
 
-/** Which measures to show on the scale bar. */
+/** Which measurement systems to show on the scale bar. */
 public data class ScaleBarMeasures(
   val primary: ScaleBarMeasure,
   val secondary: ScaleBarMeasure? = null,
 )
 
 /**
- * A scale bar composable that shows the current scale of the map in feet, meters or feet and meters
- * when zoomed in to the map, changing to miles and kilometers, respectively, when zooming out.
+ * A scale bar composable that shows the current scale of the map in feet, yards, or meters when
+ * zoomed in to the map, changing to miles and kilometers when zooming out.
  *
- * @param metersPerDp how many meters are displayed in one device independent pixel (dp), i.e. the
- *   scale. See
- *   [CameraState.metersPerDpAtTarget][dev.sargunv.maplibrecompose.compose.CameraState.metersPerDpAtTarget]
+ * @param scale the ratio of real world distance [Length] to [Dp], i.e. the scale. See
+ *   [CameraState.scaleAtTarget][dev.sargunv.maplibrecompose.compose.CameraState.scaleAtTarget]
  * @param modifier the [Modifier] to be applied to this layout node
  * @param measures which measures to show on the scale bar. If `null`, measures will be selected
  *   based on the system settings or otherwise the user's locale.
@@ -48,7 +53,7 @@ public data class ScaleBarMeasures(
  */
 @Composable
 public fun ScaleBar(
-  metersPerDp: Double,
+  scale: MapScale,
   modifier: Modifier = Modifier,
   measures: ScaleBarMeasures = defaultScaleBarMeasures(),
   haloColor: Color = MaterialTheme.colorScheme.surface,
@@ -57,6 +62,7 @@ public fun ScaleBar(
   alignment: Alignment.Horizontal = Alignment.Start,
 ) {
   val textMeasurer = rememberTextMeasurer()
+
   // longest possible text
   val maxTextSizePx =
     remember(textMeasurer, textStyle) { textMeasurer.measure("5000 km", textStyle).size }
@@ -83,8 +89,8 @@ public fun ScaleBar(
     // scale bar start/end should not overlap horizontally with canvas bounds
     val maxBarLength = maxWidth - fullStrokeWidth
 
-    val params1 = scaleBarParameters(measures.primary, metersPerDp, maxBarLength)
-    val params2 = measures.secondary?.let { scaleBarParameters(it, metersPerDp, maxBarLength) }
+    val params1 = scaleBarParameters(measures.primary, scale, maxBarLength)
+    val params2 = measures.secondary?.let { scaleBarParameters(it, scale, maxBarLength) }
 
     Canvas(modifier.fillMaxSize()) {
       val fullStrokeWidthPx = fullStrokeWidth.toPx()
@@ -99,10 +105,11 @@ public fun ScaleBar(
       val paths = ArrayList<List<Offset>>(2)
       val texts = ArrayList<Pair<Offset, TextLayoutResult>>(2)
 
-      if (true) { // just want a scope here
+      @Suppress("ConstantConditionIf") // just want a scope here
+      if (true) {
         val offsetX =
           alignment.align(
-            size = params1.barLength.toPx().toInt(),
+            size = params1.barWidth.toPx().toInt(),
             space = (size.width - fullStrokeWidthPx).toInt(),
             layoutDirection = layoutDirection,
           )
@@ -110,7 +117,7 @@ public fun ScaleBar(
           listOf(
             Offset(offsetX + fullStrokeWidthPx / 2f, 0f + textHeightPx / 2f),
             Offset(0f, barEndsHeightPx),
-            Offset(params1.barLength.toPx(), 0f),
+            Offset(params1.barWidth.toPx(), 0f),
             Offset(0f, -barEndsHeightPx),
           )
         )
@@ -127,7 +134,7 @@ public fun ScaleBar(
       if (params2 != null) {
         val offsetX =
           alignment.align(
-            size = params2.barLength.toPx().toInt(),
+            size = params2.barWidth.toPx().toInt(),
             space = (size.width - fullStrokeWidthPx).toInt(),
             layoutDirection = layoutDirection,
           )
@@ -135,7 +142,7 @@ public fun ScaleBar(
           listOf(
             Offset(offsetX + fullStrokeWidthPx / 2f, y + fullStrokeWidthPx / 2f + barEndsHeightPx),
             Offset(0f, -barEndsHeightPx),
-            Offset(params2.barLength.toPx(), 0f),
+            Offset(params2.barWidth.toPx(), 0f),
             Offset(0f, +barEndsHeightPx),
           )
         )
@@ -178,24 +185,28 @@ public fun ScaleBar(
   }
 }
 
-private data class ScaleBarParams(val barLength: Dp, val text: String)
+private data class ScaleBarParams(val barWidth: Dp, val text: String)
 
 @Composable
 private fun scaleBarParameters(
   measure: ScaleBarMeasure,
-  metersPerDp: Double,
+  scale: MapScale,
   maxBarLength: Dp,
 ): ScaleBarParams {
-  val max = maxBarLength.value * metersPerDp / measure.unitInMeters
+  val max = scale * maxBarLength
   val stop = findStop(max, measure.stops)
-  return ScaleBarParams((stop * measure.unitInMeters / metersPerDp).dp, measure.getText(stop))
+  return ScaleBarParams(barWidth = (stop / scale), text = measure.getText(stop))
 }
 
 /**
  * find the largest stop in the list of stops (sorted in ascending order) that is below or equal
  * [max].
  */
-private fun findStop(max: Double, stops: List<Double>): Double {
+private fun findStop(max: Length, stops: List<Length>): Length {
   val i = stops.binarySearch { it.compareTo(max) }
   return if (i >= 0) stops[i] else stops[(-i - 2).coerceAtLeast(0)]
 }
+
+// https://github.com/kevincianfarini/alchemist/issues/53
+private operator fun Length.times(other: Double) =
+  (this.toLong(Nanometer) * other).roundToLong().nanometers

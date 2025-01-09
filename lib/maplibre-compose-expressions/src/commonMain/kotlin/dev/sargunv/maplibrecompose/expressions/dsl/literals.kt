@@ -18,6 +18,7 @@ import dev.sargunv.maplibrecompose.expressions.ast.FloatLiteral
 import dev.sargunv.maplibrecompose.expressions.ast.IntLiteral
 import dev.sargunv.maplibrecompose.expressions.ast.ListLiteral
 import dev.sargunv.maplibrecompose.expressions.ast.Literal
+import dev.sargunv.maplibrecompose.expressions.ast.MetersLiteral
 import dev.sargunv.maplibrecompose.expressions.ast.MillisecondsLiteral
 import dev.sargunv.maplibrecompose.expressions.ast.NullLiteral
 import dev.sargunv.maplibrecompose.expressions.ast.OffsetLiteral
@@ -31,6 +32,7 @@ import dev.sargunv.maplibrecompose.expressions.value.SymbolAnchor
 import dev.sargunv.maplibrecompose.expressions.value.TextUnitOffsetValue
 import dev.sargunv.maplibrecompose.expressions.value.TextVariableAnchorOffsetValue
 import dev.sargunv.maplibrecompose.expressions.value.VectorValue
+import io.github.kevincianfarini.alchemist.type.Length
 import kotlin.jvm.JvmName
 import kotlin.time.Duration
 
@@ -61,6 +63,13 @@ public fun const(textUnit: TextUnit): TextUnitCalculation = TextUnitCalculation.
  * The duration will be rounded to the nearest whole milliseconds.
  */
 public fun const(duration: Duration): MillisecondsLiteral = MillisecondsLiteral.of(duration)
+
+/**
+ * Creates a literal expression for a [Length] value.
+ *
+ * The length will be represented in meters.
+ */
+public fun const(duration: Length): MetersLiteral = MetersLiteral.of(duration)
 
 /** Creates a literal expression for a [Boolean] value. */
 public fun const(bool: Boolean): BooleanLiteral = BooleanLiteral.of(bool)
