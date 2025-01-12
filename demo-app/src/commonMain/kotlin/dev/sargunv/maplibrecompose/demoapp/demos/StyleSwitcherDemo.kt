@@ -14,16 +14,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import dev.sargunv.maplibrecompose.compose.MaplibreMap
+import dev.sargunv.maplibrecompose.compose.layer.SymbolLayer
 import dev.sargunv.maplibrecompose.compose.rememberCameraState
 import dev.sargunv.maplibrecompose.compose.rememberStyleState
+import dev.sargunv.maplibrecompose.compose.source.rememberVectorSource
 import dev.sargunv.maplibrecompose.core.CameraPosition
 import dev.sargunv.maplibrecompose.demoapp.ALL_STYLES
 import dev.sargunv.maplibrecompose.demoapp.Demo
 import dev.sargunv.maplibrecompose.demoapp.DemoMapControls
 import dev.sargunv.maplibrecompose.demoapp.DemoOrnamentSettings
 import dev.sargunv.maplibrecompose.demoapp.DemoScaffold
+import dev.sargunv.maplibrecompose.demoapp.generated.Res
 import dev.sargunv.maplibrecompose.demoapp.getDefaultColorScheme
+import dev.sargunv.maplibrecompose.expressions.dsl.const
+import dev.sargunv.maplibrecompose.expressions.dsl.convertToString
+import dev.sargunv.maplibrecompose.expressions.dsl.feature
+import dev.sargunv.maplibrecompose.expressions.value.SymbolAnchor
 import io.github.dellisd.spatialk.geojson.Position
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 private val NEW_YORK = Position(latitude = 40.744, longitude = -73.981)
 
@@ -32,6 +40,7 @@ object StyleSwitcherDemo : Demo {
   override val description = "Switch between different map styles at runtime."
 
   @Composable
+  @OptIn(ExperimentalResourceApi::class)
   override fun Component(navigateUp: () -> Unit) {
     var selectedIndex by remember { mutableStateOf(0) }
 
@@ -48,7 +57,20 @@ object StyleSwitcherDemo : Demo {
               cameraState = cameraState,
               styleState = styleState,
               ornamentSettings = DemoOrnamentSettings(),
-            )
+            ) {
+              val crags = rememberVectorSource(
+                id = "openbeta-crags",
+                uri = Res.getUri("files/data/openbeta-crags.json")
+              )
+              SymbolLayer(
+                id = "crag-name-label",
+                source = crags,
+                sourceLayer = "crags",
+                iconAnchor = const(SymbolAnchor.Center),
+                textField = feature.get("name").convertToString(),
+                textFont = const(listOf("Noto Sans Regular"))
+              )
+            }
             DemoMapControls(cameraState, styleState)
           }
 

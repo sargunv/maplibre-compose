@@ -1,0 +1,8 @@
+{
+  "tiles": [
+    "https://maptiles.openbeta.io/crags/{z}/{x}/{y}.pbf"
+  ],
+  "promoteId": "id",
+  "maxzoom": 11,
+  "attribution": "© OpenBeta contributors"
+}
