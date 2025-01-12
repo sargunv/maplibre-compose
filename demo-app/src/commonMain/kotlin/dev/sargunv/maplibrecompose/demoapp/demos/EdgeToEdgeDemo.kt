@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import dev.sargunv.maplibrecompose.compose.MaplibreMap
 import dev.sargunv.maplibrecompose.compose.rememberCameraState
 import dev.sargunv.maplibrecompose.compose.rememberStyleState
-import dev.sargunv.maplibrecompose.compose.source.rememberVectorSource
 import dev.sargunv.maplibrecompose.core.CameraPosition
 import dev.sargunv.maplibrecompose.demoapp.DEFAULT_STYLE
 import dev.sargunv.maplibrecompose.demoapp.Demo
@@ -40,10 +39,7 @@ object EdgeToEdgeDemo : Demo {
           cameraState = cameraState,
           styleState = styleState,
           ornamentSettings = DemoOrnamentSettings(padding),
-        ) {
-          val x =
-            rememberVectorSource("x", uri = "https://maptiles.openbeta.io/crags/{z}/{x}/{y}.pbf")
-        }
+        )
         DemoMapControls(cameraState, styleState, modifier = Modifier.padding(padding))
       }
     }
