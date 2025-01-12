@@ -86,7 +86,7 @@ internal class AndroidMap(
     lastStyleUri = styleUri
     logger?.i { "Setting style URI" }
     callbacks.onStyleChanged(this, null)
-    val builder = MlnStyle.Builder().fromUri(styleUri.correctedAndroidUri().toString())
+    val builder = MlnStyle.Builder().fromUri(styleUri.correctedAndroidUri())
     map.setStyle(builder) {
       logger?.i { "Style finished loading" }
       callbacks.onStyleChanged(this, AndroidStyle(it))

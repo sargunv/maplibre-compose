@@ -30,16 +30,19 @@ import dev.sargunv.maplibrecompose.expressions.ast.StringLiteral
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Position
 import java.net.URI
+import java.net.URISyntaxException
 import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.geometry.LatLngBounds
 import org.maplibre.android.style.expressions.Expression as MLNExpression
 
-internal fun String.correctedAndroidUri(): URI {
-  val uri = URI(this)
-  return if (uri.scheme == "file" && uri.path.startsWith("/android_asset/")) {
-    URI("asset://${uri.path.removePrefix("/android_asset/")}")
-  } else {
-    uri
+internal fun String.correctedAndroidUri(): String {
+  return try {
+    val uri = URI(this)
+    if (uri.scheme == "file" && uri.path.startsWith("/android_asset/"))
+      URI("asset://${uri.path.removePrefix("/android_asset/")}").toString()
+    else this
+  } catch (_: URISyntaxException) {
+    this
   }
 }
 

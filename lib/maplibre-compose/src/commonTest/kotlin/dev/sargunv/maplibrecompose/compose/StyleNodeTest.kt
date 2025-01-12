@@ -9,6 +9,7 @@ import dev.sargunv.maplibrecompose.core.layer.Layer
 import dev.sargunv.maplibrecompose.core.layer.LineLayer
 import dev.sargunv.maplibrecompose.core.source.GeoJsonOptions
 import dev.sargunv.maplibrecompose.core.source.GeoJsonSource
+import dev.sargunv.maplibrecompose.core.source.VectorSource
 import io.github.dellisd.spatialk.geojson.FeatureCollection
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -20,7 +21,7 @@ import kotlin.test.assertNull
 abstract class StyleNodeTest {
   private val testSources by lazy {
     listOf(
-      GeoJsonSource("foo", FeatureCollection(), GeoJsonOptions()),
+      VectorSource("foo", "https://example.com/{z}/{x}/{y}.pbf"),
       GeoJsonSource("bar", FeatureCollection(), GeoJsonOptions()),
       GeoJsonSource("baz", FeatureCollection(), GeoJsonOptions()),
     )
