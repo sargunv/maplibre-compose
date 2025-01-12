@@ -98,23 +98,32 @@ public external class Map public constructor(options: MapOptions) {
   public fun getBounds(): LngLatBounds
 
   public fun addLayer(layer: LayerSpecification, beforeId: String? = definedExternally)
+
   public fun removeLayer(id: String)
+
   public fun getLayer(id: String): StyleLayer?
+
   public fun getLayersOrder(): Array<String>
 
   public fun addSource(id: String, source: SourceSpecification)
+
   public fun removeSource(id: String)
+
   public fun getSource(id: String): Source?
 
   public fun setLayoutProperty(layerId: String, name: String, value: Expression)
+
   public fun setPaintProperty(layerId: String, name: String, value: Expression)
+
   public fun setFilter(layerId: String, filter: Expression)
 }
 
 /** [Source](https://maplibre.org/maplibre-gl-js/docs/API/interfaces/Source/) */
 public sealed external interface Source {
-  public val type: String;
-  public val id: String;
+  public val type: String
+
+  public val id: String
+
   public var minzoom: Number
   public var maxzoom: Number
   public var tileSize: Number
@@ -178,13 +187,17 @@ public sealed external class StyleLayer {
   public var maxzoom: Int?
   public var filter: Expression?
   public var visibility: String?
+
   public fun getLayoutProperty(key: String): dynamic
+
   public fun setLayoutProperty(key: String, value: dynamic)
+
   public fun getPaintProperty(key: String): dynamic
+
   public fun setPaintProperty(key: String, value: dynamic)
 }
 
-public external class FillStyleLayer private constructor(): StyleLayer
+public external class FillStyleLayer private constructor() : StyleLayer
 
 public external class BackgroundStyleLayer private constructor() : StyleLayer
 
@@ -202,7 +215,7 @@ public external class RasterStyleLayer private constructor() : StyleLayer
 
 public external class SymbolStyleLayer private constructor() : StyleLayer
 
-public external interface LayerSpecification  {
+public external interface LayerSpecification {
   public var id: String?
   public var source: String?
   public var sourceLayer: String?
