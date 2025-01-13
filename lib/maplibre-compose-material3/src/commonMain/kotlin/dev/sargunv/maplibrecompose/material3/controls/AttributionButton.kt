@@ -42,7 +42,7 @@ import org.jetbrains.compose.resources.stringResource
  * @param colors Colors that will be used for the info button
  * @param textStyle Text style used for the attribution info
  * @param textLinkStyles Text link styles that should be used for the links in the attribution info
- * */
+ */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 public fun AttributionButton(
@@ -59,7 +59,7 @@ public fun AttributionButton(
   Row(
     modifier = modifier,
     horizontalArrangement = Arrangement.End,
-    verticalAlignment = Alignment.CenterVertically
+    verticalAlignment = Alignment.CenterVertically,
   ) {
     AnimatedVisibility(expanded, modifier = Modifier.weight(1f, fill = false)) {
       Surface(shape = MaterialTheme.shapes.medium) {
@@ -84,7 +84,7 @@ public fun AttributionButton(
     IconButton(onClick = onClick, modifier = Modifier.align(Alignment.Bottom), colors = colors) {
       Icon(
         imageVector = Icons.Outlined.Info,
-        contentDescription = stringResource(Res.string.attribution)
+        contentDescription = stringResource(Res.string.attribution),
       )
     }
   }
