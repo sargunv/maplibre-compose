@@ -58,17 +58,18 @@ object StyleSwitcherDemo : Demo {
               styleState = styleState,
               ornamentSettings = DemoOrnamentSettings(),
             ) {
-              val crags = rememberVectorSource(
-                id = "openbeta-crags",
-                uri = Res.getUri("files/data/openbeta-crags.json")
-              )
+              val crags =
+                rememberVectorSource(
+                  id = "openbeta-crags",
+                  uri = Res.getUri("files/data/openbeta-crags.json"),
+                )
               SymbolLayer(
                 id = "crag-name-label",
                 source = crags,
                 sourceLayer = "crags",
                 iconAnchor = const(SymbolAnchor.Center),
                 textField = feature.get("name").convertToString(),
-                textFont = const(listOf("Noto Sans Regular"))
+                textFont = const(listOf("Noto Sans Regular")),
               )
             }
             DemoMapControls(cameraState, styleState)

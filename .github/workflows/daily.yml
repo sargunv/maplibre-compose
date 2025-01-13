@@ -4,6 +4,7 @@ name: "Daily"
 on:
   schedule:
     - cron: "00 10 * * *"
+  workflow_dispatch:
 
 jobs:
   check-last-run:

@@ -6,8 +6,8 @@ import org.maplibre.android.style.layers.PropertyFactory
 
 internal actual sealed class Layer {
   abstract val impl: MlnLayer
-  actual val id: String
-    get() = impl.id
+
+  actual val id: String by lazy { impl.id }
 
   actual var minZoom: Float
     get() = impl.minZoom

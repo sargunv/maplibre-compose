@@ -6,8 +6,8 @@ import org.maplibre.android.style.sources.Source as MLNSource
 
 public actual sealed class Source {
   internal abstract val impl: MLNSource
-  internal actual val id: String
-    get() = impl.id
+
+  internal actual val id: String by lazy { impl.id }
 
   public actual val attributionLinks: List<AttributionLink>
     get() {
