@@ -24,7 +24,6 @@ import dev.sargunv.maplibrecompose.demoapp.DemoOrnamentSettings
 import dev.sargunv.maplibrecompose.demoapp.DemoScaffold
 import dev.sargunv.maplibrecompose.demoapp.getDefaultColorScheme
 import io.github.dellisd.spatialk.geojson.Position
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 private val NEW_YORK = Position(latitude = 40.744, longitude = -73.981)
 
@@ -33,7 +32,6 @@ object StyleSwitcherDemo : Demo {
   override val description = "Switch between different map styles at runtime."
 
   @Composable
-  @OptIn(ExperimentalResourceApi::class)
   override fun Component(navigateUp: () -> Unit) {
     var selectedIndex by remember { mutableStateOf(0) }
 
