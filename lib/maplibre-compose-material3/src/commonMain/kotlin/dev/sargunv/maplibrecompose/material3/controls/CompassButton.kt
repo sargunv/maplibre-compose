@@ -47,7 +47,7 @@ public fun CompassButton(
   colors: ButtonColors = ButtonDefaults.elevatedButtonColors(),
   contentDescription: String = stringResource(Res.string.compass),
   size: Dp = 48.dp,
-  contentPadding: PaddingValues = PaddingValues(8.dp),
+  contentPadding: PaddingValues = PaddingValues(size / 6),
   shape: Shape = CircleShape,
   needlePainter: Painter = painterResource(Res.drawable.compass_needle),
 ) {
@@ -85,7 +85,7 @@ public fun DisappearingCompassButton(
   colors: ButtonColors = ButtonDefaults.elevatedButtonColors(),
   contentDescription: String = stringResource(Res.string.compass),
   size: Dp = 48.dp,
-  contentPadding: PaddingValues = PaddingValues(8.dp),
+  contentPadding: PaddingValues = PaddingValues(size / 6),
   shape: Shape = CircleShape,
   needlePainter: Painter = painterResource(Res.drawable.compass_needle),
   visibilityDuration: Duration = 1.seconds,
