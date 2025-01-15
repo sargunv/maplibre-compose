@@ -117,7 +117,7 @@ public fun DisappearingCompassButton(
       colors = colors,
       contentDescription = contentDescription,
       size = size,
-      needlePainter = needlePainter
+      needlePainter = needlePainter,
     )
   }
 }
