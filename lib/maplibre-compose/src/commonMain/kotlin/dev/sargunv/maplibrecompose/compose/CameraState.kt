@@ -57,7 +57,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
   public val moveReason: CameraMoveReason
     get() = moveReasonState.value
 
-  /** meters per dp at the target position */
+  /** meters per dp at the target position. Zero when the map is not initialized yet. */
   public val metersPerDpAtTarget: Double
     get() = metersPerDpAtTargetState.value
 

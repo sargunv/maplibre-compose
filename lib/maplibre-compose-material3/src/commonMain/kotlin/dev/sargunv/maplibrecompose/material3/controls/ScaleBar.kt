@@ -56,6 +56,9 @@ public fun ScaleBar(
   textStyle: TextStyle = MaterialTheme.typography.labelSmall,
   alignment: Alignment.Horizontal = Alignment.Start,
 ) {
+  // when map is not fully initialized yet
+  if (metersPerDp == 0.0) return
+
   val textMeasurer = rememberTextMeasurer()
   // longest possible text
   val maxTextSizePx =
