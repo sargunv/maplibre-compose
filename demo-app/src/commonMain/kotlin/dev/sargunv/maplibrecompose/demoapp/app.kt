@@ -166,7 +166,12 @@ fun DemoMapControls(
         modifier = Modifier.align(Alignment.TopEnd),
         onClick = onCompassClick,
       )
-      AttributionButton(styleState, modifier = Modifier.align(Alignment.BottomEnd))
+      val attributionLinks = remember { styleState.queryAttributionLinks() }
+      AttributionButton(
+        lastCameraMoveReason = cameraState.moveReason,
+        attributions = attributionLinks,
+        modifier = Modifier.align(Alignment.BottomEnd)
+      )
     }
   }
 }

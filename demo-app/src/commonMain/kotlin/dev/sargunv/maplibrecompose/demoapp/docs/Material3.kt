@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -33,9 +34,20 @@ fun Material3() {
     )
 
     Box(modifier = Modifier.fillMaxSize().padding(8.dp)) {
-      ScaleBar(cameraState.metersPerDpAtTarget, modifier = Modifier.align(Alignment.TopStart))
-      CompassButton(cameraState, modifier = Modifier.align(Alignment.TopEnd))
-      AttributionButton(styleState, modifier = Modifier.align(Alignment.BottomEnd))
+      ScaleBar(
+        metersPerDp = cameraState.metersPerDpAtTarget,
+        modifier = Modifier.align(Alignment.TopStart)
+      )
+      CompassButton(
+        cameraState = cameraState,
+        modifier = Modifier.align(Alignment.TopEnd)
+      )
+      val attributionLinks = remember { styleState.queryAttributionLinks() }
+      AttributionButton(
+        lastCameraMoveReason = cameraState.moveReason,
+        attributions = attributionLinks,
+        modifier = Modifier.align(Alignment.BottomEnd)
+      )
     }
   }
   // -8<- [end:controls]
@@ -54,8 +66,16 @@ fun Material3() {
         zoom = cameraState.position.zoom,
         modifier = Modifier.align(Alignment.TopStart),
       ) // (1)!
-      DisappearingCompassButton(cameraState, modifier = Modifier.align(Alignment.TopEnd)) // (2)!
-      AttributionButton(styleState, modifier = Modifier.align(Alignment.BottomEnd))
+      DisappearingCompassButton(
+        cameraState = cameraState,
+        modifier = Modifier.align(Alignment.TopEnd)
+      ) // (2)!
+      val attributionLinks = remember { styleState.queryAttributionLinks() }
+      AttributionButton(
+        lastCameraMoveReason = cameraState.moveReason,
+        attributions = attributionLinks,
+        modifier = Modifier.align(Alignment.BottomEnd)
+      )
     }
   }
   // -8<- [end:disappearing-controls]
