@@ -84,30 +84,27 @@ public fun AttributionButton(
     // the background is separate from the attribution texts because it should, when visible, also
     // cover the info icon button
     AnimatedVisibility(expanded, modifier = Modifier.matchParentSize()) {
-      Box(Modifier
-        .matchParentSize()
-        .padding(4.dp)
-        .background(surfaceColor, RoundedCornerShape(cornerSize))
+      Box(
+        Modifier.matchParentSize()
+          .padding(4.dp)
+          .background(surfaceColor, RoundedCornerShape(cornerSize))
       )
     }
     CompositionLocalProvider(LocalContentColor provides contentColor) {
-      Row(
-        horizontalArrangement = Arrangement.End,
-        verticalAlignment = Alignment.CenterVertically,
-      ) {
+      Row(horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
         AnimatedVisibility(expanded, modifier = Modifier.weight(1f, fill = false)) {
           AttributionTexts(
             attributions = attributions,
             // make sure that the text always fits in the rounded corner background
             modifier = Modifier.padding(vertical = 4.dp).padding(start = cornerSize - 4.dp),
             textStyle = textStyle,
-            textLinkStyles = textLinkStyles
+            textLinkStyles = textLinkStyles,
           )
         }
         InfoIconButton(
           onClick = { expanded = !expanded },
           colors = colors,
-          modifier = Modifier.align(Alignment.Bottom)
+          modifier = Modifier.align(Alignment.Bottom),
         )
       }
     }
@@ -144,9 +141,7 @@ private fun AttributionTexts(
     ) {
       attributions.forEach {
         val text = buildAnnotatedString {
-          withLink(LinkAnnotation.Url(url = it.url, styles = textLinkStyles)) {
-            append(it.title)
-          }
+          withLink(LinkAnnotation.Url(url = it.url, styles = textLinkStyles)) { append(it.title) }
         }
         Text(text)
       }

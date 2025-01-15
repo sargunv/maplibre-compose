@@ -46,7 +46,7 @@ fun Material3() {
       AttributionButton(
         lastCameraMoveReason = cameraState.moveReason,
         attributions = attributionLinks,
-        modifier = Modifier.align(Alignment.BottomEnd)
+        modifier = Modifier.align(Alignment.BottomEnd),
       )
     }
   }
@@ -68,13 +68,13 @@ fun Material3() {
       ) // (1)!
       DisappearingCompassButton(
         cameraState = cameraState,
-        modifier = Modifier.align(Alignment.TopEnd)
+        modifier = Modifier.align(Alignment.TopEnd),
       ) // (2)!
       val attributionLinks = remember { styleState.queryAttributionLinks() }
       AttributionButton(
         lastCameraMoveReason = cameraState.moveReason,
         attributions = attributionLinks,
-        modifier = Modifier.align(Alignment.BottomEnd)
+        modifier = Modifier.align(Alignment.BottomEnd),
       )
     }
   }
