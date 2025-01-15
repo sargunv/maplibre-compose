@@ -42,7 +42,7 @@ abstract class StyleNodeTest {
   @BeforeTest open fun platformSetup() {}
 
   @Test
-  fun shoudGetBaseSource() = runComposeUiTest {
+  fun shouldGetBaseSource() = runComposeUiTest {
     runOnUiThread {
       val s = makeStyleNode()
       assertEquals(testSources[1], s.sourceManager.getBaseSource("bar"))
