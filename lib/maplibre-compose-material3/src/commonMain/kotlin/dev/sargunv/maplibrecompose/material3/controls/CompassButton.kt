@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.Dp
@@ -46,6 +47,8 @@ public fun CompassButton(
   colors: ButtonColors = ButtonDefaults.elevatedButtonColors(),
   contentDescription: String = stringResource(Res.string.compass),
   size: Dp = 48.dp,
+  contentPadding: PaddingValues = PaddingValues(8.dp),
+  shape: Shape = CircleShape,
   needlePainter: Painter = painterResource(Res.drawable.compass_needle),
 ) {
   val coroutineScope = rememberCoroutineScope()
@@ -57,9 +60,9 @@ public fun CompassButton(
       }
       onClick()
     },
-    shape = CircleShape,
+    shape = shape,
     colors = colors,
-    contentPadding = PaddingValues(8.dp),
+    contentPadding = contentPadding,
   ) {
     Image(
       painter = needlePainter,
@@ -82,6 +85,8 @@ public fun DisappearingCompassButton(
   colors: ButtonColors = ButtonDefaults.elevatedButtonColors(),
   contentDescription: String = stringResource(Res.string.compass),
   size: Dp = 48.dp,
+  contentPadding: PaddingValues = PaddingValues(8.dp),
+  shape: Shape = CircleShape,
   needlePainter: Painter = painterResource(Res.drawable.compass_needle),
   visibilityDuration: Duration = 1.seconds,
   enterTransition: EnterTransition = fadeIn(),
@@ -117,6 +122,8 @@ public fun DisappearingCompassButton(
       colors = colors,
       contentDescription = contentDescription,
       size = size,
+      contentPadding = contentPadding,
+      shape = shape,
       needlePainter = needlePainter,
     )
   }
