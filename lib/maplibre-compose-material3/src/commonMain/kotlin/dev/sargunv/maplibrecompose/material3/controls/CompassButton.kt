@@ -23,6 +23,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrecompose.compose.CameraState
 import dev.sargunv.maplibrecompose.material3.generated.Res
@@ -42,11 +44,13 @@ public fun CompassButton(
   modifier: Modifier = Modifier,
   onClick: () -> Unit = {},
   colors: ButtonColors = ButtonDefaults.elevatedButtonColors(),
-  contentDescription: String = "Compass",
+  contentDescription: String = stringResource(Res.string.compass),
+  size: Dp = 48.dp,
+  needlePainter: Painter = painterResource(Res.drawable.compass_needle),
 ) {
   val coroutineScope = rememberCoroutineScope()
   ElevatedButton(
-    modifier = modifier.size(48.dp).aspectRatio(1f),
+    modifier = modifier.size(size).aspectRatio(1f),
     onClick = {
       coroutineScope.launch {
         cameraState.animateTo(cameraState.position.copy(bearing = 0.0, tilt = 0.0))
@@ -58,7 +62,7 @@ public fun CompassButton(
     contentPadding = PaddingValues(8.dp),
   ) {
     Image(
-      painter = painterResource(Res.drawable.compass_needle),
+      painter = needlePainter,
       contentDescription = contentDescription,
       modifier =
         Modifier.fillMaxSize()
@@ -76,6 +80,9 @@ public fun DisappearingCompassButton(
   modifier: Modifier = Modifier,
   onClick: () -> Unit = {},
   colors: ButtonColors = ButtonDefaults.elevatedButtonColors(),
+  contentDescription: String = stringResource(Res.string.compass),
+  size: Dp = 48.dp,
+  needlePainter: Painter = painterResource(Res.drawable.compass_needle),
   visibilityDuration: Duration = 1.seconds,
   enterTransition: EnterTransition = fadeIn(),
   exitTransition: ExitTransition = fadeOut(),
@@ -108,7 +115,9 @@ public fun DisappearingCompassButton(
       modifier = modifier,
       onClick = onClick,
       colors = colors,
-      contentDescription = stringResource(Res.string.compass),
+      contentDescription = contentDescription,
+      size = size,
+      needlePainter = needlePainter
     )
   }
 }
