@@ -2,6 +2,7 @@ package dev.sargunv.maplibrecompose.core
 
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpRect
+import dev.sargunv.maplibrecompose.core.util.MapScale
 import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
 import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.BoundingBox
@@ -54,7 +55,7 @@ internal interface MaplibreMap {
     predicate: CompiledExpression<BooleanValue>? = null,
   ): List<Feature>
 
-  suspend fun asyncMetersPerDpAtLatitude(latitude: Double): Double
+  suspend fun asyncScaleAtLatitude(latitude: Double): MapScale
 
   interface Callbacks {
     fun onStyleChanged(map: MaplibreMap, style: Style?)
@@ -120,8 +121,7 @@ internal interface StandardMaplibreMap : MaplibreMap {
     predicate: CompiledExpression<BooleanValue>?,
   ): List<Feature> = queryRenderedFeatures(rect, layerIds, predicate)
 
-  override suspend fun asyncMetersPerDpAtLatitude(latitude: Double): Double =
-    metersPerDpAtLatitude(latitude)
+  override suspend fun asyncScaleAtLatitude(latitude: Double): MapScale = scaleAtLatitude(latitude)
 
   fun setStyleUri(styleUri: String)
 
@@ -165,5 +165,5 @@ internal interface StandardMaplibreMap : MaplibreMap {
     predicate: CompiledExpression<BooleanValue>? = null,
   ): List<Feature>
 
-  fun metersPerDpAtLatitude(latitude: Double): Double
+  fun scaleAtLatitude(latitude: Double): MapScale
 }

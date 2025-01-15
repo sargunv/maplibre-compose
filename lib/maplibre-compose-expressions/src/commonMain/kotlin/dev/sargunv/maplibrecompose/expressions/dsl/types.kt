@@ -18,6 +18,7 @@ import dev.sargunv.maplibrecompose.expressions.value.FloatValue
 import dev.sargunv.maplibrecompose.expressions.value.IntValue
 import dev.sargunv.maplibrecompose.expressions.value.ListValue
 import dev.sargunv.maplibrecompose.expressions.value.MapValue
+import dev.sargunv.maplibrecompose.expressions.value.MetersValue
 import dev.sargunv.maplibrecompose.expressions.value.MillisecondsValue
 import dev.sargunv.maplibrecompose.expressions.value.NumberValue
 import dev.sargunv.maplibrecompose.expressions.value.StringValue
@@ -282,6 +283,10 @@ public val Expression<FloatValue>.milliseconds: Expression<MillisecondsValue>
 /** Converts a numeric [Expression] in seconds to a [MillisecondsValue] expression. */
 public val Expression<FloatValue>.seconds: Expression<MillisecondsValue>
   get() = (this * const(1000f)).cast()
+
+/** Converts a numeric [Expression] in meters to a [MetersValue] expression. */
+public val Expression<FloatValue>.meters: Expression<MetersValue>
+  get() = this.cast()
 
 /** Converts a numeric [Expression] to an [TextUnitValue] expression in SP. */
 public val Expression<FloatValue>.sp: Expression<TextUnitValue>

@@ -3,11 +3,15 @@ package dev.sargunv.maplibrecompose.core
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import dev.sargunv.maplibrecompose.core.util.MapScale
+import dev.sargunv.maplibrecompose.core.util.div
 import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
 import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
+import io.github.kevincianfarini.alchemist.scalar.meters
 import kotlin.time.Duration
 
 internal class WebviewMap(private val bridge: WebviewBridge) : MaplibreMap {
@@ -139,7 +143,7 @@ internal class WebviewMap(private val bridge: WebviewBridge) : MaplibreMap {
     return emptyList()
   }
 
-  override suspend fun asyncMetersPerDpAtLatitude(latitude: Double): Double {
-    return 0.0
+  override suspend fun asyncScaleAtLatitude(latitude: Double): MapScale {
+    return 0.meters / 1.dp
   }
 }

@@ -38,7 +38,10 @@ kotlin {
   wasmJs { browser() }
 
   sourceSets {
-    commonMain.dependencies { implementation(compose.foundation) }
+    commonMain.dependencies {
+      implementation(compose.foundation)
+      api(libs.alchemist)
+    }
 
     commonTest.dependencies {
       implementation(kotlin("test"))

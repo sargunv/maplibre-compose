@@ -7,6 +7,7 @@ import dev.sargunv.maplibrecompose.expressions.value.ColorValue
 import dev.sargunv.maplibrecompose.expressions.value.DpOffsetValue
 import dev.sargunv.maplibrecompose.expressions.value.FloatValue
 import dev.sargunv.maplibrecompose.expressions.value.ImageValue
+import dev.sargunv.maplibrecompose.expressions.value.MetersValue
 import dev.sargunv.maplibrecompose.expressions.value.TranslateAnchor
 
 internal expect class FillExtrusionLayer(id: String, source: Source) : FeatureLayer {
@@ -24,9 +25,9 @@ internal expect class FillExtrusionLayer(id: String, source: Source) : FeatureLa
 
   fun setFillExtrusionPattern(pattern: CompiledExpression<ImageValue>)
 
-  fun setFillExtrusionHeight(height: CompiledExpression<FloatValue>)
+  fun setFillExtrusionHeight(height: CompiledExpression<MetersValue>)
 
-  fun setFillExtrusionBase(base: CompiledExpression<FloatValue>)
+  fun setFillExtrusionBase(base: CompiledExpression<MetersValue>)
 
   fun setFillExtrusionVerticalGradient(verticalGradient: CompiledExpression<BooleanValue>)
 }

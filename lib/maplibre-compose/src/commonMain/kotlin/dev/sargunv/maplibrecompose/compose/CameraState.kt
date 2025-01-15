@@ -5,11 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpRect
+import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrecompose.core.CameraMoveReason
 import dev.sargunv.maplibrecompose.core.CameraPosition
 import dev.sargunv.maplibrecompose.core.MaplibreMap
 import dev.sargunv.maplibrecompose.core.StandardMaplibreMap
 import dev.sargunv.maplibrecompose.core.VisibleRegion
+import dev.sargunv.maplibrecompose.core.util.MapScale
+import dev.sargunv.maplibrecompose.core.util.div
 import dev.sargunv.maplibrecompose.expressions.ExpressionContext
 import dev.sargunv.maplibrecompose.expressions.ast.Expression
 import dev.sargunv.maplibrecompose.expressions.dsl.const
@@ -17,6 +20,7 @@ import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
+import io.github.kevincianfarini.alchemist.scalar.meters
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.channels.Channel
@@ -42,7 +46,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
 
   internal val positionState = mutableStateOf(firstPosition)
   internal val moveReasonState = mutableStateOf(CameraMoveReason.NONE)
-  internal val metersPerDpAtTargetState = mutableStateOf(0.0)
+  internal val scaleAtTargetState = mutableStateOf(0.meters / 1.dp)
 
   /** how the camera is oriented towards the map */
   // if the map is not yet initialized, we store the value to apply it later
@@ -57,9 +61,9 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
   public val moveReason: CameraMoveReason
     get() = moveReasonState.value
 
-  /** meters per dp at the target position */
-  public val metersPerDpAtTarget: Double
-    get() = metersPerDpAtTargetState.value
+  /** real world distance per dp at the target position */
+  public val scaleAtTarget: MapScale
+    get() = scaleAtTargetState.value
 
   /** suspends until the map has been initialized */
   public suspend fun awaitInitialized() {
