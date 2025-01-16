@@ -49,11 +49,10 @@ import org.jetbrains.compose.resources.stringResource
 
 /**
  * Info button from which an attribution text is expanded towards the start. The attribution text
- * retracts when the user starts interacting with the map.
+ * retracts once when the user first starts interacting with the map.
  *
  * @param lastCameraMoveReason The reason reason why the camera moved, last time it moved. See
- *   [CameraState.moveReason]. (The attribution text will automatically retract when the map is
- *   moved by the user.)
+ *   [CameraState.moveReason].
  * @param attributions List of attributions to show. See
  *   [StyleState.queryAttributionLinks][dev.sargunv.maplibrecompose.compose.StyleState.queryAttributionLinks]
  * @param modifier the Modifier to be applied to this layout node
@@ -76,15 +75,15 @@ public fun AttributionButton(
 
   var expanded by remember { mutableStateOf(true) }
 
-  val verticalAlignment = remember(contentAlignment) { contentAlignment.vertical }
-  val horizontalArrangement =
-    remember(contentAlignment) { contentAlignment.horizontal.toArrangement() }
-
   LaunchedEffect(lastCameraMoveReason) {
     if (lastCameraMoveReason == CameraMoveReason.GESTURE) {
       expanded = false
     }
   }
+
+  val verticalAlignment = remember(contentAlignment) { contentAlignment.vertical }
+  val horizontalArrangement =
+    remember(contentAlignment) { contentAlignment.horizontal.toArrangement() }
 
   // rounded corner the size of the info button
   val cornerSize = 20.dp
@@ -96,7 +95,8 @@ public fun AttributionButton(
   val surfaceColor = MaterialTheme.colorScheme.surface
   val contentColor = contentColorFor(surfaceColor)
 
-  // reverse the layout if necessary: the info button should always stick to the aligned side
+  // reverse the layout if necessary: the info button should always stick to the side the whole
+  // widget is aligned to
   val dir = LocalLayoutDirection.current
   val rowLayoutDirection = if (horizontalArrangement == Arrangement.End) dir.reverse() else dir
 
@@ -105,9 +105,11 @@ public fun AttributionButton(
     LocalLayoutDirection provides rowLayoutDirection,
   ) {
     Box(modifier = modifier, contentAlignment = Alignment.CenterStart) {
+      // background for the attribution texts
       AnimatedVisibility(expanded, modifier = Modifier.matchParentSize()) {
         Box(
-          Modifier.matchParentSize()
+          modifier = Modifier
+            .matchParentSize()
             .padding(4.dp)
             .background(surfaceColor, RoundedCornerShape(cornerSize))
         )
@@ -122,6 +124,8 @@ public fun AttributionButton(
           colors = colors,
           modifier = Modifier.align(verticalAlignment),
         )
+        // attributions texts: after applying the paddings, they should be layout in the normal
+        // layout direction again
         AnimatedVisibility(expanded, modifier = Modifier.weight(1f, fill = false)) {
           // make sure that the text always fits in the rounded corner background
           Box(Modifier.padding(vertical = 8.dp).padding(end = cornerSize - 4.dp)) {
