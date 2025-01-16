@@ -172,7 +172,7 @@ internal class AndroidMap(
 
     map.addOnMapLongClickListener { coords ->
       val pos = coords.toPosition()
-      callbacks.onClick(this, pos, screenLocationFromPosition(pos))
+      callbacks.onLongClick(this, pos, screenLocationFromPosition(pos))
       true
     }
 
