@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.TextStyle
@@ -40,6 +41,10 @@ import dev.sargunv.maplibrecompose.core.CameraMoveReason
 import dev.sargunv.maplibrecompose.core.source.AttributionLink
 import dev.sargunv.maplibrecompose.material3.generated.Res
 import dev.sargunv.maplibrecompose.material3.generated.attribution
+import dev.sargunv.maplibrecompose.material3.horizontal
+import dev.sargunv.maplibrecompose.material3.reverse
+import dev.sargunv.maplibrecompose.material3.toArrangement
+import dev.sargunv.maplibrecompose.material3.vertical
 import org.jetbrains.compose.resources.stringResource
 
 /**
@@ -55,6 +60,7 @@ import org.jetbrains.compose.resources.stringResource
  * @param colors Colors that will be used for the info button
  * @param textStyle Text style used for the attribution info
  * @param textLinkStyles Text link styles that should be used for the links in the attribution info
+ * @param contentAlignment Alignment where the button and attribution texts should be aligned to
  */
 @Composable
 public fun AttributionButton(
@@ -64,10 +70,15 @@ public fun AttributionButton(
   colors: IconButtonColors = IconButtonDefaults.iconButtonColors(),
   textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
   textLinkStyles: TextLinkStyles? = null,
+  contentAlignment: Alignment = Alignment.BottomEnd,
 ) {
   if (attributions.isEmpty()) return
 
   var expanded by remember { mutableStateOf(true) }
+
+  val verticalAlignment = remember(contentAlignment) { contentAlignment.vertical }
+  val horizontalArrangement =
+    remember(contentAlignment) { contentAlignment.horizontal.toArrangement() }
 
   LaunchedEffect(lastCameraMoveReason) {
     if (lastCameraMoveReason == CameraMoveReason.GESTURE) {
@@ -75,40 +86,56 @@ public fun AttributionButton(
     }
   }
 
+  // rounded corner the size of the info button
+  val cornerSize = 20.dp
+
+  // the background is separate from the attribution texts because it should, when visible, also
+  // cover the info icon button. This makes the whole setup a bit more complicated, i.e. requires
+  // two AnimatedVisibility and the actual content to be wrapped in CompositionLocalProvider for the
+  // the content color
   val surfaceColor = MaterialTheme.colorScheme.surface
   val contentColor = contentColorFor(surfaceColor)
-  // rounded corner the size of the info button
-  val cornerSize = 24.dp
 
-  Box(modifier = modifier, contentAlignment = Alignment.BottomEnd) {
-    // the background is separate from the attribution texts because it should, when visible, also
-    // cover the info icon button
-    AnimatedVisibility(expanded, modifier = Modifier.matchParentSize()) {
-      Box(Modifier
-        .matchParentSize()
-        .padding(4.dp)
-        .background(surfaceColor, RoundedCornerShape(cornerSize))
-      )
-    }
-    CompositionLocalProvider(LocalContentColor provides contentColor) {
+  // reverse the layout if necessary: the info button should always stick to the aligned side
+  val dir = LocalLayoutDirection.current
+  val rowLayoutDirection = if (horizontalArrangement == Arrangement.End) dir.reverse() else dir
+
+  CompositionLocalProvider(
+    LocalContentColor provides contentColor,
+    LocalLayoutDirection provides rowLayoutDirection
+  ) {
+    Box(modifier = modifier, contentAlignment = Alignment.CenterStart) {
+
+      AnimatedVisibility(expanded, modifier = Modifier.matchParentSize()) {
+        Box(Modifier
+          .matchParentSize()
+          .padding(4.dp)
+          .background(surfaceColor, RoundedCornerShape(cornerSize))
+        )
+      }
+
       Row(
-        horizontalArrangement = Arrangement.End,
+        horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
       ) {
-        AnimatedVisibility(expanded, modifier = Modifier.weight(1f, fill = false)) {
-          AttributionTexts(
-            attributions = attributions,
-            // make sure that the text always fits in the rounded corner background
-            modifier = Modifier.padding(vertical = 4.dp).padding(start = cornerSize - 4.dp),
-            textStyle = textStyle,
-            textLinkStyles = textLinkStyles
-          )
-        }
         InfoIconButton(
           onClick = { expanded = !expanded },
           colors = colors,
-          modifier = Modifier.align(Alignment.Bottom)
+          modifier = Modifier.align(verticalAlignment)
         )
+
+        AnimatedVisibility(expanded, modifier = Modifier.weight(1f, fill = false)) {
+          // make sure that the text always fits in the rounded corner background
+          Box(Modifier.padding(vertical = 8.dp).padding(end = cornerSize - 4.dp)) {
+            CompositionLocalProvider(LocalLayoutDirection provides dir) {
+              AttributionTexts(
+                attributions = attributions,
+                textStyle = textStyle,
+                textLinkStyles = textLinkStyles,
+              )
+            }
+          }
+        }
       }
     }
   }
@@ -139,16 +166,12 @@ private fun AttributionTexts(
   ProvideTextStyle(textStyle) {
     FlowRow(
       modifier = modifier,
-      horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.End),
-      verticalArrangement = Arrangement.Bottom,
+      horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
       attributions.forEach {
-        val text = buildAnnotatedString {
-          withLink(LinkAnnotation.Url(url = it.url, styles = textLinkStyles)) {
-            append(it.title)
-          }
-        }
-        Text(text)
+        Text(buildAnnotatedString {
+          withLink(LinkAnnotation.Url(url = it.url, styles = textLinkStyles)) { append(it.title) }
+        })
       }
     }
   }
