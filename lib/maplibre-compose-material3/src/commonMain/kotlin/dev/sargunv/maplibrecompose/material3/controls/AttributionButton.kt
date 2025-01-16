@@ -107,23 +107,20 @@ public fun AttributionButton(
     Box(modifier = modifier, contentAlignment = Alignment.CenterStart) {
 
       AnimatedVisibility(expanded, modifier = Modifier.matchParentSize()) {
-        Box(Modifier
-          .matchParentSize()
+        Box(
+          Modifier.matchParentSize()
           .padding(4.dp)
           .background(surfaceColor, RoundedCornerShape(cornerSize))
         )
       }
 
-      Row(
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically,
+      Row(horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically
       ) {
         InfoIconButton(
           onClick = { expanded = !expanded },
           colors = colors,
-          modifier = Modifier.align(verticalAlignment)
+          modifier = Modifier.align(verticalAlignment),
         )
-
         AnimatedVisibility(expanded, modifier = Modifier.weight(1f, fill = false)) {
           // make sure that the text always fits in the rounded corner background
           Box(Modifier.padding(vertical = 8.dp).padding(end = cornerSize - 4.dp)) {
