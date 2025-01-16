@@ -36,12 +36,9 @@ fun Material3() {
     Box(modifier = Modifier.fillMaxSize().padding(8.dp)) {
       ScaleBar(
         metersPerDp = cameraState.metersPerDpAtTarget,
-        modifier = Modifier.align(Alignment.TopStart)
+        modifier = Modifier.align(Alignment.TopStart),
       )
-      CompassButton(
-        cameraState = cameraState,
-        modifier = Modifier.align(Alignment.TopEnd)
-      )
+      CompassButton(cameraState = cameraState, modifier = Modifier.align(Alignment.TopEnd))
       val attributionLinks = remember { styleState.queryAttributionLinks() }
       AttributionButton(
         lastCameraMoveReason = cameraState.moveReason,
