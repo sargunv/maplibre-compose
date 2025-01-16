@@ -6,21 +6,23 @@ import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 
-private val Alignment.horizontalBias: Float get() {
-  val align = align(IntSize.Zero, IntSize(10_000_000, 1), LayoutDirection.Ltr)
-  return align.x / 5_000_000f - 1f
-}
+private val Alignment.horizontalBias: Float
+  get() {
+    val align = align(IntSize.Zero, IntSize(10_000_000, 1), LayoutDirection.Ltr)
+    return align.x / 5_000_000f - 1f
+  }
 
-internal val Alignment.horizontal: Alignment.Horizontal get() =
-  BiasAlignment.Horizontal(horizontalBias)
+internal val Alignment.horizontal: Alignment.Horizontal
+  get() = BiasAlignment.Horizontal(horizontalBias)
 
-private val Alignment.verticalBias: Float get() {
-  val align = align(IntSize.Zero, IntSize(1, 10_000_000), LayoutDirection.Ltr)
-  return align.y / 5_000_000f - 1f
-}
+private val Alignment.verticalBias: Float
+  get() {
+    val align = align(IntSize.Zero, IntSize(1, 10_000_000), LayoutDirection.Ltr)
+    return align.y / 5_000_000f - 1f
+  }
 
-internal val Alignment.vertical: Alignment.Vertical get() =
-  BiasAlignment.Vertical(verticalBias)
+internal val Alignment.vertical: Alignment.Vertical
+  get() = BiasAlignment.Vertical(verticalBias)
 
 internal fun Alignment.Horizontal.toArrangement(): Arrangement.Horizontal {
   val align = align(0, 2, LayoutDirection.Ltr)

@@ -102,21 +102,20 @@ public fun AttributionButton(
 
   CompositionLocalProvider(
     LocalContentColor provides contentColor,
-    LocalLayoutDirection provides rowLayoutDirection
+    LocalLayoutDirection provides rowLayoutDirection,
   ) {
     Box(modifier = modifier, contentAlignment = Alignment.CenterStart) {
-
       AnimatedVisibility(expanded, modifier = Modifier.matchParentSize()) {
         Box(
           Modifier.matchParentSize()
-          .padding(4.dp)
-          .background(surfaceColor, RoundedCornerShape(cornerSize))
+            .padding(4.dp)
+            .background(surfaceColor, RoundedCornerShape(cornerSize))
         )
       }
 
       Row(
         horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
       ) {
         InfoIconButton(
           onClick = { expanded = !expanded },
@@ -163,14 +162,13 @@ private fun AttributionTexts(
   modifier: Modifier = Modifier,
 ) {
   ProvideTextStyle(textStyle) {
-    FlowRow(
-      modifier = modifier,
-      horizontalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
+    FlowRow(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
       attributions.forEach {
-        Text(buildAnnotatedString {
-          withLink(LinkAnnotation.Url(url = it.url, styles = textLinkStyles)) { append(it.title) }
-        })
+        Text(
+          buildAnnotatedString {
+            withLink(LinkAnnotation.Url(url = it.url, styles = textLinkStyles)) { append(it.title) }
+          }
+        )
       }
     }
   }
