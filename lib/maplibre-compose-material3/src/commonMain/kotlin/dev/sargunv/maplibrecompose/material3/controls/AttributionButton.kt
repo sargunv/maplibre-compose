@@ -114,7 +114,9 @@ public fun AttributionButton(
         )
       }
 
-      Row(horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically
+      Row(
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
       ) {
         InfoIconButton(
           onClick = { expanded = !expanded },
