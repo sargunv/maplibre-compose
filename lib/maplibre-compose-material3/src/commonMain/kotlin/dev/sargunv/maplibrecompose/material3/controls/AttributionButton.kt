@@ -108,10 +108,10 @@ public fun AttributionButton(
       // background for the attribution texts
       AnimatedVisibility(expanded, modifier = Modifier.matchParentSize()) {
         Box(
-          modifier = Modifier
-            .matchParentSize()
-            .padding(4.dp)
-            .background(surfaceColor, RoundedCornerShape(cornerSize))
+          modifier =
+            Modifier.matchParentSize()
+              .padding(4.dp)
+              .background(surfaceColor, RoundedCornerShape(cornerSize))
         )
       }
 
