@@ -1,21 +1,29 @@
 package dev.sargunv.maplibrecompose.compose
 
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.SwingPanel
 import co.touchlab.kermit.Logger
-import com.multiplatform.webview.jsbridge.IJsMessageHandler
-import com.multiplatform.webview.jsbridge.JsMessage
-import com.multiplatform.webview.jsbridge.rememberWebViewJsBridge
-import com.multiplatform.webview.web.WebView
-import com.multiplatform.webview.web.WebViewNavigator
-import com.multiplatform.webview.web.rememberWebViewNavigator
-import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
 import dev.sargunv.maplibrecompose.core.MaplibreMap
-import dev.sargunv.maplibrecompose.core.WebviewBridge
-import dev.sargunv.maplibrecompose.core.WebviewMap
+import dev.sargunv.maplibrenative.ClientOptions
+import dev.sargunv.maplibrenative.ResourceOptions
+import org.lwjgl.opengl.GL
+import org.lwjgl.opengl.GL.createCapabilities
+import org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT
+import org.lwjgl.opengl.GL11.GL_QUADS
+import org.lwjgl.opengl.GL11.glBegin
+import org.lwjgl.opengl.GL11.glClear
+import org.lwjgl.opengl.GL11.glClearColor
+import org.lwjgl.opengl.GL11.glColor3f
+import org.lwjgl.opengl.GL11.glEnd
+import org.lwjgl.opengl.GL11.glVertex2f
+import org.lwjgl.opengl.GL11.glViewport
+import org.lwjgl.opengl.awt.AWTGLCanvas
+import javax.swing.SwingUtilities
+import kotlin.math.abs
+import kotlin.math.sin
 
 @Composable
 internal actual fun ComposableMapView(
@@ -44,41 +52,58 @@ internal fun DesktopMapView(
   logger: Logger?,
   callbacks: MaplibreMap.Callbacks,
 ) {
-  val data = LocalMaplibreContext.current.webviewHtml
-  val state = rememberWebViewStateWithHTMLData(data)
-  val navigator = rememberWebViewNavigator()
-  val jsBridge = rememberWebViewJsBridge(navigator)
-
-  WebView(
-    state = state,
-    modifier = modifier.fillMaxWidth(),
-    navigator = navigator,
-    webViewJsBridge = jsBridge,
-    onCreated = { _ -> },
-    onDispose = { _ -> onReset() },
-  )
-
-  if (state.isLoading) return
-
-  val map = remember(state) { WebviewMap(WebviewBridge(state.nativeWebView, "WebviewMapBridge")) }
-
-  LaunchedEffect(map) { map.init() }
-
-  LaunchedEffect(map, styleUri) { map.asyncSetStyleUri(styleUri) }
-
-  LaunchedEffect(map, update) { update(map) }
+  DisposableEffect(Unit) {
+    val clientOptions =
+      ClientOptions().apply {
+        name = "MaplibreCompose"
+        version = "0.1.0"
+      }
+    val resourceOptions = ResourceOptions()
+    onDispose {
+      println("Disposing $clientOptions")
+      println("Disposing $resourceOptions")
+      resourceOptions.close()
+      clientOptions.close()
+    }
+  }
+  SwingPanel(modifier = modifier.fillMaxSize(), factory = { OpenGlDemo() }, update = { _ -> })
 }
 
-internal class MessageHandler(
-  val name: String,
-  val handler:
-    (message: JsMessage, navigator: WebViewNavigator?, callback: (String) -> Unit) -> Unit,
-) : IJsMessageHandler {
-  override fun handle(
-    message: JsMessage,
-    navigator: WebViewNavigator?,
-    callback: (String) -> Unit,
-  ) = handler(message, navigator, callback)
+internal class OpenGlDemo : AWTGLCanvas() {
+  init {
+    SwingUtilities.invokeLater(RenderLoop(this))
+  }
 
-  override fun methodName(): String = name
+  override fun initGL() {
+    createCapabilities()
+    glClearColor(0.3f, 0.4f, 0.5f, 1f)
+  }
+
+  override fun paintGL() {
+    glClear(GL_COLOR_BUFFER_BIT)
+    glViewport(0, 0, framebufferWidth, framebufferHeight)
+
+    val aspect = framebufferWidth.toFloat() / framebufferHeight
+    val shapeWidth = abs(sin(System.currentTimeMillis() * 0.001 * 0.3)).toFloat()
+    glBegin(GL_QUADS)
+    glColor3f(0.4f, 0.6f, 0.8f)
+    glVertex2f(-0.75f * shapeWidth / aspect, 0.0f)
+    glVertex2f(0f, -0.75f)
+    glVertex2f(+0.75f * shapeWidth / aspect, 0f)
+    glVertex2f(0f, +0.75f)
+    glEnd()
+
+    swapBuffers()
+  }
+
+  class RenderLoop(private val demo: OpenGlDemo) : Runnable {
+    override fun run() {
+      if (demo.isValid) {
+        demo.render()
+        SwingUtilities.invokeLater(this)
+      } else {
+        GL.setCapabilities(null)
+      }
+    }
+  }
 }

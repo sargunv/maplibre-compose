@@ -54,12 +54,14 @@ dependencies {
 }
 
 spotless {
+  val modules =
+    allprojects.map { it.layout.projectDirectory.asFile.relativeTo(projectDir).path } + "buildSrc"
   kotlinGradle {
-    target("**/*.gradle.kts")
+    target(modules.map { "$it/*.gradle.kts" })
     ktfmt().googleStyle()
   }
   kotlin {
-    target("**/*.kt")
+    target(modules.map { "$it/src/*.kt" })
     ktfmt().googleStyle()
   }
   if (System.getProperty("os.name").contains("Mac OS X")) {
@@ -69,11 +71,11 @@ spotless {
     }
   }
   format("markdown") {
-    target("**/*.md")
+    target(modules.map { "$it/*.md" }, "docs/**/*.md", ".github/**/*.md")
     prettier(libs.versions.tool.prettier.get()).config(mapOf("proseWrap" to "always"))
   }
   yaml {
-    target("**/*.yml", "**/*.yaml")
+    target("docs/**/*.yml", ".github/**/*.yml")
     prettier(libs.versions.tool.prettier.get())
   }
 }
