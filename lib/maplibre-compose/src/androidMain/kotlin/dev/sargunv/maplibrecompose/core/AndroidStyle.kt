@@ -4,8 +4,14 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import dev.sargunv.maplibrecompose.core.layer.Layer
 import dev.sargunv.maplibrecompose.core.layer.UnknownLayer
+import dev.sargunv.maplibrecompose.core.source.GeoJsonSource
+import dev.sargunv.maplibrecompose.core.source.RasterSource
 import dev.sargunv.maplibrecompose.core.source.Source
 import dev.sargunv.maplibrecompose.core.source.UnknownSource
+import dev.sargunv.maplibrecompose.core.source.VectorSource
+import org.maplibre.android.style.sources.GeoJsonSource as MLNGeoJsonSource
+import org.maplibre.android.style.sources.VectorSource as MLNVectorSource
+import org.maplibre.android.style.sources.RasterSource as MLNRasterSource
 import org.maplibre.android.maps.Style as MLNStyle
 
 internal class AndroidStyle(style: MLNStyle) : Style {
@@ -20,11 +26,25 @@ internal class AndroidStyle(style: MLNStyle) : Style {
   }
 
   override fun getSource(id: String): Source? {
-    return impl.getSource(id)?.let { UnknownSource(it) }
+    return impl.getSource(id)?.let {
+      when (it) {
+        is MLNVectorSource -> VectorSource(it)
+        is MLNGeoJsonSource -> GeoJsonSource(it)
+        is MLNRasterSource -> RasterSource(it)
+        else -> UnknownSource(it)
+      }
+    }
   }
 
   override fun getSources(): List<Source> {
-    return impl.sources.map { UnknownSource(it) }
+    return impl.sources.map {
+      when (it) {
+        is MLNVectorSource -> VectorSource(it)
+        is MLNGeoJsonSource -> GeoJsonSource(it)
+        is MLNRasterSource -> RasterSource(it)
+        else -> UnknownSource(it)
+      }
+    }
   }
 
   override fun addSource(source: Source) {
