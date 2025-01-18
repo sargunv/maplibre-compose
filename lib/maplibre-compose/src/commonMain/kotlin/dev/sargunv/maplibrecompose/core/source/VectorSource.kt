@@ -12,5 +12,8 @@ import io.github.dellisd.spatialk.geojson.Feature
  *   [TileJSON specification](https://github.com/mapbox/tilejson-spec/)
  */
 public expect class VectorSource(id: String, uri: String) : Source {
-  public fun querySourceFeatures(sourceLayerIds: Set<String>, predicate: CompiledExpression<BooleanValue>?): List<Feature>
+  public fun querySourceFeatures(
+    sourceLayerIds: Set<String>,
+    predicate: CompiledExpression<BooleanValue>?,
+  ): List<Feature>
 }

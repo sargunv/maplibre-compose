@@ -9,10 +9,10 @@ import dev.sargunv.maplibrecompose.core.source.RasterSource
 import dev.sargunv.maplibrecompose.core.source.Source
 import dev.sargunv.maplibrecompose.core.source.UnknownSource
 import dev.sargunv.maplibrecompose.core.source.VectorSource
-import org.maplibre.android.style.sources.GeoJsonSource as MLNGeoJsonSource
-import org.maplibre.android.style.sources.VectorSource as MLNVectorSource
-import org.maplibre.android.style.sources.RasterSource as MLNRasterSource
 import org.maplibre.android.maps.Style as MLNStyle
+import org.maplibre.android.style.sources.GeoJsonSource as MLNGeoJsonSource
+import org.maplibre.android.style.sources.RasterSource as MLNRasterSource
+import org.maplibre.android.style.sources.VectorSource as MLNVectorSource
 
 internal class AndroidStyle(style: MLNStyle) : Style {
   private var impl: MLNStyle = style

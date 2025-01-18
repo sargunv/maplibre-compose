@@ -20,9 +20,10 @@ public actual class VectorSource : Source {
 
   public actual fun querySourceFeatures(
     sourceLayerIds: Set<String>,
-    predicate: CompiledExpression<BooleanValue>?
+    predicate: CompiledExpression<BooleanValue>?,
   ): List<Feature> {
-    return impl.querySourceFeatures(sourceLayerIds.toTypedArray(), predicate?.toMLNExpression())
+    return impl
+      .querySourceFeatures(sourceLayerIds.toTypedArray(), predicate?.toMLNExpression())
       .map { Feature.fromJson(it.toJson()) }
   }
 }

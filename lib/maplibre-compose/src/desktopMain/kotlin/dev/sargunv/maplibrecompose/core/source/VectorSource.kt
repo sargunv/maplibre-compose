@@ -9,7 +9,7 @@ public actual class VectorSource actual constructor(id: String, uri: String) : S
 
   public actual fun querySourceFeatures(
     sourceLayerIds: Set<String>,
-    predicate: CompiledExpression<BooleanValue>?
+    predicate: CompiledExpression<BooleanValue>?,
   ): List<Feature> {
     TODO()
   }
