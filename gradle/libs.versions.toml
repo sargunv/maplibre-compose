@@ -22,7 +22,7 @@ gradle-jgitver = "0.10.0-rc03"
 gradle-kotlin = "2.1.0"
 gradle-mavenPublish = "0.30.0"
 gradle-mkdocs = "4.0.1"
-gradle-spotless = "7.0.1"
+gradle-spotless = "7.0.2"
 
 tool-prettier = "3.4.2"
 
