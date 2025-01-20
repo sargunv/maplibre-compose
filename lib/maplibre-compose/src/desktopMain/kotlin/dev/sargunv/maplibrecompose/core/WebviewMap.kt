@@ -106,11 +106,11 @@ internal class WebviewMap(private val bridge: WebviewBridge) : MaplibreMap {
   }
 
   override suspend fun asyncSetGestureSettings(value: GestureSettings) {
-    bridge.callVoid("setTiltGesturesEnabled", value.isTiltGesturesEnabled)
-    bridge.callVoid("setZoomGesturesEnabled", value.isZoomGesturesEnabled)
-    bridge.callVoid("setRotateGesturesEnabled", value.isRotateGesturesEnabled)
-    bridge.callVoid("setScrollGesturesEnabled", value.isScrollGesturesEnabled)
-    bridge.callVoid("setKeyboardGesturesEnabled", value.isKeyboardGesturesEnabled)
+    bridge.callVoid("setTiltGesturesEnabled", false)
+    bridge.callVoid("setZoomGesturesEnabled", false)
+    bridge.callVoid("setRotateGesturesEnabled", false)
+    bridge.callVoid("setScrollGesturesEnabled", false)
+    bridge.callVoid("setKeyboardGesturesEnabled", false)
   }
 
   override suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration) {}
