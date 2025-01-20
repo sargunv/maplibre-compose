@@ -1,7 +1,7 @@
 package dev.sargunv.maplibrecompose.core.source
 
 import cocoapods.MapLibre.MLNVectorTileSource
-import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
+import dev.sargunv.maplibrecompose.expressions.ast.Expression
 import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.Feature
 import platform.Foundation.NSURL
@@ -11,7 +11,7 @@ public actual class VectorSource actual constructor(id: String, uri: String) : S
 
   public actual fun querySourceFeatures(
     sourceLayerIds: Set<String>,
-    predicate: CompiledExpression<BooleanValue>?,
+    predicate: Expression<BooleanValue>,
   ): List<Feature> {
     TODO()
   }

@@ -2,7 +2,9 @@ package dev.sargunv.maplibrecompose.core.source
 
 import dev.sargunv.maplibrecompose.core.util.correctedAndroidUri
 import dev.sargunv.maplibrecompose.core.util.toMLNExpression
-import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
+import dev.sargunv.maplibrecompose.expressions.ExpressionContext
+import dev.sargunv.maplibrecompose.expressions.ast.Expression
+import dev.sargunv.maplibrecompose.expressions.dsl.const
 import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.Feature
 import org.maplibre.android.style.sources.VectorSource
@@ -20,10 +22,12 @@ public actual class VectorSource : Source {
 
   public actual fun querySourceFeatures(
     sourceLayerIds: Set<String>,
-    predicate: CompiledExpression<BooleanValue>?,
+    predicate: Expression<BooleanValue>,
   ): List<Feature> {
+    val predicateOrNull =
+      predicate.takeUnless { it == const(true) }?.compile(ExpressionContext.None)
     return impl
-      .querySourceFeatures(sourceLayerIds.toTypedArray(), predicate?.toMLNExpression())
+      .querySourceFeatures(sourceLayerIds.toTypedArray(), predicateOrNull?.toMLNExpression())
       .map { Feature.fromJson(it.toJson()) }
   }
 }

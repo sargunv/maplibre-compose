@@ -1,6 +1,7 @@
 package dev.sargunv.maplibrecompose.core.source
 
-import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
+import dev.sargunv.maplibrecompose.expressions.ast.Expression
+import dev.sargunv.maplibrecompose.expressions.dsl.const
 import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.Feature
 
@@ -14,6 +15,6 @@ import io.github.dellisd.spatialk.geojson.Feature
 public expect class VectorSource(id: String, uri: String) : Source {
   public fun querySourceFeatures(
     sourceLayerIds: Set<String>,
-    predicate: CompiledExpression<BooleanValue>?,
+    predicate: Expression<BooleanValue> = const(true),
   ): List<Feature>
 }
