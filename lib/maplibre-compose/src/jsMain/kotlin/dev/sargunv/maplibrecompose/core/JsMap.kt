@@ -1,5 +1,6 @@
 package dev.sargunv.maplibrecompose.core
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpRect
@@ -251,6 +252,16 @@ internal class JsMap(
         easing = { t -> t },
       )
     )
+  }
+
+  override suspend fun animateCameraPosition(
+    latLngBounds: LatLngBounds,
+    bearing: Double,
+    tilt: Double,
+    padding: PaddingValues,
+    duration: Duration,
+  ) {
+    TODO()
   }
 
   override fun positionFromScreenLocation(offset: DpOffset): Position {

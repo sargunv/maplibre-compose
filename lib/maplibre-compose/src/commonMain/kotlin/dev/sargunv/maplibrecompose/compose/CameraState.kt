@@ -1,12 +1,15 @@
 package dev.sargunv.maplibrecompose.compose
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpRect
+import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrecompose.core.CameraMoveReason
 import dev.sargunv.maplibrecompose.core.CameraPosition
+import dev.sargunv.maplibrecompose.core.LatLngBounds
 import dev.sargunv.maplibrecompose.core.MaplibreMap
 import dev.sargunv.maplibrecompose.core.StandardMaplibreMap
 import dev.sargunv.maplibrecompose.core.VisibleRegion
@@ -17,9 +20,9 @@ import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
+import kotlinx.coroutines.channels.Channel
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
-import kotlinx.coroutines.channels.Channel
 
 /** Remember a new [CameraState] in the initial state as given in [firstPosition]. */
 @Composable
@@ -73,6 +76,18 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
   ) {
     val map = map ?: mapAttachSignal.receive()
     map.animateCameraPosition(finalPosition, duration)
+  }
+
+  /** Animates the camera towards the [latLngBounds] in [duration] time with [bearing], [tilt] and [padding]. */
+  public suspend fun animateTo(
+    latLngBounds: LatLngBounds,
+    bearing: Double = 0.0,
+    tilt: Double = 0.0,
+    padding: PaddingValues = PaddingValues(0.dp),
+    duration: Duration = 300.milliseconds,
+  ) {
+    val map = map ?: mapAttachSignal.receive()
+    map.animateCameraPosition(latLngBounds, bearing, tilt, padding, duration)
   }
 
   private fun requireMap(): StandardMaplibreMap {

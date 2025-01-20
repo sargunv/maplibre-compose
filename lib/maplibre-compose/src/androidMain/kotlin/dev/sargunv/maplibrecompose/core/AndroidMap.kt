@@ -24,24 +24,25 @@ import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
-import kotlin.time.Duration
-import kotlin.time.DurationUnit
-import org.maplibre.android.camera.CameraPosition as MLNCameraPosition
 import org.maplibre.android.camera.CameraUpdateFactory
-import org.maplibre.android.geometry.VisibleRegion as MLNVisibleRegion
 import org.maplibre.android.gestures.MoveGestureDetector
 import org.maplibre.android.gestures.RotateGestureDetector
 import org.maplibre.android.gestures.ShoveGestureDetector
 import org.maplibre.android.gestures.StandardScaleGestureDetector
-import org.maplibre.android.log.Logger as MLNLogger
-import org.maplibre.android.maps.MapLibreMap as MLNMap
 import org.maplibre.android.maps.MapLibreMap
 import org.maplibre.android.maps.MapLibreMap.OnCameraMoveStartedListener
 import org.maplibre.android.maps.MapLibreMap.OnMoveListener
 import org.maplibre.android.maps.MapLibreMap.OnScaleListener
 import org.maplibre.android.maps.MapView
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import org.maplibre.android.camera.CameraPosition as MLNCameraPosition
+import org.maplibre.android.geometry.LatLngBounds as MLNLatLngBounds
+import org.maplibre.android.geometry.VisibleRegion as MLNVisibleRegion
+import org.maplibre.android.log.Logger as MLNLogger
+import org.maplibre.android.maps.MapLibreMap as MLNMap
 import org.maplibre.android.maps.Style as MlnStyle
 import org.maplibre.android.style.expressions.Expression as MLNExpression
 import org.maplibre.geojson.Feature as MLNFeature
@@ -284,6 +285,14 @@ internal class AndroidMap(
         .build()
     }
 
+  private fun LatLngBounds.toMLNLatLngBounds(): MLNLatLngBounds =
+    MLNLatLngBounds.from(
+      latNorth = northEast.latitude,
+      lonEast = northEast.longitude,
+      latSouth = southWest.latitude,
+      lonWest = southWest.longitude,
+    )
+
   override fun getCameraPosition(): CameraPosition {
     return map.cameraPosition.toCameraPosition()
   }
@@ -303,6 +312,35 @@ internal class AndroidMap(
           override fun onCancel() = cont.resume(Unit)
         },
       )
+    }
+
+  override suspend fun animateCameraPosition(
+    latLngBounds: LatLngBounds,
+    bearing: Double,
+    tilt: Double,
+    padding: PaddingValues,
+    duration: Duration,
+  ) =
+    suspendCoroutine { cont ->
+      with(density) {
+        map.animateCamera(
+          CameraUpdateFactory.newLatLngBounds(
+            bounds = latLngBounds.toMLNLatLngBounds(),
+            bearing = bearing,
+            tilt = tilt,
+            paddingLeft = padding.calculateLeftPadding(layoutDir).roundToPx(),
+            paddingTop = padding.calculateTopPadding().roundToPx(),
+            paddingRight = padding.calculateRightPadding(layoutDir).roundToPx(),
+            paddingBottom = padding.calculateBottomPadding().roundToPx(),
+          ),
+          duration.toInt(DurationUnit.MILLISECONDS),
+          object : MLNMap.CancelableCallback {
+            override fun onFinish() = cont.resume(Unit)
+
+            override fun onCancel() = cont.resume(Unit)
+          },
+        )
+      }
     }
 
   override fun positionFromScreenLocation(offset: DpOffset): Position =
