@@ -35,10 +35,10 @@ import dev.sargunv.maplibrejs.ScaleControl
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
-import org.w3c.dom.HTMLElement
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.TimeSource
+import org.w3c.dom.HTMLElement
 
 internal class JsMap(
   parent: HTMLElement,
@@ -265,12 +265,13 @@ internal class JsMap(
   ) {
     impl.fitBounds(
       bounds = LngLatBounds(latLngBounds.southWest.toLngLat(), latLngBounds.northEast.toLngLat()),
-      options = FitBoundsOptions(
-        linear = true,
-        bearing = bearing,
-        pitch = tilt,
-        padding = padding.toPaddingOptions(layoutDir),
-      )
+      options =
+        FitBoundsOptions(
+          linear = true,
+          bearing = bearing,
+          pitch = tilt,
+          padding = padding.toPaddingOptions(layoutDir),
+        ),
     )
   }
 

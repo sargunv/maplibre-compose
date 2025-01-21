@@ -385,7 +385,9 @@ public sealed external interface EaseToOptions : CameraOptions {
   public var easing: (t: Double) -> Double?
 }
 
-/** [FitBoundsOptions](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/FitBoundsOptions/) */
+/**
+ * [FitBoundsOptions](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/FitBoundsOptions/)
+ */
 public sealed external interface FitBoundsOptions : FlyToOptions {
   public var linear: Boolean?
   public var maxZoom: Double?
