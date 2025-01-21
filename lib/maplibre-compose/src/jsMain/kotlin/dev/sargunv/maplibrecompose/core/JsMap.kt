@@ -18,8 +18,10 @@ import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
 import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import dev.sargunv.maplibrejs.AttributionControl
 import dev.sargunv.maplibrejs.EaseToOptions
+import dev.sargunv.maplibrejs.FitBoundsOptions
 import dev.sargunv.maplibrejs.JumpToOptions
 import dev.sargunv.maplibrejs.LngLat
+import dev.sargunv.maplibrejs.LngLatBounds
 import dev.sargunv.maplibrejs.LogoControl
 import dev.sargunv.maplibrejs.Map
 import dev.sargunv.maplibrejs.MapLibreEvent
@@ -33,10 +35,10 @@ import dev.sargunv.maplibrejs.ScaleControl
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
+import org.w3c.dom.HTMLElement
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.TimeSource
-import org.w3c.dom.HTMLElement
 
 internal class JsMap(
   parent: HTMLElement,
@@ -261,7 +263,15 @@ internal class JsMap(
     padding: PaddingValues,
     duration: Duration,
   ) {
-    TODO()
+    impl.fitBounds(
+      bounds = LngLatBounds(latLngBounds.southWest.toLngLat(), latLngBounds.northEast.toLngLat()),
+      options = FitBoundsOptions(
+        linear = true,
+        bearing = bearing,
+        pitch = tilt,
+        padding = padding.toPaddingOptions(layoutDir),
+      )
+    )
   }
 
   override fun positionFromScreenLocation(offset: DpOffset): Position {
