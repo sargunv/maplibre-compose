@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import dev.sargunv.maplibrecompose.core.Style
 import dev.sargunv.maplibrecompose.core.source.AttributionLink
+import dev.sargunv.maplibrecompose.core.source.Source
 
 @Composable
 public fun rememberStyleState(): StyleState {
@@ -23,4 +24,19 @@ public class StyleState internal constructor() {
     // TODO expose this as State somehow?
     return style?.getSources()?.flatMap { it.attributionLinks } ?: emptyList()
   }
+
+  /**
+   * Retrieves all sources from the style.
+   *
+   * @return A list of sources, or an empty list if the style is null or has no sources.
+   */
+  public fun getSources(): List<Source> = style?.getSources() ?: emptyList()
+
+  /**
+   * Retrieves a source by its [id].
+   *
+   * @param id The ID of the source to retrieve.
+   * @return The source with the specified ID, or null if no such source exists.
+   */
+  public fun getSource(id: String): Source? = style?.getSource(id)
 }
