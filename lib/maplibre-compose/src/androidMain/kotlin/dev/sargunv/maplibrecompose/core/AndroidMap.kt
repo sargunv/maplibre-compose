@@ -30,6 +30,7 @@ import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import org.maplibre.android.camera.CameraPosition as MLNCameraPosition
 import org.maplibre.android.camera.CameraUpdateFactory
+import org.maplibre.android.geometry.LatLngBounds as MLNLatLngBounds
 import org.maplibre.android.geometry.VisibleRegion as MLNVisibleRegion
 import org.maplibre.android.gestures.MoveGestureDetector
 import org.maplibre.android.gestures.RotateGestureDetector
@@ -284,6 +285,14 @@ internal class AndroidMap(
         .build()
     }
 
+  private fun LatLngBounds.toMLNLatLngBounds(): MLNLatLngBounds =
+    MLNLatLngBounds.from(
+      latNorth = northEast.latitude,
+      lonEast = northEast.longitude,
+      latSouth = southWest.latitude,
+      lonWest = southWest.longitude,
+    )
+
   override fun getCameraPosition(): CameraPosition {
     return map.cameraPosition.toCameraPosition()
   }
@@ -304,6 +313,34 @@ internal class AndroidMap(
         },
       )
     }
+
+  override suspend fun animateCameraPosition(
+    latLngBounds: LatLngBounds,
+    bearing: Double,
+    tilt: Double,
+    padding: PaddingValues,
+    duration: Duration,
+  ) = suspendCoroutine { cont ->
+    with(density) {
+      map.animateCamera(
+        CameraUpdateFactory.newLatLngBounds(
+          bounds = latLngBounds.toMLNLatLngBounds(),
+          bearing = bearing,
+          tilt = tilt,
+          paddingLeft = padding.calculateLeftPadding(layoutDir).roundToPx(),
+          paddingTop = padding.calculateTopPadding().roundToPx(),
+          paddingRight = padding.calculateRightPadding(layoutDir).roundToPx(),
+          paddingBottom = padding.calculateBottomPadding().roundToPx(),
+        ),
+        duration.toInt(DurationUnit.MILLISECONDS),
+        object : MLNMap.CancelableCallback {
+          override fun onFinish() = cont.resume(Unit)
+
+          override fun onCancel() = cont.resume(Unit)
+        },
+      )
+    }
+  }
 
   override fun positionFromScreenLocation(offset: DpOffset): Position =
     map.projection.fromScreenLocation(offset.toPointF(density)).toPosition()

@@ -440,6 +440,16 @@ internal class IosMap(
       )
     }
 
+  override suspend fun animateCameraPosition(
+    latLngBounds: LatLngBounds,
+    bearing: Double,
+    tilt: Double,
+    padding: PaddingValues,
+    duration: Duration,
+  ) {
+    TODO()
+  }
+
   override fun positionFromScreenLocation(offset: DpOffset): Position =
     mapView.convertPoint(point = offset.toCGPoint(), toCoordinateFromView = null).toPosition()
 
