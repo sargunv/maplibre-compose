@@ -78,7 +78,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
   }
 
   /**
-   * Animates the camera towards the specified [latLngBounds] in the given [duration] time with the
+   * Animates the camera towards the specified [boundingBox] in the given [duration] time with the
    * specified [bearing], [tilt], and [padding].
    *
    * @param boundingBox The bounds to animate the camera to.
