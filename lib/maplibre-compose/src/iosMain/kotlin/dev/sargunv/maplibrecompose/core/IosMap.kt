@@ -441,7 +441,7 @@ internal class IosMap(
     }
 
   override suspend fun animateCameraPosition(
-    latLngBounds: LatLngBounds,
+    boundingBox: BoundingBox,
     bearing: Double,
     tilt: Double,
     padding: PaddingValues,

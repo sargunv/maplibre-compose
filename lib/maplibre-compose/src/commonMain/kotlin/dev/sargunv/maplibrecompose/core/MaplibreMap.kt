@@ -14,7 +14,7 @@ internal interface MaplibreMap {
   suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration)
 
   suspend fun animateCameraPosition(
-    latLngBounds: LatLngBounds,
+    boundingBox: BoundingBox,
     bearing: Double,
     tilt: Double,
     padding: PaddingValues,

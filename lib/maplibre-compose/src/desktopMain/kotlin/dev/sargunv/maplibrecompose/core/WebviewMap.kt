@@ -117,7 +117,7 @@ internal class WebviewMap(private val bridge: WebviewBridge) : MaplibreMap {
   override suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration) {}
 
   override suspend fun animateCameraPosition(
-    latLngBounds: LatLngBounds,
+    boundingBox: BoundingBox,
     bearing: Double,
     tilt: Double,
     padding: PaddingValues,

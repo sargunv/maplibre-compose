@@ -9,7 +9,6 @@ import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrecompose.core.CameraMoveReason
 import dev.sargunv.maplibrecompose.core.CameraPosition
-import dev.sargunv.maplibrecompose.core.LatLngBounds
 import dev.sargunv.maplibrecompose.core.MaplibreMap
 import dev.sargunv.maplibrecompose.core.StandardMaplibreMap
 import dev.sargunv.maplibrecompose.core.VisibleRegion
@@ -89,14 +88,14 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
    * @param duration The duration of the animation. Defaults to 300 ms. Has no effect on JS.
    */
   public suspend fun animateTo(
-    latLngBounds: LatLngBounds,
+    boundingBox: BoundingBox,
     bearing: Double = 0.0,
     tilt: Double = 0.0,
     padding: PaddingValues = PaddingValues(0.dp),
     duration: Duration = 300.milliseconds,
   ) {
     val map = map ?: mapAttachSignal.receive()
-    map.animateCameraPosition(latLngBounds, bearing, tilt, padding, duration)
+    map.animateCameraPosition(boundingBox, bearing, tilt, padding, duration)
   }
 
   private fun requireMap(): StandardMaplibreMap {

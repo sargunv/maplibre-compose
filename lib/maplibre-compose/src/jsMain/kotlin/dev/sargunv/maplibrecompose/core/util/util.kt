@@ -51,3 +51,6 @@ internal fun PaddingValues.toPaddingOptions(layoutDir: LayoutDirection) =
 
 internal fun LngLatBounds.toBoundingBox() =
   BoundingBox(south = getSouth(), west = getWest(), north = getNorth(), east = getEast())
+
+internal fun BoundingBox.toLatLngBounds() =
+  LngLatBounds(sw = southwest.toLngLat(), ne = northeast.toLngLat())

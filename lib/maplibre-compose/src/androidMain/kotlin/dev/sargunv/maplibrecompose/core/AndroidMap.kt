@@ -14,6 +14,7 @@ import dev.sargunv.maplibrecompose.core.util.correctedAndroidUri
 import dev.sargunv.maplibrecompose.core.util.toBoundingBox
 import dev.sargunv.maplibrecompose.core.util.toGravity
 import dev.sargunv.maplibrecompose.core.util.toLatLng
+import dev.sargunv.maplibrecompose.core.util.toLatLngBounds
 import dev.sargunv.maplibrecompose.core.util.toMLNExpression
 import dev.sargunv.maplibrecompose.core.util.toOffset
 import dev.sargunv.maplibrecompose.core.util.toPointF
@@ -30,7 +31,6 @@ import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import org.maplibre.android.camera.CameraPosition as MLNCameraPosition
 import org.maplibre.android.camera.CameraUpdateFactory
-import org.maplibre.android.geometry.LatLngBounds as MLNLatLngBounds
 import org.maplibre.android.geometry.VisibleRegion as MLNVisibleRegion
 import org.maplibre.android.gestures.MoveGestureDetector
 import org.maplibre.android.gestures.RotateGestureDetector
@@ -285,14 +285,6 @@ internal class AndroidMap(
         .build()
     }
 
-  private fun LatLngBounds.toMLNLatLngBounds(): MLNLatLngBounds =
-    MLNLatLngBounds.from(
-      latNorth = northEast.latitude,
-      lonEast = northEast.longitude,
-      latSouth = southWest.latitude,
-      lonWest = southWest.longitude,
-    )
-
   override fun getCameraPosition(): CameraPosition {
     return map.cameraPosition.toCameraPosition()
   }
@@ -315,7 +307,7 @@ internal class AndroidMap(
     }
 
   override suspend fun animateCameraPosition(
-    latLngBounds: LatLngBounds,
+    boundingBox: BoundingBox,
     bearing: Double,
     tilt: Double,
     padding: PaddingValues,
@@ -324,7 +316,7 @@ internal class AndroidMap(
     with(density) {
       map.animateCamera(
         CameraUpdateFactory.newLatLngBounds(
-          bounds = latLngBounds.toMLNLatLngBounds(),
+          bounds = boundingBox.toLatLngBounds(),
           bearing = bearing,
           tilt = tilt,
           paddingLeft = padding.calculateLeftPadding(layoutDir).roundToPx(),

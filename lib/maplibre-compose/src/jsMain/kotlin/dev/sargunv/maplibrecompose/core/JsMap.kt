@@ -9,6 +9,7 @@ import co.touchlab.kermit.Logger
 import dev.sargunv.maplibrecompose.core.util.toBoundingBox
 import dev.sargunv.maplibrecompose.core.util.toControlPosition
 import dev.sargunv.maplibrecompose.core.util.toDpOffset
+import dev.sargunv.maplibrecompose.core.util.toLatLngBounds
 import dev.sargunv.maplibrecompose.core.util.toLngLat
 import dev.sargunv.maplibrecompose.core.util.toPaddingOptions
 import dev.sargunv.maplibrecompose.core.util.toPaddingValuesAbsolute
@@ -21,7 +22,6 @@ import dev.sargunv.maplibrejs.EaseToOptions
 import dev.sargunv.maplibrejs.FitBoundsOptions
 import dev.sargunv.maplibrejs.JumpToOptions
 import dev.sargunv.maplibrejs.LngLat
-import dev.sargunv.maplibrejs.LngLatBounds
 import dev.sargunv.maplibrejs.LogoControl
 import dev.sargunv.maplibrejs.Map
 import dev.sargunv.maplibrejs.MapLibreEvent
@@ -257,14 +257,14 @@ internal class JsMap(
   }
 
   override suspend fun animateCameraPosition(
-    latLngBounds: LatLngBounds,
+    boundingBox: BoundingBox,
     bearing: Double,
     tilt: Double,
     padding: PaddingValues,
     duration: Duration,
   ) {
     impl.fitBounds(
-      bounds = LngLatBounds(latLngBounds.southWest.toLngLat(), latLngBounds.northEast.toLngLat()),
+      bounds = boundingBox.toLatLngBounds(),
       options =
         FitBoundsOptions(
           linear = true,
