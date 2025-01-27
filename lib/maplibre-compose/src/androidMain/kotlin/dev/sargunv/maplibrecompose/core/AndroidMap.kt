@@ -25,6 +25,7 @@ import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
+import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
@@ -293,16 +294,19 @@ internal class AndroidMap(
     map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition.toMLNCameraPosition()))
   }
 
+  private class CancelableCoroutineCallback(private val cont: Continuation<Unit>) :
+    MLNMap.CancelableCallback {
+    override fun onCancel() = cont.resume(Unit)
+
+    override fun onFinish() = cont.resume(Unit)
+  }
+
   override suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration) =
     suspendCoroutine { cont ->
       map.animateCamera(
         CameraUpdateFactory.newCameraPosition(finalPosition.toMLNCameraPosition()),
         duration.toInt(DurationUnit.MILLISECONDS),
-        object : MLNMap.CancelableCallback {
-          override fun onFinish() = cont.resume(Unit)
-
-          override fun onCancel() = cont.resume(Unit)
-        },
+        CancelableCoroutineCallback(cont),
       )
     }
 
@@ -325,11 +329,7 @@ internal class AndroidMap(
           paddingBottom = padding.calculateBottomPadding().roundToPx(),
         ),
         duration.toInt(DurationUnit.MILLISECONDS),
-        object : MLNMap.CancelableCallback {
-          override fun onFinish() = cont.resume(Unit)
-
-          override fun onCancel() = cont.resume(Unit)
-        },
+        CancelableCoroutineCallback(cont),
       )
     }
   }
