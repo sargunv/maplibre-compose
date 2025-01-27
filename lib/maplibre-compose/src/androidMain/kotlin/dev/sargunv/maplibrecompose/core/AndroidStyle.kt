@@ -12,6 +12,7 @@ import dev.sargunv.maplibrecompose.core.source.VectorSource
 import org.maplibre.android.maps.Style as MLNStyle
 import org.maplibre.android.style.sources.GeoJsonSource as MLNGeoJsonSource
 import org.maplibre.android.style.sources.RasterSource as MLNRasterSource
+import org.maplibre.android.style.sources.Source as MLNSource
 import org.maplibre.android.style.sources.VectorSource as MLNVectorSource
 
 internal class AndroidStyle(style: MLNStyle) : Style {
@@ -25,26 +26,20 @@ internal class AndroidStyle(style: MLNStyle) : Style {
     impl.removeImage(id)
   }
 
-  override fun getSource(id: String): Source? {
-    return impl.getSource(id)?.let {
-      when (it) {
-        is MLNVectorSource -> VectorSource(it)
-        is MLNGeoJsonSource -> GeoJsonSource(it)
-        is MLNRasterSource -> RasterSource(it)
-        else -> UnknownSource(it)
-      }
+  private fun MLNSource.toSource() =
+    when (this) {
+      is MLNVectorSource -> VectorSource(this)
+      is MLNGeoJsonSource -> GeoJsonSource(this)
+      is MLNRasterSource -> RasterSource(this)
+      else -> UnknownSource(this)
     }
+
+  override fun getSource(id: String): Source? {
+    return impl.getSource(id)?.toSource()
   }
 
   override fun getSources(): List<Source> {
-    return impl.sources.map {
-      when (it) {
-        is MLNVectorSource -> VectorSource(it)
-        is MLNGeoJsonSource -> GeoJsonSource(it)
-        is MLNRasterSource -> RasterSource(it)
-        else -> UnknownSource(it)
-      }
-    }
+    return impl.sources.map { it.toSource() }
   }
 
   override fun addSource(source: Source) {
