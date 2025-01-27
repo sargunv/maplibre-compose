@@ -24,10 +24,15 @@ public actual class VectorSource : Source {
     sourceLayerIds: Set<String>,
     predicate: Expression<BooleanValue>,
   ): List<Feature> {
-    val predicateOrNull =
-      predicate.takeUnless { it == const(true) }?.compile(ExpressionContext.None)
     return impl
-      .querySourceFeatures(sourceLayerIds.toTypedArray(), predicateOrNull?.toMLNExpression())
+      .querySourceFeatures(
+        sourceLayerIds = sourceLayerIds.toTypedArray(),
+        filter =
+          predicate
+            .takeUnless { it == const(true) }
+            ?.compile(ExpressionContext.None)
+            ?.toMLNExpression(),
+      )
       .map { Feature.fromJson(it.toJson()) }
   }
 }

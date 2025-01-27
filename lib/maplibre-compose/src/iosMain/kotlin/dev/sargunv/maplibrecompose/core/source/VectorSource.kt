@@ -1,7 +1,12 @@
 package dev.sargunv.maplibrecompose.core.source
 
+import cocoapods.MapLibre.MLNFeatureProtocol
 import cocoapods.MapLibre.MLNVectorTileSource
+import dev.sargunv.maplibrecompose.core.util.toFeature
+import dev.sargunv.maplibrecompose.core.util.toNSPredicate
+import dev.sargunv.maplibrecompose.expressions.ExpressionContext
 import dev.sargunv.maplibrecompose.expressions.ast.Expression
+import dev.sargunv.maplibrecompose.expressions.dsl.const
 import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.Feature
 import platform.Foundation.NSURL
@@ -21,6 +26,15 @@ public actual class VectorSource : Source {
     sourceLayerIds: Set<String>,
     predicate: Expression<BooleanValue>,
   ): List<Feature> {
-    TODO()
+    return impl
+      .featuresInSourceLayersWithIdentifiers(
+        sourceLayerIdentifiers = sourceLayerIds,
+        predicate =
+          predicate
+            .takeUnless { it == const(true) }
+            ?.compile(ExpressionContext.None)
+            ?.toNSPredicate(),
+      )
+      .map { (it as MLNFeatureProtocol).toFeature() }
   }
 }
