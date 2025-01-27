@@ -48,6 +48,7 @@ import dev.sargunv.maplibrecompose.core.util.toCGRect
 import dev.sargunv.maplibrecompose.core.util.toCLLocationCoordinate2D
 import dev.sargunv.maplibrecompose.core.util.toDpOffset
 import dev.sargunv.maplibrecompose.core.util.toFeature
+import dev.sargunv.maplibrecompose.core.util.toMLNCoordinateBounds
 import dev.sargunv.maplibrecompose.core.util.toMLNOrnamentPosition
 import dev.sargunv.maplibrecompose.core.util.toNSPredicate
 import dev.sargunv.maplibrecompose.core.util.toPosition
@@ -433,7 +434,7 @@ internal class IosMap(
   override suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration) =
     suspendCoroutine { cont ->
       mapView.flyToCamera(
-        finalPosition.toMLNMapCamera(),
+        camera = finalPosition.toMLNMapCamera(),
         withDuration = duration.toDouble(DurationUnit.SECONDS),
         edgePadding = finalPosition.padding.toEdgeInsets(),
         completionHandler = { cont.resume(Unit) },
@@ -447,7 +448,18 @@ internal class IosMap(
     padding: PaddingValues,
     duration: Duration,
   ) {
-    TODO()
+    suspendCoroutine { cont ->
+      mapView.flyToCamera(
+        camera =
+          mapView.cameraThatFitsCoordinateBounds(boundingBox.toMLNCoordinateBounds()).apply {
+            heading = bearing
+            pitch = tilt
+          },
+        withDuration = duration.toDouble(DurationUnit.SECONDS),
+        edgePadding = padding.toEdgeInsets(),
+        completionHandler = { cont.resume(Unit) },
+      )
+    }
   }
 
   override fun positionFromScreenLocation(offset: DpOffset): Position =
