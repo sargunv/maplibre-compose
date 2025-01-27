@@ -12,7 +12,7 @@ import org.maplibre.android.style.sources.GeoJsonSource as MLNGeoJsonSource
 public actual class GeoJsonSource : Source {
   override val impl: MLNGeoJsonSource
 
-  public constructor(source: MLNGeoJsonSource) {
+  internal constructor(source: MLNGeoJsonSource) {
     impl = source
   }
 

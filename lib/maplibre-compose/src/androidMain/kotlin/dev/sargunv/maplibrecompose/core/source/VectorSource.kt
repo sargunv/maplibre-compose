@@ -7,17 +7,17 @@ import dev.sargunv.maplibrecompose.expressions.ast.Expression
 import dev.sargunv.maplibrecompose.expressions.dsl.const
 import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.Feature
-import org.maplibre.android.style.sources.VectorSource
+import org.maplibre.android.style.sources.VectorSource as MLNVectorSource
 
 public actual class VectorSource : Source {
-  override val impl: VectorSource
+  override val impl: MLNVectorSource
 
-  public constructor(source: VectorSource) {
+  internal constructor(source: MLNVectorSource) {
     impl = source
   }
 
   public actual constructor(id: String, uri: String) {
-    impl = VectorSource(id, uri.correctedAndroidUri())
+    impl = MLNVectorSource(id, uri.correctedAndroidUri())
   }
 
   public actual fun querySourceFeatures(
