@@ -12,7 +12,7 @@ public interface MapSnapshotter {
     cameraPosition: CameraPosition?,
     showLogo: Boolean,
     localIdeographFontFamily: String?,
-    pixelRatio: Float = 1f,
+    pixelRatio: Float,
     callback: (MapSnapshot) -> Unit,
     errorHandler: (String) -> Unit,
   )
