@@ -1,6 +1,7 @@
 package dev.sargunv.maplibrecompose.core
 
 import android.content.Context
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
@@ -9,9 +10,7 @@ import dev.sargunv.maplibrecompose.core.util.correctedAndroidUri
 import dev.sargunv.maplibrecompose.core.util.toLatLngBounds
 import dev.sargunv.maplibrecompose.core.util.toMLNCameraPosition
 import io.github.dellisd.spatialk.geojson.BoundingBox
-import org.maplibre.android.constants.MapLibreConstants
 import org.maplibre.android.maps.Style
-import org.maplibre.android.snapshotter.MapSnapshot as MLNMapSnapshot
 import org.maplibre.android.snapshotter.MapSnapshotter as MLNMapSnapshotter
 
 internal class AndroidMapSnapshotter(
@@ -29,9 +28,7 @@ internal class AndroidMapSnapshotter(
     region: BoundingBox?,
     cameraPosition: CameraPosition?,
     showLogo: Boolean,
-    localIdeographFontFamily: String?,
-    pixelRatio: Float,
-    callback: (MapSnapshot) -> Unit,
+    callback: (ImageBitmap) -> Unit,
     errorHandler: (String) -> Unit,
   ) {
     with(density) {
@@ -46,12 +43,10 @@ internal class AndroidMapSnapshotter(
           .withRegion(region?.toLatLngBounds())
           .withCameraPosition(cameraPosition?.toMLNCameraPosition(this, layoutDir))
           .withLogo(showLogo)
-          .withLocalIdeographFontFamily(localIdeographFontFamily ?: MapLibreConstants.DEFAULT_FONT)
-          .withPixelRatio(pixelRatio)
 
       impl = MLNMapSnapshotter(context, options)
       impl?.start({ snapshot ->
-        callback(snapshot.toMapSnapshot())
+        callback(snapshot.bitmap.asImageBitmap())
         isStarted = false
       }) { error ->
         errorHandler(error)
@@ -64,7 +59,4 @@ internal class AndroidMapSnapshotter(
     impl?.cancel()
     isStarted = false
   }
-
-  private fun MLNMapSnapshot.toMapSnapshot() =
-    MapSnapshot(bitmap.asImageBitmap(), attributions.toList(), isShowLogo)
 }

@@ -87,8 +87,8 @@ object SnapshotterDemo : Demo {
             cameraPosition = cameraState.position,
             callback = {
               isLoading.value = false
-              snapshot.value = it.bitmap
-            }
+              snapshot.value = it
+            },
           )
         }
       ) {

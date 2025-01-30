@@ -1,5 +1,6 @@
 package dev.sargunv.maplibrecompose.core
 
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.Dp
 import io.github.dellisd.spatialk.geojson.BoundingBox
 
@@ -11,9 +12,7 @@ public interface MapSnapshotter {
     region: BoundingBox?,
     cameraPosition: CameraPosition?,
     showLogo: Boolean,
-    localIdeographFontFamily: String?,
-    pixelRatio: Float,
-    callback: (MapSnapshot) -> Unit,
+    callback: (ImageBitmap) -> Unit,
     errorHandler: (String) -> Unit,
   )
 
