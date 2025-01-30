@@ -497,4 +497,8 @@ internal class IosMap(
       .map { (it as MLNFeatureProtocol).toFeature() }
 
   override fun metersPerDpAtLatitude(latitude: Double) = mapView.metersPerPointAtLatitude(latitude)
+
+  override fun getMapSnapshotter(): MapSnapshotter {
+    TODO()
+  }
 }

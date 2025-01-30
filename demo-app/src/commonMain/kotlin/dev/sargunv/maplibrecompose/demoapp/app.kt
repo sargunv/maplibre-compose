@@ -46,6 +46,7 @@ import dev.sargunv.maplibrecompose.demoapp.demos.ClusteredPointsDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.EdgeToEdgeDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.FrameRateDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.MarkersDemo
+import dev.sargunv.maplibrecompose.demoapp.demos.SnapshotterDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.StyleSwitcherDemo
 import dev.sargunv.maplibrecompose.material3.controls.AttributionButton
 import dev.sargunv.maplibrecompose.material3.controls.DisappearingCompassButton
@@ -62,6 +63,7 @@ private val DEMOS = buildList {
   if (!Platform.isDesktop) add(CameraStateDemo)
   if (Platform.usesMaplibreNative) add(CameraFollowDemo)
   if (!Platform.isDesktop) add(FrameRateDemo)
+  if (Platform.supportsSnapshotter) add(SnapshotterDemo)
 }
 
 @Composable

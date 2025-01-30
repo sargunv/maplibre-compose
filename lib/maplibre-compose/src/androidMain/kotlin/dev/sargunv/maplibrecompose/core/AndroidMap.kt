@@ -53,6 +53,7 @@ internal class AndroidMap(
   private val mapView: MapView,
   private val map: MapLibreMap,
   private val scaleBar: AndroidScaleBar,
+  private val mapSnapshotter: AndroidMapSnapshotter,
   layoutDir: LayoutDirection,
   density: Density,
   internal var callbacks: MaplibreMap.Callbacks,
@@ -338,6 +339,8 @@ internal class AndroidMap(
 
   override fun metersPerDpAtLatitude(latitude: Double) =
     map.projection.getMetersPerPixelAtLatitude(latitude)
+
+  override fun getMapSnapshotter() = mapSnapshotter
 }
 
 private fun MLNVisibleRegion.toVisibleRegion() =
