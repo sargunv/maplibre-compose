@@ -323,7 +323,5 @@ internal class JsMap(
     return impl.unproject(point).distanceTo(impl.unproject(Point(point.x + 1, point.y)))
   }
 
-  override fun getMapSnapshotter(): MapSnapshotter {
-    TODO()
-  }
+  override fun getMapSnapshotter() = JsMapSnapshotter()
 }
