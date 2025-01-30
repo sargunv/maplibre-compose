@@ -13,6 +13,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,6 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import dev.sargunv.maplibrecompose.compose.CameraState
 import dev.sargunv.maplibrecompose.compose.MaplibreMap
 import dev.sargunv.maplibrecompose.compose.rememberCameraState
@@ -37,13 +41,27 @@ object SnapshotterDemo : Demo {
 
   @Composable
   override fun Component(navigateUp: () -> Unit) {
+    val cameraState = rememberCameraState()
+    val styleState = rememberStyleState()
+    val isLoading = remember { mutableStateOf(false) }
+    val snapshot = remember { mutableStateOf<ImageBitmap?>(null) }
+    val lifeCycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifeCycleOwner) {
+      val observer = LifecycleEventObserver { _, event ->
+        if (event == Lifecycle.Event.ON_PAUSE) {
+          cameraState.cancelSnapshotter()
+          isLoading.value = false
+        }
+      }
+      lifeCycleOwner.lifecycle.addObserver(observer)
+      onDispose {
+        lifeCycleOwner.lifecycle.removeObserver(observer)
+      }
+    }
+
     DemoScaffold(this, navigateUp) {
       Column {
-        val isLoading = remember { mutableStateOf(false) }
-        val snapshot = remember { mutableStateOf<ImageBitmap?>(null) }
-        val cameraState = rememberCameraState()
-        val styleState = rememberStyleState()
-
         Box(modifier = Modifier.weight(1f)) {
           MaplibreMap(
             styleUri = DEFAULT_STYLE,
