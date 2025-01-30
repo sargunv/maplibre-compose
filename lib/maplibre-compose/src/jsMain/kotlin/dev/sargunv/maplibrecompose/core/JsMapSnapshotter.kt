@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.Dp
 import io.github.dellisd.spatialk.geojson.BoundingBox
 
-public class JsMapSnapshotter: MapSnapshotter {
+public class JsMapSnapshotter : MapSnapshotter {
   override fun snapshot(
     width: Dp,
     height: Dp,
@@ -13,7 +13,7 @@ public class JsMapSnapshotter: MapSnapshotter {
     cameraPosition: CameraPosition?,
     showLogo: Boolean,
     callback: (ImageBitmap) -> Unit,
-    errorHandler: (String) -> Unit
+    errorHandler: (String) -> Unit,
   ) {}
 
   override fun cancel() {}

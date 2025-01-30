@@ -55,9 +55,7 @@ object SnapshotterDemo : Demo {
         }
       }
       lifeCycleOwner.lifecycle.addObserver(observer)
-      onDispose {
-        lifeCycleOwner.lifecycle.removeObserver(observer)
-      }
+      onDispose { lifeCycleOwner.lifecycle.removeObserver(observer) }
     }
 
     DemoScaffold(this, navigateUp) {
