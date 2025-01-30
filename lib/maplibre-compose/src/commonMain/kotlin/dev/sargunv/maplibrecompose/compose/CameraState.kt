@@ -200,6 +200,18 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
     return requireMap().getVisibleRegion()
   }
 
+  /**
+   * Takes a snapshot of the map with the specified parameters. Available on Android and iOS only.
+   *
+   * @param width The width of the snapshot in Dp.
+   * @param height The height of the snapshot in Dp.
+   * @param styleUri The URI of the style to use for the snapshot.
+   * @param region The bounding box of the region to capture in the snapshot.
+   * @param cameraPosition The camera position to use for the snapshot.
+   * @param showLogo Whether to show the logo in the snapshot. Defaults to true.
+   * @param callback The callback to invoke with the resulting ImageBitmap.
+   * @param errorHandler The callback to invoke if an error occurs.
+   */
   public fun snapshot(
     width: Dp,
     height: Dp,
@@ -215,6 +227,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
       .snapshot(width, height, styleUri, region, cameraPosition, showLogo, callback, errorHandler)
   }
 
+  /** Cancels the map snapshotter if it is currently active. */
   public fun cancelSnapshotter() {
     maybeMap { it.getMapSnapshotter().cancel() }
   }
