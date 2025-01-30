@@ -19,11 +19,11 @@ internal class AndroidStyle(style: MLNStyle) : Style {
   private var impl: MLNStyle = style
 
   override fun addImage(id: String, image: ImageBitmap, sdf: Boolean) {
-    impl.addImage(id, image.asAndroidBitmap(), sdf)
+    if (impl.isFullyLoaded) impl.addImage(id, image.asAndroidBitmap(), sdf)
   }
 
   override fun removeImage(id: String) {
-    impl.removeImage(id)
+    if (impl.isFullyLoaded) impl.removeImage(id)
   }
 
   private fun MLNSource.toSource() =
@@ -35,46 +35,46 @@ internal class AndroidStyle(style: MLNStyle) : Style {
     }
 
   override fun getSource(id: String): Source? {
-    return impl.getSource(id)?.toSource()
+    return if (impl.isFullyLoaded) impl.getSource(id)?.toSource() else null
   }
 
   override fun getSources(): List<Source> {
-    return impl.sources.map { it.toSource() }
+    return if (impl.isFullyLoaded) impl.sources.map { it.toSource() } else emptyList()
   }
 
   override fun addSource(source: Source) {
-    impl.addSource(source.impl)
+    if (impl.isFullyLoaded) impl.addSource(source.impl)
   }
 
   override fun removeSource(source: Source) {
-    impl.removeSource(source.impl)
+    if (impl.isFullyLoaded) impl.removeSource(source.impl)
   }
 
   override fun getLayer(id: String): Layer? {
-    return impl.getLayer(id)?.let { UnknownLayer(it) }
+    return if (impl.isFullyLoaded) impl.getLayer(id)?.let { UnknownLayer(it) } else null
   }
 
   override fun getLayers(): List<Layer> {
-    return impl.layers.map { UnknownLayer(it) }
+    return if (impl.isFullyLoaded) impl.layers.map { UnknownLayer(it) } else return emptyList()
   }
 
   override fun addLayer(layer: Layer) {
-    impl.addLayer(layer.impl)
+    if (impl.isFullyLoaded) impl.addLayer(layer.impl)
   }
 
   override fun addLayerAbove(id: String, layer: Layer) {
-    impl.addLayerAbove(layer.impl, id)
+    if (impl.isFullyLoaded) impl.addLayerAbove(layer.impl, id)
   }
 
   override fun addLayerBelow(id: String, layer: Layer) {
-    impl.addLayerBelow(layer.impl, id)
+    if (impl.isFullyLoaded) impl.addLayerBelow(layer.impl, id)
   }
 
   override fun addLayerAt(index: Int, layer: Layer) {
-    impl.addLayerAt(layer.impl, index)
+    if (impl.isFullyLoaded) impl.addLayerAt(layer.impl, index)
   }
 
   override fun removeLayer(layer: Layer) {
-    impl.removeLayer(layer.impl)
+    if (impl.isFullyLoaded) impl.removeLayer(layer.impl)
   }
 }

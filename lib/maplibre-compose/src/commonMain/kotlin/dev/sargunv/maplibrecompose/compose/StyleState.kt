@@ -28,7 +28,7 @@ public class StyleState internal constructor() {
   /**
    * Retrieves all sources from the style.
    *
-   * @return A list of sources, or an empty list if the style is null or has no sources.
+   * @return A list of sources, or an empty list if the style is not fully loaded or has no sources.
    */
   public fun getSources(): List<Source> = style?.getSources() ?: emptyList()
 
@@ -36,7 +36,8 @@ public class StyleState internal constructor() {
    * Retrieves a source by its [id].
    *
    * @param id The ID of the source to retrieve.
-   * @return The source with the specified ID, or null if no such source exists.
+   * @return The source with the specified ID, or null if no such source exists, or the style is not
+   *   fully loaded.
    */
   public fun getSource(id: String): Source? = style?.getSource(id)
 }
