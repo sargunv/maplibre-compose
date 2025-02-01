@@ -5,6 +5,8 @@ import dev.sargunv.maplibrecompose.core.layer.Layer
 import dev.sargunv.maplibrecompose.core.source.Source
 
 internal interface Style {
+  var isLoaded: Boolean
+
   fun addImage(id: String, image: ImageBitmap, sdf: Boolean)
 
   fun removeImage(id: String)
@@ -32,6 +34,8 @@ internal interface Style {
   fun removeLayer(layer: Layer)
 
   object Null : Style {
+    override var isLoaded: Boolean = false
+
     override fun addImage(id: String, image: ImageBitmap, sdf: Boolean) {}
 
     override fun removeImage(id: String) {}

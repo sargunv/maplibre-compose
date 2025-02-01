@@ -113,6 +113,9 @@ public fun MaplibreMap(
       object : MaplibreMap.Callbacks {
         override fun onStyleChanged(map: MaplibreMap, style: Style?) {
           map as StandardMaplibreMap
+
+          if (style == null) rememberedStyle?.isLoaded = false
+
           styleState.attach(style)
           rememberedStyle = style
           cameraState.metersPerDpAtTargetState.value =
@@ -133,6 +136,8 @@ public fun MaplibreMap(
         override fun onCameraMoveEnded(map: MaplibreMap) {}
 
         private fun layerNodesInOrder(): List<LayerNode<*>> {
+          if (styleComposition?.style?.isLoaded != true) return emptyList()
+
           val layerNodes =
             (styleComposition?.children?.filterIsInstance<LayerNode<*>>() ?: emptyList())
               .associateBy { node -> node.layer.id }

@@ -7,6 +7,8 @@ import dev.sargunv.maplibrejs.Map as MlJsMap
 
 internal class JsStyle(internal val impl: MlJsMap) : Style {
 
+  override var isLoaded: Boolean = true
+
   override fun addImage(id: String, image: ImageBitmap, sdf: Boolean) {}
 
   override fun removeImage(id: String) {}

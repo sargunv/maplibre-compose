@@ -4,7 +4,7 @@ import dev.sargunv.maplibrecompose.core.source.Source
 
 internal class SourceManager(private val node: StyleNode) {
 
-  private val baseSources = node.style.getSources().associateBy { it.id }
+  private val baseSources = getSources().associateBy { it.id }
   private val sourcesToAdd = mutableListOf<Source>()
   private val counter = ReferenceCounter<Source>()
 
@@ -13,6 +13,8 @@ internal class SourceManager(private val node: StyleNode) {
   }
 
   internal fun addReference(source: Source) {
+    if (!node.style.isLoaded) return
+
     require(source.id !in baseSources) { "Source ID '${source.id}' already exists in base style" }
     counter.increment(source) {
       node.logger?.i { "Queuing source ${source.id} for addition" }
@@ -21,6 +23,8 @@ internal class SourceManager(private val node: StyleNode) {
   }
 
   internal fun removeReference(source: Source) {
+    if (!node.style.isLoaded) return
+
     require(source.id !in baseSources) {
       "Source ID '${source.id}' is part of the base style and can't be removed here"
     }
@@ -31,6 +35,8 @@ internal class SourceManager(private val node: StyleNode) {
   }
 
   internal fun applyChanges() {
+    if (!node.style.isLoaded) return
+
     sourcesToAdd
       .onEach {
         node.logger?.i { "Adding source ${it.id}" }
@@ -38,4 +44,6 @@ internal class SourceManager(private val node: StyleNode) {
       }
       .clear()
   }
+
+  private fun getSources() = if (node.style.isLoaded) node.style.getSources() else emptyList()
 }
