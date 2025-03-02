@@ -254,21 +254,23 @@ internal class AndroidMap(
   }
 
   private fun MLNCameraPosition.toCameraPosition(): CameraPosition =
-    CameraPosition(
-      target = target?.toPosition() ?: Position(0.0, 0.0),
-      zoom = zoom,
-      bearing = bearing,
-      tilt = tilt,
-      padding =
-        padding?.let {
-          PaddingValues.Absolute(
-            left = it[0].dp,
-            top = it[1].dp,
-            right = it[2].dp,
-            bottom = it[3].dp,
-          )
-        } ?: PaddingValues.Absolute(0.dp),
-    )
+    with(density) {
+      CameraPosition(
+        target = target?.toPosition() ?: Position(0.0, 0.0),
+        zoom = zoom,
+        bearing = bearing,
+        tilt = tilt,
+        padding =
+          padding?.let {
+            PaddingValues.Absolute(
+              left = it[0].toInt().toDp(),
+              top = it[1].toInt().toDp(),
+              right = it[2].toInt().toDp(),
+              bottom = it[3].toInt().toDp(),
+            )
+          } ?: PaddingValues.Absolute(0.dp),
+      )
+    }
 
   private fun CameraPosition.toMLNCameraPosition(): MLNCameraPosition =
     with(density) {
