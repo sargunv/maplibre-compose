@@ -14,7 +14,11 @@ public class JsMapSnapshotter : MapSnapshotter {
     showLogo: Boolean,
     callback: (ImageBitmap) -> Unit,
     errorHandler: (String) -> Unit,
-  ) {}
+  ) {
+    // missing feature in MapLibre GL JS
+  }
 
-  override fun cancel() {}
+  override fun cancel() {
+    // missing feature in MapLibre GL JS
+  }
 }
