@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpRect
@@ -12,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrecompose.core.CameraMoveReason
 import dev.sargunv.maplibrecompose.core.CameraPosition
 import dev.sargunv.maplibrecompose.core.MaplibreMap
+import dev.sargunv.maplibrecompose.core.SnapshotResponse
 import dev.sargunv.maplibrecompose.core.StandardMaplibreMap
 import dev.sargunv.maplibrecompose.core.VisibleRegion
 import dev.sargunv.maplibrecompose.expressions.ExpressionContext
@@ -212,23 +212,15 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
    * @param callback The callback to invoke with the resulting ImageBitmap.
    * @param errorHandler The callback to invoke if an error occurs.
    */
-  public fun snapshot(
+  public suspend fun snapshot(
     width: Dp,
     height: Dp,
     styleUri: String,
     region: BoundingBox? = null,
     cameraPosition: CameraPosition? = null,
     showLogo: Boolean = true,
-    callback: (ImageBitmap) -> Unit,
-    errorHandler: (String) -> Unit = {},
-  ) {
+  ): SnapshotResponse =
     requireMap()
       .getMapSnapshotter()
-      .snapshot(width, height, styleUri, region, cameraPosition, showLogo, callback, errorHandler)
-  }
-
-  /** Cancels the map snapshotter if it is currently active. */
-  public fun cancelSnapshotter() {
-    maybeMap { it.getMapSnapshotter().cancel() }
-  }
+      .snapshot(width, height, styleUri, region, cameraPosition, showLogo)
 }

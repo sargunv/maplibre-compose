@@ -15,8 +15,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
@@ -29,11 +32,14 @@ import dev.sargunv.maplibrecompose.compose.CameraState
 import dev.sargunv.maplibrecompose.compose.MaplibreMap
 import dev.sargunv.maplibrecompose.compose.rememberCameraState
 import dev.sargunv.maplibrecompose.compose.rememberStyleState
+import dev.sargunv.maplibrecompose.core.SnapshotResponse
 import dev.sargunv.maplibrecompose.demoapp.DEFAULT_STYLE
 import dev.sargunv.maplibrecompose.demoapp.Demo
 import dev.sargunv.maplibrecompose.demoapp.DemoMapControls
 import dev.sargunv.maplibrecompose.demoapp.DemoOrnamentSettings
 import dev.sargunv.maplibrecompose.demoapp.DemoScaffold
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 object SnapshotterDemo : Demo {
   override val name = "Snapshotter"
@@ -50,7 +56,6 @@ object SnapshotterDemo : Demo {
     DisposableEffect(lifeCycleOwner) {
       val observer = LifecycleEventObserver { _, event ->
         if (event == Lifecycle.Event.ON_PAUSE) {
-          cameraState.cancelSnapshotter()
           isLoading.value = false
         }
       }
@@ -89,26 +94,41 @@ object SnapshotterDemo : Demo {
     isLoading: MutableState<Boolean>,
     snapshot: MutableState<ImageBitmap?>,
   ) {
+    val scope = rememberCoroutineScope()
+    var snapshotJob by remember { mutableStateOf<Job?>(null) }
+
     Row(
       modifier = Modifier.padding(16.dp).fillMaxWidth(),
       horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
       Button(
         onClick = {
-          isLoading.value = true
-          cameraState.snapshot(
-            width = 500.dp,
-            height = 500.dp,
-            styleUri = DEFAULT_STYLE,
-            cameraPosition = cameraState.position,
-            callback = {
+          snapshotJob =
+            scope.launch {
+              isLoading.value = true
+              val response =
+                cameraState.snapshot(
+                  width = 500.dp,
+                  height = 500.dp,
+                  styleUri = DEFAULT_STYLE,
+                  cameraPosition = cameraState.position,
+                )
+
+              when (response) {
+                is SnapshotResponse.Success -> snapshot.value = response.image
+                is SnapshotResponse.Error -> println("Snapshot generation error: ${response.error}")
+                is SnapshotResponse.Cancelled -> println("Snapshot generation cancelled")
+              }
+
               isLoading.value = false
-              snapshot.value = it
-            },
-          )
+              snapshotJob = null
+            }
         }
       ) {
         Text("Take snapshot")
+      }
+      Button(enabled = snapshotJob != null, onClick = { snapshotJob?.cancel() }) {
+        Text("Cancel snapshot")
       }
     }
   }

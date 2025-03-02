@@ -1,6 +1,5 @@
 package dev.sargunv.maplibrecompose.core
 
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import cocoapods.MapLibre.MLNMapCamera
@@ -10,27 +9,22 @@ import dev.sargunv.maplibrecompose.core.util.toImageBitmap
 import dev.sargunv.maplibrecompose.core.util.toMLNCoordinateBounds
 import dev.sargunv.maplibrecompose.core.util.toMLNMapCamera
 import io.github.dellisd.spatialk.geojson.BoundingBox
+import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.CoreGraphics.CGSizeMake
 import platform.Foundation.NSURL
+import kotlin.coroutines.cancellation.CancellationException
+import kotlin.coroutines.resume
 
 internal class IosMapSnapshotter(private val density: Density) : MapSnapshotter {
-  private var impl: MLNMapSnapshotter? = null
-  private var isStarted: Boolean = false
-
-  override fun snapshot(
+  override suspend fun snapshot(
     width: Dp,
     height: Dp,
     styleUri: String,
     region: BoundingBox?,
     cameraPosition: CameraPosition?,
     showLogo: Boolean,
-    callback: (ImageBitmap) -> Unit,
-    errorHandler: (String) -> Unit,
-  ) {
+  ): SnapshotResponse {
     with(density) {
-      if (isStarted) return
-
-      isStarted = true
 
       val size = CGSizeMake(width.roundToPx().toDouble(), height.roundToPx().toDouble())
       val options =
@@ -42,20 +36,22 @@ internal class IosMapSnapshotter(private val density: Density) : MapSnapshotter 
       region?.toMLNCoordinateBounds()?.let { options.coordinateBounds = it }
       options.showsLogo = showLogo
 
-      impl = MLNMapSnapshotter(options)
+      val snapshotter = MLNMapSnapshotter(options)
 
-      impl?.startWithCompletionHandler { snapshot, error ->
-        snapshot?.let { callback(snapshot.image.toImageBitmap()) }
-
-        error?.description?.let { errorHandler(it) }
-
-        isStarted = false
+      return try {
+        suspendCancellableCoroutine { cont ->
+          snapshotter?.startWithCompletionHandler { snapshot, error ->
+            if (snapshot != null) {
+              cont.resume(SnapshotResponse.Success(snapshot.image.toImageBitmap()))
+            } else {
+              cont.resume(SnapshotResponse.Error(error?.description ?: "Unknown error"))
+            }
+          }
+        }
+      } catch (e: CancellationException) {
+        snapshotter.cancel()
+        SnapshotResponse.Cancelled
       }
     }
-  }
-
-  override fun cancel() {
-    impl?.cancel()
-    isStarted = false
   }
 }
