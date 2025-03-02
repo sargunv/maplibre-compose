@@ -201,7 +201,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
   }
 
   /**
-   * Takes a snapshot of the map with the specified parameters. Available on Android and iOS only.
+   * Takes a snapshot of the map with the specified parameters. Functional on Android and iOS only.
    *
    * @param width The width of the snapshot in Dp.
    * @param height The height of the snapshot in Dp.
