@@ -37,4 +37,4 @@ public sealed interface ComparableValue<T> : ExpressionValue
  *
  * @param T the type of values that can be interpolated between.
  */
-public sealed interface InterpolateableValue<T> : ExpressionValue
+public sealed interface InterpolatableValue<T> : ExpressionValue
