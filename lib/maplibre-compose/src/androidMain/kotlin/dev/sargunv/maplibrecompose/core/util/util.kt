@@ -82,14 +82,14 @@ internal fun MLNCameraPosition.toCameraPosition(density: Density): CameraPositio
       bearing = bearing,
       tilt = tilt,
       padding =
-      padding?.let {
-        PaddingValues.Absolute(
-          left = it[0].toInt().toDp(),
-          top = it[1].toInt().toDp(),
-          right = it[2].toInt().toDp(),
-          bottom = it[3].toInt().toDp(),
-        )
-      } ?: PaddingValues.Absolute(0.dp),
+        padding?.let {
+          PaddingValues.Absolute(
+            left = it[0].toInt().toDp(),
+            top = it[1].toInt().toDp(),
+            right = it[2].toInt().toDp(),
+            bottom = it[3].toInt().toDp(),
+          )
+        } ?: PaddingValues.Absolute(0.dp),
     )
   }
 
