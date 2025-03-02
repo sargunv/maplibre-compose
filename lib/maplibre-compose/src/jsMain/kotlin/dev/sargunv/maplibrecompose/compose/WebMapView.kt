@@ -51,7 +51,7 @@ internal fun WebMapView(
 
   HtmlElement(
     modifier = modifier.onGloballyPositioned { maybeMap?.resize() },
-    // zIndex = "-1", // TODO figure out pointer interop
+    zIndex = "-1",
     factory = {
       document.createElement("div").unsafeCast<HTMLElement>().apply {
         style.apply {
