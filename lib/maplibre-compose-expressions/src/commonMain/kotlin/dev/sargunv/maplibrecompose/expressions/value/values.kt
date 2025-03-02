@@ -37,7 +37,7 @@ public sealed interface BooleanValue : ExpressionValue, EquatableValue
 public sealed interface NumberValue<U> :
   ExpressionValue,
   MatchableValue,
-  InterpolateableValue<U>,
+  InterpolatableValue<U>,
   ComparableValue<NumberValue<U>>,
   EquatableValue
 
@@ -87,7 +87,7 @@ public sealed interface EnumValue<out T> : StringValue {
 }
 
 /** Represents an [ExpressionValue] that resolves to a [Color] value. See [const]. */
-public sealed interface ColorValue : ExpressionValue, InterpolateableValue<ColorValue>
+public sealed interface ColorValue : ExpressionValue, InterpolatableValue<ColorValue>
 
 /**
  * Represents an [ExpressionValue] that resolves to a map value (corresponds to a JSON object). See
@@ -127,7 +127,7 @@ public typealias TextVariableAnchorOffsetValue =
  * @param U the unit type of the number. For dimensionless quantities, use [Number].
  */
 public sealed interface VectorValue<U> :
-  ListValue<NumberValue<U>>, InterpolateableValue<VectorValue<U>>
+  ListValue<NumberValue<U>>, InterpolatableValue<VectorValue<U>>
 
 /**
  * Represents an [ExpressionValue] that reoslves to a 2D vector in some unit.
