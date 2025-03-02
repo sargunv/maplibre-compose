@@ -74,17 +74,24 @@ internal fun BoundingBox.toLatLngBounds(): LatLngBounds =
     lonWest = southwest.longitude,
   )
 
-internal fun MLNCameraPosition.toCameraPosition(): CameraPosition =
-  CameraPosition(
-    target = target?.toPosition() ?: Position(0.0, 0.0),
-    zoom = zoom,
-    bearing = bearing,
-    tilt = tilt,
-    padding =
+internal fun MLNCameraPosition.toCameraPosition(density: Density): CameraPosition =
+  with(density) {
+    CameraPosition(
+      target = target?.toPosition() ?: Position(0.0, 0.0),
+      zoom = zoom,
+      bearing = bearing,
+      tilt = tilt,
+      padding =
       padding?.let {
-        PaddingValues.Absolute(left = it[0].dp, top = it[1].dp, right = it[2].dp, bottom = it[3].dp)
+        PaddingValues.Absolute(
+          left = it[0].toInt().toDp(),
+          top = it[1].toInt().toDp(),
+          right = it[2].toInt().toDp(),
+          bottom = it[3].toInt().toDp(),
+        )
       } ?: PaddingValues.Absolute(0.dp),
-  )
+    )
+  }
 
 internal fun CameraPosition.toMLNCameraPosition(
   density: Density,

@@ -256,7 +256,7 @@ internal class AndroidMap(
   }
 
   override fun getCameraPosition(): CameraPosition {
-    return map.cameraPosition.toCameraPosition()
+    return map.cameraPosition.toCameraPosition(density)
   }
 
   override fun setCameraPosition(cameraPosition: CameraPosition) {
