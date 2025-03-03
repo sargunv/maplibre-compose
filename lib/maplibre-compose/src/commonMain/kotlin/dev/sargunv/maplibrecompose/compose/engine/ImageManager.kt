@@ -20,6 +20,8 @@ internal class ImageManager(private val node: StyleNode) {
   private val painterBitmaps = mutableMapOf<PainterKey, ImageBitmap>()
 
   internal fun acquireBitmap(key: BitmapKey): String {
+    if (!node.style.isLoaded) return ""
+
     bitmapCounter.increment(key) {
       val id = bitmapIds.addId(key)
       node.logger?.i { "Adding bitmap $id" }
@@ -29,6 +31,8 @@ internal class ImageManager(private val node: StyleNode) {
   }
 
   internal fun releaseBitmap(key: BitmapKey) {
+    if (!node.style.isLoaded) return
+
     bitmapCounter.decrement(key) {
       val id = bitmapIds.removeId(key)
       node.logger?.i { "Removing bitmap $id" }
@@ -50,6 +54,8 @@ internal class ImageManager(private val node: StyleNode) {
   }
 
   internal fun acquirePainter(key: PainterKey): String {
+    if (!node.style.isLoaded) return ""
+
     painterCounter.increment(key) {
       val id = painterIds.addId(key)
       node.logger?.i { "Adding painter $id" }
@@ -62,6 +68,8 @@ internal class ImageManager(private val node: StyleNode) {
   }
 
   internal fun releasePainter(key: PainterKey) {
+    if (!node.style.isLoaded) return
+
     painterCounter.decrement(key) {
       val id = painterIds.removeId(key)
       node.logger?.i { "Removing painter $id" }

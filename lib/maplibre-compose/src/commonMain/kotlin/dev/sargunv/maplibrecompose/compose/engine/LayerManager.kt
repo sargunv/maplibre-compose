@@ -4,7 +4,7 @@ import dev.sargunv.maplibrecompose.compose.layer.Anchor
 import dev.sargunv.maplibrecompose.core.layer.Layer
 
 internal class LayerManager(private val styleNode: StyleNode) {
-  private val baseLayers = styleNode.style.getLayers().associateBy { it.id }
+  private val baseLayers = getLayers().associateBy { it.id }
 
   private val userLayers = mutableListOf<LayerNode<*>>()
 
@@ -13,6 +13,8 @@ internal class LayerManager(private val styleNode: StyleNode) {
   private val replacementCounters = mutableMapOf<Anchor.Replace, Int>()
 
   internal fun addLayer(node: LayerNode<*>, index: Int) {
+    if (!styleNode.style.isLoaded) return
+
     require(node.layer.id !in baseLayers) {
       "Layer ID '${node.layer.id}' already exists in base style"
     }
@@ -24,6 +26,8 @@ internal class LayerManager(private val styleNode: StyleNode) {
   }
 
   internal fun removeLayer(node: LayerNode<*>, oldIndex: Int) {
+    if (!styleNode.style.isLoaded) return
+
     userLayers.removeAt(oldIndex)
 
     // special handling for Replace anchors
@@ -52,6 +56,8 @@ internal class LayerManager(private val styleNode: StyleNode) {
   }
 
   internal fun applyChanges() {
+    if (!styleNode.style.isLoaded) return
+
     val tailLayerIds = mutableMapOf<Anchor, String>()
     val missedLayers = mutableMapOf<Anchor, MutableList<LayerNode<*>>>()
 
@@ -132,4 +138,7 @@ internal class LayerManager(private val styleNode: StyleNode) {
         is Anchor.Replace -> layerId
         else -> null
       }
+
+  private fun getLayers() =
+    if (styleNode.style.isLoaded) styleNode.style.getLayers() else emptyList()
 }
