@@ -463,11 +463,11 @@ internal class IosMap(
   }
 
   override fun positionFromScreenLocation(offset: DpOffset): Position =
-    mapView.convertPoint(point = offset.toCGPoint(), toCoordinateFromView = null).toPosition()
+    mapView.convertPoint(point = offset.toCGPoint(), toCoordinateFromView = mapView).toPosition()
 
   override fun screenLocationFromPosition(position: Position): DpOffset =
     mapView
-      .convertCoordinate(position.toCLLocationCoordinate2D(), toPointToView = null)
+      .convertCoordinate(position.toCLLocationCoordinate2D(), toPointToView = mapView)
       .toDpOffset()
 
   override fun queryRenderedFeatures(
