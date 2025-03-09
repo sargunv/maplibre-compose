@@ -1,6 +1,7 @@
 package dev.sargunv.maplibrecompose.core
 
 import android.content.Context
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
@@ -9,7 +10,6 @@ import dev.sargunv.maplibrecompose.core.util.correctedAndroidUri
 import dev.sargunv.maplibrecompose.core.util.toLatLngBounds
 import dev.sargunv.maplibrecompose.core.util.toMLNCameraPosition
 import io.github.dellisd.spatialk.geojson.BoundingBox
-import kotlin.coroutines.cancellation.CancellationException
 import kotlin.coroutines.resume
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.maplibre.android.maps.Style
@@ -28,7 +28,7 @@ internal class AndroidMapSnapshotter(
     region: BoundingBox?,
     cameraPosition: CameraPosition?,
     showLogo: Boolean,
-  ): SnapshotResponse {
+  ): ImageBitmap {
     with(density) {
       val styleBuilder = Style.Builder().fromUri(styleUri.correctedAndroidUri())
       val options =
@@ -40,17 +40,11 @@ internal class AndroidMapSnapshotter(
 
       val snapshotter = MLNMapSnapshotter(context, options)
 
-      return try {
-        suspendCancellableCoroutine { cont ->
-          snapshotter.start({ snapshot ->
-            cont.resume(SnapshotResponse.Success(snapshot.bitmap.asImageBitmap()))
-          }) { error ->
-            cont.resume(SnapshotResponse.Error(error))
-          }
+      return suspendCancellableCoroutine { cont ->
+        snapshotter.start({ snapshot -> cont.resume(snapshot.bitmap.asImageBitmap()) }) { error ->
+          throw SnapshotException(error)
         }
-      } catch (e: CancellationException) {
-        snapshotter.cancel()
-        SnapshotResponse.Cancelled
+        cont.invokeOnCancellation { snapshotter.cancel() }
       }
     }
   }

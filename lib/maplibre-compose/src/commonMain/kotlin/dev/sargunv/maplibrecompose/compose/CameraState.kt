@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpRect
@@ -11,7 +12,6 @@ import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrecompose.core.CameraMoveReason
 import dev.sargunv.maplibrecompose.core.CameraPosition
 import dev.sargunv.maplibrecompose.core.MaplibreMap
-import dev.sargunv.maplibrecompose.core.SnapshotResponse
 import dev.sargunv.maplibrecompose.core.StandardMaplibreMap
 import dev.sargunv.maplibrecompose.core.VisibleRegion
 import dev.sargunv.maplibrecompose.expressions.ExpressionContext
@@ -219,7 +219,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
     region: BoundingBox? = null,
     cameraPosition: CameraPosition? = null,
     showLogo: Boolean = true,
-  ): SnapshotResponse =
+  ): ImageBitmap =
     requireMap()
       .getMapSnapshotter()
       .snapshot(width, height, styleUri, region, cameraPosition, showLogo)

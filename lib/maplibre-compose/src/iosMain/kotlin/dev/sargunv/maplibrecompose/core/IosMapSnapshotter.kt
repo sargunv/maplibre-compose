@@ -1,19 +1,18 @@
 package dev.sargunv.maplibrecompose.core
 
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import cocoapods.MapLibre.MLNMapCamera
 import cocoapods.MapLibre.MLNMapSnapshotOptions
 import cocoapods.MapLibre.MLNMapSnapshotter
-import dev.sargunv.maplibrecompose.core.util.toImageBitmap
 import dev.sargunv.maplibrecompose.core.util.toMLNCoordinateBounds
 import dev.sargunv.maplibrecompose.core.util.toMLNMapCamera
 import io.github.dellisd.spatialk.geojson.BoundingBox
+import kotlin.coroutines.resume
 import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.CoreGraphics.CGSizeMake
 import platform.Foundation.NSURL
-import kotlin.coroutines.cancellation.CancellationException
-import kotlin.coroutines.resume
 
 internal class IosMapSnapshotter(private val density: Density) : MapSnapshotter {
   override suspend fun snapshot(
@@ -23,9 +22,8 @@ internal class IosMapSnapshotter(private val density: Density) : MapSnapshotter 
     region: BoundingBox?,
     cameraPosition: CameraPosition?,
     showLogo: Boolean,
-  ): SnapshotResponse {
+  ): ImageBitmap {
     with(density) {
-
       val size = CGSizeMake(width.roundToPx().toDouble(), height.roundToPx().toDouble())
       val options =
         MLNMapSnapshotOptions(
@@ -38,19 +36,15 @@ internal class IosMapSnapshotter(private val density: Density) : MapSnapshotter 
 
       val snapshotter = MLNMapSnapshotter(options)
 
-      return try {
-        suspendCancellableCoroutine { cont ->
-          snapshotter?.startWithCompletionHandler { snapshot, error ->
-            if (snapshot != null) {
-              cont.resume(SnapshotResponse.Success(snapshot.image.toImageBitmap()))
-            } else {
-              cont.resume(SnapshotResponse.Error(error?.description ?: "Unknown error"))
-            }
+      return suspendCancellableCoroutine { cont ->
+        snapshotter.startWithCompletionHandler { snapshot, error ->
+          if (snapshot != null) {
+            cont.resume(snapshot.bitmap.asImageBitmap())
+          } else {
+            throw SnapshotException(error?.description ?: "Unknown error")
           }
         }
-      } catch (e: CancellationException) {
-        snapshotter.cancel()
-        SnapshotResponse.Cancelled
+        cont.invokeOnCancellation { snapshotter.cancel() }
       }
     }
   }

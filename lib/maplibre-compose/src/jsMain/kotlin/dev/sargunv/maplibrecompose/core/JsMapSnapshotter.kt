@@ -1,5 +1,6 @@
 package dev.sargunv.maplibrecompose.core
 
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.Dp
 import io.github.dellisd.spatialk.geojson.BoundingBox
 
@@ -11,8 +12,8 @@ internal class JsMapSnapshotter : MapSnapshotter {
     region: BoundingBox?,
     cameraPosition: CameraPosition?,
     showLogo: Boolean,
-  ): SnapshotResponse {
+  ): ImageBitmap {
     // missing feature in MapLibre GL JS
-    return SnapshotResponse.Error("Not supported")
+    throw SnapshotException("Not supported")
   }
 }

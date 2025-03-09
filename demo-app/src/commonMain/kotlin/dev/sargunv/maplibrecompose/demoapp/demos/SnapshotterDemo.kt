@@ -32,12 +32,13 @@ import dev.sargunv.maplibrecompose.compose.CameraState
 import dev.sargunv.maplibrecompose.compose.MaplibreMap
 import dev.sargunv.maplibrecompose.compose.rememberCameraState
 import dev.sargunv.maplibrecompose.compose.rememberStyleState
-import dev.sargunv.maplibrecompose.core.SnapshotResponse
+import dev.sargunv.maplibrecompose.core.SnapshotException
 import dev.sargunv.maplibrecompose.demoapp.DEFAULT_STYLE
 import dev.sargunv.maplibrecompose.demoapp.Demo
 import dev.sargunv.maplibrecompose.demoapp.DemoMapControls
 import dev.sargunv.maplibrecompose.demoapp.DemoOrnamentSettings
 import dev.sargunv.maplibrecompose.demoapp.DemoScaffold
+import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -106,18 +107,20 @@ object SnapshotterDemo : Demo {
           snapshotJob =
             scope.launch {
               isLoading.value = true
-              val response =
-                cameraState.snapshot(
-                  width = 500.dp,
-                  height = 500.dp,
-                  styleUri = DEFAULT_STYLE,
-                  cameraPosition = cameraState.position,
-                )
+              try {
+                val response =
+                  cameraState.snapshot(
+                    width = 500.dp,
+                    height = 500.dp,
+                    styleUri = DEFAULT_STYLE,
+                    cameraPosition = cameraState.position,
+                  )
 
-              when (response) {
-                is SnapshotResponse.Success -> snapshot.value = response.image
-                is SnapshotResponse.Error -> println("Snapshot generation error: ${response.error}")
-                is SnapshotResponse.Cancelled -> println("Snapshot generation cancelled")
+                snapshot.value = response
+              } catch (cancel: SnapshotException) {
+                println("Error during snapshot generation")
+              } catch (cancel: CancellationException) {
+                println("Snapshot generation cancelled")
               }
 
               isLoading.value = false
