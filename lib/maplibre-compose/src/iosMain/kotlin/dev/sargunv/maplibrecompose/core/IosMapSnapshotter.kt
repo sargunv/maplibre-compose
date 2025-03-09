@@ -13,6 +13,7 @@ import kotlin.coroutines.resume
 import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.CoreGraphics.CGSizeMake
 import platform.Foundation.NSURL
+import kotlin.coroutines.resumeWithException
 
 internal class IosMapSnapshotter(private val density: Density) : MapSnapshotter {
   override suspend fun snapshot(
@@ -41,7 +42,7 @@ internal class IosMapSnapshotter(private val density: Density) : MapSnapshotter 
           if (snapshot != null) {
             cont.resume(snapshot.bitmap.asImageBitmap())
           } else {
-            throw SnapshotException(error?.description ?: "Unknown error")
+            cont.resumeWithException(SnapshotException(error?.description ?: "Unknown error"))
           }
         }
         cont.invokeOnCancellation { snapshotter.cancel() }

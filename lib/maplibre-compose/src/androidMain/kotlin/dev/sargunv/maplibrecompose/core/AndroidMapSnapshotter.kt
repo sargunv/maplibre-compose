@@ -13,6 +13,7 @@ import io.github.dellisd.spatialk.geojson.BoundingBox
 import kotlin.coroutines.resume
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.maplibre.android.maps.Style
+import kotlin.coroutines.resumeWithException
 import org.maplibre.android.snapshotter.MapSnapshotter as MLNMapSnapshotter
 
 internal class AndroidMapSnapshotter(
@@ -42,7 +43,7 @@ internal class AndroidMapSnapshotter(
 
       return suspendCancellableCoroutine { cont ->
         snapshotter.start({ snapshot -> cont.resume(snapshot.bitmap.asImageBitmap()) }) { error ->
-          throw SnapshotException(error)
+          cont.resumeWithException(SnapshotException(error))
         }
         cont.invokeOnCancellation { snapshotter.cancel() }
       }
