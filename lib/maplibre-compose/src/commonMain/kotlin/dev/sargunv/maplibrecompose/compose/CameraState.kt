@@ -209,8 +209,9 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
    * @param region The bounding box of the region to capture in the snapshot.
    * @param cameraPosition The camera position to use for the snapshot.
    * @param showLogo Whether to show the logo in the snapshot. Defaults to true.
-   * @param callback The callback to invoke with the resulting ImageBitmap.
-   * @param errorHandler The callback to invoke if an error occurs.
+   * @return The resulting ImageBitmap of the snapshot.
+   * @throws IllegalStateException if the map is not initialized yet. See [awaitInitialized].
+   * @throws SnapshotException if an error occurs during snapshot generation.
    */
   public suspend fun snapshot(
     width: Dp,
