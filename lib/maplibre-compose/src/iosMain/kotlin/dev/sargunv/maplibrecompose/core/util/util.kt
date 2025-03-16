@@ -61,14 +61,15 @@ import org.jetbrains.skia.ImageInfo
 import platform.CoreFoundation.CFDataGetBytePtr
 import platform.CoreFoundation.CFDataGetLength
 import platform.CoreFoundation.CFRelease
+import platform.CoreGraphics.CGColorSpaceCreateDeviceRGB
 import platform.CoreGraphics.CGDataProviderCopyData
 import platform.CoreGraphics.CGImageAlphaInfo
+import platform.CoreGraphics.CGImageCreateCopyWithColorSpace
 import platform.CoreGraphics.CGImageGetAlphaInfo
 import platform.CoreGraphics.CGImageGetBytesPerRow
 import platform.CoreGraphics.CGImageGetDataProvider
 import platform.CoreGraphics.CGImageGetHeight
 import platform.CoreGraphics.CGImageGetWidth
-import platform.CoreGraphics.CGImageRelease
 import platform.CoreGraphics.CGPoint
 import platform.CoreGraphics.CGPointMake
 import platform.CoreGraphics.CGRect
@@ -279,7 +280,7 @@ internal fun UIImage.toImageBitmap(): ImageBitmap {
 }
 
 private fun UIImage.toSkiaImage(): Image? {
-  val imageRef = this.CGImage ?: return null
+  val imageRef = CGImageCreateCopyWithColorSpace(this.CGImage, CGColorSpaceCreateDeviceRGB()) ?: return null
 
   val width = CGImageGetWidth(imageRef).toInt()
   val height = CGImageGetHeight(imageRef).toInt()
@@ -288,9 +289,10 @@ private fun UIImage.toSkiaImage(): Image? {
   val data = CGDataProviderCopyData(CGImageGetDataProvider(imageRef))
   val bytePointer = CFDataGetBytePtr(data)
   val length = CFDataGetLength(data)
+  val alphaInfo = CGImageGetAlphaInfo(imageRef)
 
   val alphaType =
-    when (CGImageGetAlphaInfo(imageRef)) {
+    when (alphaInfo) {
       CGImageAlphaInfo.kCGImageAlphaPremultipliedFirst,
       CGImageAlphaInfo.kCGImageAlphaPremultipliedLast -> ColorAlphaType.PREMUL
       CGImageAlphaInfo.kCGImageAlphaFirst,
@@ -304,7 +306,7 @@ private fun UIImage.toSkiaImage(): Image? {
   val byteArray = ByteArray(length.toInt()) { index -> bytePointer!![index].toByte() }
 
   CFRelease(data)
-  CGImageRelease(imageRef)
+  CFRelease(imageRef)
 
   val skiaColorSpace = ColorSpace.sRGB
   val colorType = ColorType.RGBA_8888
