@@ -11,10 +11,10 @@ import dev.sargunv.maplibrecompose.core.util.toMLNCoordinateBounds
 import dev.sargunv.maplibrecompose.core.util.toMLNMapCamera
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.CoreGraphics.CGSizeMake
 import platform.Foundation.NSURL
-import kotlin.coroutines.resumeWithException
 
 internal class IosMapSnapshotter(private val density: Density) : MapSnapshotter {
   override suspend fun snapshot(

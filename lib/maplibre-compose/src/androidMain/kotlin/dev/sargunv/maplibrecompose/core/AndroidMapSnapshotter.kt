@@ -11,9 +11,9 @@ import dev.sargunv.maplibrecompose.core.util.toLatLngBounds
 import dev.sargunv.maplibrecompose.core.util.toMLNCameraPosition
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.maplibre.android.maps.Style
-import kotlin.coroutines.resumeWithException
 import org.maplibre.android.snapshotter.MapSnapshotter as MLNMapSnapshotter
 
 internal class AndroidMapSnapshotter(

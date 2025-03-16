@@ -280,7 +280,8 @@ internal fun UIImage.toImageBitmap(): ImageBitmap {
 }
 
 private fun UIImage.toSkiaImage(): Image? {
-  val imageRef = CGImageCreateCopyWithColorSpace(this.CGImage, CGColorSpaceCreateDeviceRGB()) ?: return null
+  val imageRef =
+    CGImageCreateCopyWithColorSpace(this.CGImage, CGColorSpaceCreateDeviceRGB()) ?: return null
 
   val width = CGImageGetWidth(imageRef).toInt()
   val height = CGImageGetHeight(imageRef).toInt()
