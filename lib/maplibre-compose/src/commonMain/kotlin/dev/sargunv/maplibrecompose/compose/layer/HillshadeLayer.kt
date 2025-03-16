@@ -28,8 +28,8 @@ import dev.sargunv.maplibrecompose.expressions.value.IlluminationAnchor
  *   gorges.
  * @param illuminationDirection The direction of the light source used to generate the hillshading
  *   in degrees. A value in the range of `[0..360)`. `0` means
- *     - the top of the viewport if [illuminationAnchor] = [IlluminationAnchor.Viewport] or
- *     - north if [illuminationAnchor] = [IlluminationAnchor.Map]
+ *   - the top of the viewport if [illuminationAnchor] = [IlluminationAnchor.Viewport] or
+ *   - north if [illuminationAnchor] = [IlluminationAnchor.Map]
  *
  * @param illuminationAnchor Direction of light source when map is rotated. See
  *   [illuminationDirection].

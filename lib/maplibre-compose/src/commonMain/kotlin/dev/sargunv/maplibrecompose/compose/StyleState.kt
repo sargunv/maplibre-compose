@@ -6,11 +6,13 @@ import dev.sargunv.maplibrecompose.core.Style
 import dev.sargunv.maplibrecompose.core.source.AttributionLink
 import dev.sargunv.maplibrecompose.core.source.Source
 
+/** Remember a new [StyleState]. */
 @Composable
 public fun rememberStyleState(): StyleState {
   return remember { StyleState() }
 }
 
+/** Use this class to access information about the style, such as sources and layers. */
 public class StyleState internal constructor() {
   private var style: Style? = null
 

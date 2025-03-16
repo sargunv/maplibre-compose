@@ -1,0 +1,58 @@
+name: Bug Report
+description: File a bug report
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Include any errors or stack traces if available.
+      placeholder: Describe the bug
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Affected Platforms
+      description: On which platforms have you seen this bug?
+      multiple: true
+      options:
+        - Android
+        - iOS
+        - Desktop (JVM)
+        - Browser (JS)
+        - Browser (Wasm)
+    validations:
+      required: true
+  - type: input
+    id: platform-version
+    attributes:
+      label: Platform Version
+      description: What version of the platform are you using?
+      placeholder: e.g. Android 14, iOS 17.2, macOS 14.2
+    validations:
+      required: true
+  - type: input
+    id: library-version
+    attributes:
+      label: Library Version
+      description: What version of MapLibre Compose are you using?
+      placeholder: e.g. 1.0.0
+    validations:
+      required: true
+  - type: textarea
+    id: sample-code
+    attributes:
+      label: Sample Code
+      description: Please provide a minimal code sample that demonstrates the issue
+      placeholder: |
+        @Composable
+        fun MyMap() {
+            // Code that reproduces the issue
+        }
+    validations:
+      required: true
