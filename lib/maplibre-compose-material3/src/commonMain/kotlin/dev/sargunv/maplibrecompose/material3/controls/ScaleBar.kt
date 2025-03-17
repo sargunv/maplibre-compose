@@ -91,7 +91,7 @@ public fun ScaleBar(
     val params1 = scaleBarParameters(measures.primary, metersPerDp, maxBarLength)
     val params2 = measures.secondary?.let { scaleBarParameters(it, metersPerDp, maxBarLength) }
 
-    Canvas(modifier.fillMaxSize()) {
+    Canvas(Modifier.fillMaxSize()) {
       val fullStrokeWidthPx = fullStrokeWidth.toPx()
       val textHeightPx = maxTextSizePx.height
       val textHorizontalPaddingPx = textHorizontalPadding.toPx()
