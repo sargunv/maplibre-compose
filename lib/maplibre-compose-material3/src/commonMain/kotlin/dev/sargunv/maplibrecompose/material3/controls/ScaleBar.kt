@@ -50,7 +50,6 @@ public data class ScaleBarMeasures(
  * @param textStyle the text style. The text size is the deciding factor how large the scale bar is
  *   is displayed.
  * @param alignment horizontal alignment of the scale bar and text
-
  */
 @Composable
 public fun ScaleBar(
