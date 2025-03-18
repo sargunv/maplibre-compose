@@ -79,9 +79,10 @@ public fun ScaleBar(
   // when the next stop is e.g. 5 times the previous stop, it means that the bar may grow up to
   // five times it's minimum size (= text length) before switching over to the next stop. We
   // calculate this factor dynamically depending on the measure(s) passed in
-  val maxStopFactor = remember(measures) {
-    max(measures.primary.getMaxStopFactor(), measures.secondary?.getMaxStopFactor() ?: 1.0)
-  }
+  val maxStopFactor =
+    remember(measures) {
+      max(measures.primary.getMaxStopFactor(), measures.secondary?.getMaxStopFactor() ?: 1.0)
+    }
   val totalMaxWidth =
     maxTextSize.width * maxStopFactor.toFloat() + (textHorizontalPadding + barWidth) * 2f
 
