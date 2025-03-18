@@ -1,6 +1,7 @@
 package dev.sargunv.maplibrecompose.material3.controls
 
 import androidx.compose.runtime.Composable
+import dev.sargunv.maplibrecompose.material3.asSequenceOfPairs
 import dev.sargunv.maplibrecompose.material3.generated.Res
 import dev.sargunv.maplibrecompose.material3.generated.feet_symbol
 import dev.sargunv.maplibrecompose.material3.generated.kilometers_symbol
@@ -90,3 +91,10 @@ private fun Double.formatForDisplay(symbol: String) =
 private fun buildStops(mantissas: List<Int>, exponents: IntRange) = buildList {
   for (e in exponents) for (m in mantissas) add(m * 10.0.pow(e))
 }
+
+/**
+ * Maximum factor going from one stop to the next. E.g. if the stops are 500, 1000, 5000, the max
+ * factor is 5.0 (1000 -> 5000).
+ */
+internal fun ScaleBarMeasure.getMaxStopFactor(): Double =
+  stops.asSequenceOfPairs().maxOf { it.second / it.first }

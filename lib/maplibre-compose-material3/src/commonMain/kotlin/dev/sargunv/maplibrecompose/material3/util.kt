@@ -89,3 +89,15 @@ internal fun defaultScaleBarMeasures(): ScaleBarMeasures {
   val primary = systemDefaultPrimaryMeasure() ?: fallbackDefaultPrimaryMeasure(region)
   return ScaleBarMeasures(primary = primary, secondary = defaultSecondaryMeasure(primary, region))
 }
+
+/** Return a sequence that iterates through the given list in pairs */
+internal fun <T> Iterable<T>.asSequenceOfPairs(): Sequence<Pair<T, T>> = sequence {
+  val it = iterator()
+  if (!it.hasNext()) return@sequence
+  var item1 = it.next()
+  while (it.hasNext()) {
+    val item2 = it.next()
+    yield(item1 to item2)
+    item1 = item2
+  }
+}
