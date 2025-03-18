@@ -50,6 +50,7 @@ public data class ScaleBarMeasures(
  * @param textStyle the text style. The text size is the deciding factor how large the scale bar is
  *   is displayed.
  * @param alignment horizontal alignment of the scale bar and text
+
  */
 @Composable
 public fun ScaleBar(
@@ -76,15 +77,10 @@ public fun ScaleBar(
   val textHorizontalPadding = 4.dp
   val textVerticalPadding = 0.dp
 
-  // when the next stop is e.g. 5 times the previous stop, it means that the bar may grow up to
-  // five times it's minimum size (= text length) before switching over to the next stop. We
-  // calculate this factor dynamically depending on the measure(s) passed in
-  val maxStopFactor =
-    remember(measures) {
-      max(measures.primary.getMaxStopFactor(), measures.secondary?.getMaxStopFactor() ?: 1.0)
-    }
-  val totalMaxWidth =
-    maxTextSize.width * maxStopFactor.toFloat() + (textHorizontalPadding + barWidth) * 2f
+  // multiplied by 2.5 because the next stop can be the x2.5 of a previous stop (e.g. 2km -> 5km),
+  // so the bar can end at approx 1/2.5th of the total width. We want to avoid that the bar
+  // intersects with the text, i.e. is drawn behind the text
+  val totalMaxWidth = maxTextSize.width * 2.5f + (textHorizontalPadding + barWidth) * 2f
 
   val fullStrokeWidth = haloWidth * 2 + barWidth
 
