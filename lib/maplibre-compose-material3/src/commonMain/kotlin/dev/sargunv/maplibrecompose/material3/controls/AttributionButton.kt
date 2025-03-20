@@ -4,7 +4,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
@@ -22,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.TextLinkStyles
@@ -33,6 +37,7 @@ import androidx.compose.ui.window.Popup
 import dev.sargunv.maplibrecompose.compose.CameraState
 import dev.sargunv.maplibrecompose.core.CameraMoveReason
 import dev.sargunv.maplibrecompose.core.source.AttributionLink
+import dev.sargunv.maplibrecompose.material3.Reverse
 import dev.sargunv.maplibrecompose.material3.generated.Res
 import dev.sargunv.maplibrecompose.material3.generated.attribution
 import org.jetbrains.compose.resources.stringResource
@@ -71,20 +76,37 @@ public fun AttributionButton(
   }
 
   Box(modifier) {
-    IconButton(
-      onClick = { expanded = !expanded },
-      colors = colors,
-    ) { InfoIcon() }
+    IconButton(onClick = { expanded = !expanded }, colors = colors) { InfoIcon() }
 
     if (expanded) {
-      Popup(onDismissRequest = { expanded = false }) {
+      var alignLeft by remember { mutableStateOf(false) }
+      var alignTop by remember { mutableStateOf(true) }
+      val popupPositionProvider = SuperimposingPopupPositionProvider { left, top ->
+        alignLeft = left
+        alignTop = top
+      }
+      val arrangement = if (alignLeft) Arrangement.Absolute.Left else Arrangement.Absolute.Reverse
+      val alignment = if (alignTop) Alignment.Top else Alignment.Bottom
+
+      Popup(
+        popupPositionProvider = popupPositionProvider,
+        onDismissRequest = { expanded = false }
+      ) {
         Surface(shape = RoundedCornerShape(24.dp)) {
-          AttributionTexts(
-            attributions = attributions,
-            textStyle = textStyle,
-            textLinkStyles = textLinkStyles,
-            modifier = Modifier.padding(12.dp)
-          )
+          Row(horizontalArrangement = arrangement, verticalAlignment = Alignment.CenterVertically) {
+            IconButton(
+              onClick = { expanded = false },
+              colors = colors,
+              modifier = Modifier.align(alignment)
+            ) { InfoIcon() }
+            AttributionTexts(
+              attributions = attributions,
+              textStyle = textStyle,
+              textLinkStyles = textLinkStyles,
+              modifier = Modifier.padding(8.dp)
+            )
+            Spacer(Modifier.size(8.dp))
+          }
         }
       }
     }
