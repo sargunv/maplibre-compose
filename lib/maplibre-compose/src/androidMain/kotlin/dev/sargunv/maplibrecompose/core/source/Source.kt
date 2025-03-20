@@ -9,13 +9,12 @@ public actual sealed class Source {
 
   internal actual val id: String by lazy { impl.id }
 
-  public actual val attributionLinks: List<AttributionLink>
-    get() {
+  public actual val attributionLinks: List<AttributionLink> by lazy {
       // TODO minSdk 24 to get rid of deprecation warning
       @Suppress("DEPRECATION") val spanned = Html.fromHtml(impl.attribution)
 
       val spans = spanned.getSpans(0, spanned.length, URLSpan::class.java)
-      return spans.map {
+      spans.map {
         AttributionLink(
           title = spanned.slice(spanned.getSpanStart(it)..<spanned.getSpanEnd(it)).toString(),
           url = it.url,
