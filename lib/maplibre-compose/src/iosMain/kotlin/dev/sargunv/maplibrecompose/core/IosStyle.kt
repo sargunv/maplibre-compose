@@ -45,12 +45,10 @@ internal class IosStyle(style: MLNStyle, private val getScale: () -> Float) : St
 
   override fun addSource(source: Source) {
     impl.addSource(source.impl)
-    listener?.onSourceAdded(source)
   }
 
   override fun removeSource(source: Source) {
     impl.removeSource(source.impl)
-    listener?.onSourceRemoved(source)
   }
 
   override fun getLayer(id: String): Layer? {

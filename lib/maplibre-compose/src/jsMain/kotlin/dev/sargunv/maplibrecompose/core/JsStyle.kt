@@ -19,15 +19,9 @@ internal class JsStyle(internal val impl: MlJsMap) : Style {
     return emptyList()
   }
 
-  override fun addSource(source: Source) {
-    // uncomment once adding sources is implemented
-    // listener?.onSourceAdded(source)
-  }
+  override fun addSource(source: Source) {}
 
-  override fun removeSource(source: Source) {
-    // uncomment once adding sources is implemented
-    // listener?.onSourceRemoved(source)
-  }
+  override fun removeSource(source: Source) {}
 
   override fun getLayer(id: String): Layer? {
     return null

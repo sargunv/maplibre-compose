@@ -32,13 +32,11 @@ internal class FakeStyle(
   override fun addSource(source: Source) {
     if (source.id in sourceMap) error("Source ID '${source.id}' already exists in style")
     sourceMap[source.id] = source
-    listener?.onSourceAdded(source)
   }
 
   override fun removeSource(source: Source) {
     if (source.id !in sourceMap) error("Source ID '${source.id}' not found in style")
     sourceMap.remove(source.id)
-    listener?.onSourceRemoved(source)
   }
 
   override fun getLayer(id: String): Layer? {
