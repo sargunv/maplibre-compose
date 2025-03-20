@@ -6,6 +6,7 @@ import dev.sargunv.maplibrecompose.core.source.Source
 import dev.sargunv.maplibrejs.Map as MlJsMap
 
 internal class JsStyle(internal val impl: MlJsMap) : Style {
+  private var listener: Style.Callbacks? = null
 
   override fun addImage(id: String, image: ImageBitmap, sdf: Boolean) {}
 
@@ -19,9 +20,15 @@ internal class JsStyle(internal val impl: MlJsMap) : Style {
     return emptyList()
   }
 
-  override fun addSource(source: Source) {}
+  override fun addSource(source: Source) {
+    // uncomment once adding sources is implemented
+    // listener?.onSourceAdded(source)
+  }
 
-  override fun removeSource(source: Source) {}
+  override fun removeSource(source: Source) {
+    // uncomment once adding sources is implemented
+    // listener?.onSourceRemoved(source)
+  }
 
   override fun getLayer(id: String): Layer? {
     return null
@@ -40,4 +47,8 @@ internal class JsStyle(internal val impl: MlJsMap) : Style {
   override fun addLayerAt(index: Int, layer: Layer) {}
 
   override fun removeLayer(layer: Layer) {}
+
+  override fun setListener(listener: Style.Callbacks?) {
+    this.listener = listener
+  }
 }

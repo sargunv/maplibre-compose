@@ -31,6 +31,14 @@ internal interface Style {
 
   fun removeLayer(layer: Layer)
 
+  fun setListener(listener: Callbacks?)
+
+  interface Callbacks {
+    fun onSourceAdded(source: Source)
+
+    fun onSourceRemoved(source: Source)
+  }
+
   object Null : Style {
     override fun addImage(id: String, image: ImageBitmap, sdf: Boolean) {}
 
@@ -57,5 +65,7 @@ internal interface Style {
     override fun addLayerAt(index: Int, layer: Layer) {}
 
     override fun removeLayer(layer: Layer) {}
+
+    override fun setListener(listener: Callbacks?) {}
   }
 }

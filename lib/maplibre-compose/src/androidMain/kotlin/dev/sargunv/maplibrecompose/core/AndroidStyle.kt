@@ -17,6 +17,7 @@ import org.maplibre.android.style.sources.VectorSource as MLNVectorSource
 
 internal class AndroidStyle(style: MLNStyle) : Style {
   private var impl: MLNStyle = style
+  private var listener: Style.Callbacks? = null
 
   override fun addImage(id: String, image: ImageBitmap, sdf: Boolean) {
     impl.addImage(id, image.asAndroidBitmap(), sdf)
@@ -44,10 +45,12 @@ internal class AndroidStyle(style: MLNStyle) : Style {
 
   override fun addSource(source: Source) {
     impl.addSource(source.impl)
+    listener?.onSourceAdded(source)
   }
 
   override fun removeSource(source: Source) {
     impl.removeSource(source.impl)
+    listener?.onSourceRemoved(source)
   }
 
   override fun getLayer(id: String): Layer? {
@@ -76,5 +79,9 @@ internal class AndroidStyle(style: MLNStyle) : Style {
 
   override fun removeLayer(layer: Layer) {
     impl.removeLayer(layer.impl)
+  }
+
+  override fun setListener(listener: Style.Callbacks?) {
+    this.listener = listener
   }
 }
