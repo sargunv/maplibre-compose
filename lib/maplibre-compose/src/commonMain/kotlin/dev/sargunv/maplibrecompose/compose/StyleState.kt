@@ -21,10 +21,16 @@ public class StyleState internal constructor() {
 
   private val sourcesState = mutableStateOf(emptyList<Source>())
 
-  private val styleListener = object : Style.Callbacks {
-    override fun onSourceAdded(source: Source) { updateSources() }
-    override fun onSourceRemoved(source: Source) { updateSources() }
-  }
+  private val styleListener =
+    object : Style.Callbacks {
+      override fun onSourceAdded(source: Source) {
+        updateSources()
+      }
+
+      override fun onSourceRemoved(source: Source) {
+        updateSources()
+      }
+    }
 
   internal fun attach(style: Style?) {
     if (this.style != style) {
