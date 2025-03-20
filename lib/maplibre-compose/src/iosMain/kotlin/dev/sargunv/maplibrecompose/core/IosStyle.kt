@@ -18,7 +18,6 @@ import dev.sargunv.maplibrecompose.core.util.toUIImage
 
 internal class IosStyle(style: MLNStyle, private val getScale: () -> Float) : Style {
   private var impl: MLNStyle = style
-  private var listener: Style.Callbacks? = null
 
   override fun addImage(id: String, image: ImageBitmap, sdf: Boolean) {
     impl.setImage(image.toUIImage(getScale(), sdf), forName = id)
@@ -80,9 +79,5 @@ internal class IosStyle(style: MLNStyle, private val getScale: () -> Float) : St
 
   override fun removeLayer(layer: Layer) {
     impl.removeLayer(layer.impl)
-  }
-
-  override fun setListener(listener: Style.Callbacks?) {
-    this.listener = listener
   }
 }
