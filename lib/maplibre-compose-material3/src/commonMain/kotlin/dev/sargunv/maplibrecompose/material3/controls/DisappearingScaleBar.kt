@@ -51,7 +51,7 @@ public fun DisappearingScaleBar(
   modifier: Modifier = Modifier,
   measures: ScaleBarMeasures = defaultScaleBarMeasures(),
   haloColor: Color = MaterialTheme.colorScheme.surface,
-  haloWidth: Dp = 1.dp,
+  haloWidth: Dp = 0.dp,
   color: Color = contentColorFor(haloColor),
   barWidth: Dp = 2.dp,
   textStyle: TextStyle = MaterialTheme.typography.labelMedium,

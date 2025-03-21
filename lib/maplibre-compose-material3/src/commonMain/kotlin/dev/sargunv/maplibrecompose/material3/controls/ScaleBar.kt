@@ -24,7 +24,6 @@ import dev.sargunv.maplibrecompose.material3.defaultScaleBarMeasures
 import dev.sargunv.maplibrecompose.material3.drawPathsWithHalo
 import dev.sargunv.maplibrecompose.material3.drawTextWithHalo
 import kotlin.math.ceil
-import kotlin.math.max
 import kotlin.math.roundToInt
 
 /** Which measures to show on the scale bar. */
@@ -57,7 +56,7 @@ public fun ScaleBar(
   modifier: Modifier = Modifier,
   measures: ScaleBarMeasures = defaultScaleBarMeasures(),
   haloColor: Color = MaterialTheme.colorScheme.surface,
-  haloWidth: Dp = 1.dp,
+  haloWidth: Dp = 0.dp,
   color: Color = contentColorFor(haloColor),
   barWidth: Dp = 2.dp,
   textStyle: TextStyle = MaterialTheme.typography.labelSmall,
