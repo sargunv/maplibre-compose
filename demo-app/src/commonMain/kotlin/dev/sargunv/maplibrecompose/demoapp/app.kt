@@ -169,7 +169,7 @@ fun DemoMapControls(
       AttributionButton(
         lastCameraMoveReason = cameraState.moveReason,
         attributions = styleState.sources.flatMap { it.attributionLinks },
-        modifier = Modifier.align(Alignment.BottomEnd)
+        modifier = Modifier.align(Alignment.BottomEnd),
       )
     }
   }

@@ -24,7 +24,7 @@ internal class SuperimposingPopupPositionProvider(
     anchorBounds: IntRect,
     windowSize: IntSize,
     layoutDirection: LayoutDirection,
-    popupContentSize: IntSize
+    popupContentSize: IntSize,
   ): IntOffset {
     val alignLeft = anchorBounds.left <= windowSize.width - anchorBounds.right
     val alignTop = anchorBounds.top <= windowSize.height - anchorBounds.bottom
@@ -32,7 +32,7 @@ internal class SuperimposingPopupPositionProvider(
 
     return IntOffset(
       x = if (alignLeft) anchorBounds.left else anchorBounds.right - popupContentSize.width,
-      y = if (alignTop) anchorBounds.top else anchorBounds.bottom - popupContentSize.height
+      y = if (alignTop) anchorBounds.top else anchorBounds.bottom - popupContentSize.height,
     )
   }
 }

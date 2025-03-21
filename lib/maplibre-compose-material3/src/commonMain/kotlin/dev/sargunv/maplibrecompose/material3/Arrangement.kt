@@ -18,7 +18,7 @@ private data object ReverseAbsoluteArrangement : Arrangement.HorizontalOrVertica
     totalSize: Int,
     sizes: IntArray,
     layoutDirection: LayoutDirection,
-    outPositions: IntArray
+    outPositions: IntArray,
   ) = placeReversed(sizes, outPositions)
 
   override fun Density.arrange(totalSize: Int, sizes: IntArray, outPositions: IntArray) =

@@ -81,10 +81,9 @@ public fun AttributionButton(
   }
 
   Box(modifier) {
-    IconButton(
-      onClick = { expanded.targetState = !expanded.currentState },
-      colors = colors
-    ) { InfoIcon() }
+    IconButton(onClick = { expanded.targetState = !expanded.currentState }, colors = colors) {
+      InfoIcon()
+    }
 
     if (expanded.currentState || expanded.targetState) {
       // popup position provider places popup superimposed over the icon button, the arrangement
@@ -102,30 +101,28 @@ public fun AttributionButton(
 
       Popup(
         popupPositionProvider = popupPositionProvider,
-        onDismissRequest = { expanded.targetState = false }
+        onDismissRequest = { expanded.targetState = false },
       ) {
-        AnimatedVisibility(
-          visibleState = expanded,
-          enter = fadeIn(),
-          exit = fadeOut()
-        ) {
+        AnimatedVisibility(visibleState = expanded, enter = fadeIn(), exit = fadeOut()) {
           Surface(shape = RoundedCornerShape(24.dp)) {
             // the content of the popup should be aligned centered vertically in general, only the
             // icon button should be in the corner, so that it exactly overlaps the original button
             Row(
               horizontalArrangement = horizontalArrangement,
-              verticalAlignment = Alignment.CenterVertically
+              verticalAlignment = Alignment.CenterVertically,
             ) {
               IconButton(
                 onClick = { expanded.targetState = false },
                 colors = colors,
-                modifier = Modifier.align(verticalAlignment)
-              ) { InfoIcon() }
+                modifier = Modifier.align(verticalAlignment),
+              ) {
+                InfoIcon()
+              }
               AttributionTexts(
                 attributions = attributions,
                 textStyle = textStyle,
                 textLinkStyles = textLinkStyles,
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(8.dp),
               )
               // icon buttons are automatically padded to have a certain click size, which makes the
               // popup appear misaligned if we don't also add some extra padding on the other side
@@ -143,7 +140,7 @@ private fun InfoIcon(modifier: Modifier = Modifier) {
   Icon(
     imageVector = Icons.Outlined.Info,
     contentDescription = stringResource(Res.string.attribution),
-    modifier = modifier
+    modifier = modifier,
   )
 }
 

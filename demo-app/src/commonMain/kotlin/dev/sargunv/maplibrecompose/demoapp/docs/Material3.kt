@@ -38,7 +38,7 @@ fun Material3() {
       AttributionButton(
         lastCameraMoveReason = cameraState.moveReason,
         attributions = styleState.sources.flatMap { it.attributionLinks },
-        modifier = Modifier.align(Alignment.BottomEnd)
+        modifier = Modifier.align(Alignment.BottomEnd),
       )
     }
   }
@@ -62,7 +62,7 @@ fun Material3() {
       AttributionButton(
         lastCameraMoveReason = cameraState.moveReason,
         attributions = styleState.sources.flatMap { it.attributionLinks },
-        modifier = Modifier.align(Alignment.BottomEnd)
+        modifier = Modifier.align(Alignment.BottomEnd),
       )
     }
   }
