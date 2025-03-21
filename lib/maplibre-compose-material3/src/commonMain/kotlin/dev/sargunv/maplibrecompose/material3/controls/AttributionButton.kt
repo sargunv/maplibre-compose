@@ -106,7 +106,6 @@ public fun AttributionButton(
       ) {
         AnimatedVisibility(
           visibleState = expanded,
-          modifier = modifier,
           enter = fadeIn(),
           exit = fadeOut()
         ) {
