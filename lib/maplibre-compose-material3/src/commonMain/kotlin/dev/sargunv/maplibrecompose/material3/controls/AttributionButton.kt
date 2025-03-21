@@ -1,5 +1,9 @@
 package dev.sargunv.maplibrecompose.material3.controls
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -67,45 +71,67 @@ public fun AttributionButton(
 ) {
   if (attributions.isEmpty()) return
 
-  var expanded by remember { mutableStateOf(true) }
+  val expanded = remember { MutableTransitionState(true) }
 
+  // close popup on moving the map
   LaunchedEffect(lastCameraMoveReason) {
     if (lastCameraMoveReason == CameraMoveReason.GESTURE) {
-      expanded = false
+      expanded.targetState = false
     }
   }
 
   Box(modifier) {
-    IconButton(onClick = { expanded = !expanded }, colors = colors) { InfoIcon() }
+    IconButton(
+      onClick = { expanded.targetState = !expanded.currentState },
+      colors = colors
+    ) { InfoIcon() }
 
-    if (expanded) {
+    if (expanded.currentState || expanded.targetState) {
+      // popup position provider places popup superimposed over the icon button, the arrangement
+      // and alignment of its content depends on the position of the icon button in relation to the
+      // screen.
       var alignLeft by remember { mutableStateOf(false) }
-      var alignTop by remember { mutableStateOf(true) }
+      var alignTop by remember { mutableStateOf(false) }
       val popupPositionProvider = SuperimposingPopupPositionProvider { left, top ->
         alignLeft = left
         alignTop = top
       }
-      val arrangement = if (alignLeft) Arrangement.Absolute.Left else Arrangement.Absolute.Reverse
-      val alignment = if (alignTop) Alignment.Top else Alignment.Bottom
+      val verticalAlignment = if (alignTop) Alignment.Top else Alignment.Bottom
+      val horizontalArrangement =
+        if (alignLeft) Arrangement.Absolute.Left else Arrangement.Absolute.Reverse
 
       Popup(
         popupPositionProvider = popupPositionProvider,
-        onDismissRequest = { expanded = false }
+        onDismissRequest = { expanded.targetState = false }
       ) {
-        Surface(shape = RoundedCornerShape(24.dp)) {
-          Row(horizontalArrangement = arrangement, verticalAlignment = Alignment.CenterVertically) {
-            IconButton(
-              onClick = { expanded = false },
-              colors = colors,
-              modifier = Modifier.align(alignment)
-            ) { InfoIcon() }
-            AttributionTexts(
-              attributions = attributions,
-              textStyle = textStyle,
-              textLinkStyles = textLinkStyles,
-              modifier = Modifier.padding(8.dp)
-            )
-            Spacer(Modifier.size(8.dp))
+        AnimatedVisibility(
+          visibleState = expanded,
+          modifier = modifier,
+          enter = fadeIn(),
+          exit = fadeOut()
+        ) {
+          Surface(shape = RoundedCornerShape(24.dp)) {
+            // the content of the popup should be aligned centered vertically in general, only the
+            // icon button should be in the corner, so that it exactly overlaps the original button
+            Row(
+              horizontalArrangement = horizontalArrangement,
+              verticalAlignment = Alignment.CenterVertically
+            ) {
+              IconButton(
+                onClick = { expanded.targetState = false },
+                colors = colors,
+                modifier = Modifier.align(verticalAlignment)
+              ) { InfoIcon() }
+              AttributionTexts(
+                attributions = attributions,
+                textStyle = textStyle,
+                textLinkStyles = textLinkStyles,
+                modifier = Modifier.padding(8.dp)
+              )
+              // icon buttons are automatically padded to have a certain click size, which makes the
+              // popup appear misaligned if we don't also add some extra padding on the other side
+              Spacer(Modifier.size(8.dp))
+            }
           }
         }
       }
@@ -133,11 +159,11 @@ private fun AttributionTexts(
   ProvideTextStyle(textStyle) {
     FlowRow(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
       attributions.forEach {
-        Text(
-          buildAnnotatedString {
-            withLink(LinkAnnotation.Url(url = it.url, styles = textLinkStyles)) { append(it.title) }
-          },
-        )
+        val attributionString = buildAnnotatedString {
+          val link = LinkAnnotation.Url(url = it.url, styles = textLinkStyles)
+          withLink(link) { append(it.title) }
+        }
+        Text(attributionString)
       }
     }
   }
