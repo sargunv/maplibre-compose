@@ -20,7 +20,7 @@ gradle-compose = "1.7.3"
 gradle-dokka = "2.0.0"
 gradle-jgitver = "0.10.0-rc03"
 gradle-kotlin = "2.1.10"
-gradle-mavenPublish = "0.30.0"
+gradle-mavenPublish = "0.31.0"
 gradle-mkdocs = "4.0.1"
 gradle-spotless = "7.0.2"
 
