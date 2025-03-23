@@ -55,6 +55,7 @@ public fun <T : ExpressionValue> switch(
     )
     .cast()
 
+/** See [case] */
 public data class Condition<T : ExpressionValue>
 internal constructor(
   internal val test: Expression<BooleanValue>,
@@ -114,6 +115,7 @@ public fun <I : MatchableValue, O : ExpressionValue> switch(
     )
     .cast()
 
+/** See [switch] */
 public data class Case<@Suppress("unused") I : MatchableValue, O : ExpressionValue>
 internal constructor(internal val label: Expression<*>, internal val output: Expression<O>)
 
