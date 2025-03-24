@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
@@ -104,7 +104,7 @@ public fun AttributionButton(
         onDismissRequest = { expanded.targetState = false },
       ) {
         AnimatedVisibility(visibleState = expanded, enter = fadeIn(), exit = fadeOut()) {
-          Surface(shape = RoundedCornerShape(24.dp), shadowElevation = 8.dp) {
+          Surface(shape = RoundedCornerShape(24.dp)) {
             // the content of the popup should be aligned centered vertically in general, only the
             // icon button should be in the corner, so that it exactly overlaps the original button
             Row(
@@ -126,7 +126,7 @@ public fun AttributionButton(
               )
               // icon buttons are automatically padded to have a certain click size, which makes the
               // popup appear misaligned if we don't also add some extra padding on the other side
-              Spacer(Modifier.size(8.dp))
+              Spacer(Modifier.width(16.dp))
             }
           }
         }
