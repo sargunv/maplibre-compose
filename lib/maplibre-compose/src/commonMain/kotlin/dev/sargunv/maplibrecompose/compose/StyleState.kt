@@ -24,21 +24,26 @@ public class StyleState internal constructor() {
 
   public fun queryAttributionLinks(): List<AttributionLink> {
     // TODO expose this as State somehow?
-    return style?.getSources()?.flatMap { it.attributionLinks } ?: emptyList()
+    return getStyleIfLoaded()?.getSources()?.flatMap { it.attributionLinks } ?: emptyList()
   }
 
   /**
    * Retrieves all sources from the style.
    *
-   * @return A list of sources, or an empty list if the style is null or has no sources.
+   * @return A list of sources, or an empty list if the style is not fully loaded or has no sources.
    */
-  public fun getSources(): List<Source> = style?.getSources() ?: emptyList()
+  public fun getSources(): List<Source> = getStyleIfLoaded()?.getSources() ?: emptyList()
 
   /**
    * Retrieves a source by its [id].
    *
    * @param id The ID of the source to retrieve.
-   * @return The source with the specified ID, or null if no such source exists.
+   * @return The source with the specified ID, or null if no such source exists, or the style is not
+   *   fully loaded.
    */
-  public fun getSource(id: String): Source? = style?.getSource(id)
+  public fun getSource(id: String): Source? = getStyleIfLoaded()?.getSource(id)
+
+  private fun getStyleIfLoaded(): Style? {
+    return if (style?.isLoaded == true) style else null
+  }
 }
