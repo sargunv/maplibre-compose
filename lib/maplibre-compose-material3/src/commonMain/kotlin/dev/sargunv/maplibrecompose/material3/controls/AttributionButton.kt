@@ -37,7 +37,7 @@ public fun AttributionButton(
   }
 
   if (showDialog) {
-    val attributions = remember(styleState) { styleState.queryAttributionLinks() }
+    val attributions = styleState.sources.flatMap { it.attributionLinks }
     val uriHandler = LocalUriHandler.current
 
     AlertDialog(
