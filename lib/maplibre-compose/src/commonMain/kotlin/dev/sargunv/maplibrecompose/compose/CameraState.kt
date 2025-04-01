@@ -3,7 +3,8 @@ package dev.sargunv.maplibrecompose.compose
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.dp
@@ -26,11 +27,14 @@ import kotlinx.coroutines.channels.Channel
 /** Remember a new [CameraState] in the initial state as given in [firstPosition]. */
 @Composable
 public fun rememberCameraState(firstPosition: CameraPosition = CameraPosition()): CameraState {
-  return remember { CameraState(firstPosition) }
+  val layoutDirection = LocalLayoutDirection.current
+  return rememberSaveable(
+    saver = getCameraStateSaver(layoutDirection),
+  ) { CameraState(firstPosition) }
 }
 
 /** Use this class to access information about the map in relation to the camera. */
-public class CameraState internal constructor(firstPosition: CameraPosition) {
+public class CameraState(firstPosition: CameraPosition) {
   internal var map: MaplibreMap? = null
     set(map) {
       if (map != null && map !== field) {
