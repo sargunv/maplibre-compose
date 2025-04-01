@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.toSize
 import dev.sargunv.maplibrecompose.material3.defaultScaleBarMeasures
 import dev.sargunv.maplibrecompose.material3.drawPathsWithHalo
 import dev.sargunv.maplibrecompose.material3.drawTextWithHalo
+import kotlin.math.ceil
+import kotlin.math.roundToInt
 
 /** Which measures to show on the scale bar. */
 public data class ScaleBarMeasures(
@@ -41,7 +43,9 @@ public data class ScaleBarMeasures(
  * @param measures which measures to show on the scale bar. If `null`, measures will be selected
  *   based on the system settings or otherwise the user's locale.
  * @param haloColor halo for better visibility when displayed on top of the map
+ * @param haloWidth scale bar and text halo width
  * @param color scale bar and text color.
+ * @param barWidth scale bar width
  * @param textStyle the text style. The text size is the deciding factor how large the scale bar is
  *   is displayed.
  * @param alignment horizontal alignment of the scale bar and text
@@ -52,7 +56,9 @@ public fun ScaleBar(
   modifier: Modifier = Modifier,
   measures: ScaleBarMeasures = defaultScaleBarMeasures(),
   haloColor: Color = MaterialTheme.colorScheme.surface,
+  haloWidth: Dp = 0.dp,
   color: Color = contentColorFor(haloColor),
+  barWidth: Dp = 2.dp,
   textStyle: TextStyle = MaterialTheme.typography.labelSmall,
   alignment: Alignment.Horizontal = Alignment.Start,
 ) {
@@ -65,9 +71,6 @@ public fun ScaleBar(
     remember(textMeasurer, textStyle) { textMeasurer.measure("5000 km", textStyle).size }
   val maxTextSize = with(LocalDensity.current) { maxTextSizePx.toSize().toDpSize() }
 
-  // bar stroke width
-  val strokeWidth = 2.dp
-  val haloStrokeWidth = 1.dp
   // padding of text to bar stroke
   val textHorizontalPadding = 4.dp
   val textVerticalPadding = 0.dp
@@ -75,9 +78,9 @@ public fun ScaleBar(
   // multiplied by 2.5 because the next stop can be the x2.5 of a previous stop (e.g. 2km -> 5km),
   // so the bar can end at approx 1/2.5th of the total width. We want to avoid that the bar
   // intersects with the text, i.e. is drawn behind the text
-  val totalMaxWidth = maxTextSize.width * 2.5f + (textHorizontalPadding + strokeWidth) * 2f
+  val totalMaxWidth = maxTextSize.width * 2.5f + (textHorizontalPadding + barWidth) * 2f
 
-  val fullStrokeWidth = haloStrokeWidth * 2 + strokeWidth
+  val fullStrokeWidth = haloWidth * 2 + barWidth
 
   val textCount = if (measures.secondary != null) 2 else 1
   val totalHeight = (maxTextSize.height + textVerticalPadding) * textCount + fullStrokeWidth
@@ -89,7 +92,7 @@ public fun ScaleBar(
     val params1 = scaleBarParameters(measures.primary, metersPerDp, maxBarLength)
     val params2 = measures.secondary?.let { scaleBarParameters(it, metersPerDp, maxBarLength) }
 
-    Canvas(modifier.fillMaxSize()) {
+    Canvas(Modifier.fillMaxSize()) {
       val fullStrokeWidthPx = fullStrokeWidth.toPx()
       val textHeightPx = maxTextSizePx.height
       val textHorizontalPaddingPx = textHorizontalPadding.toPx()
@@ -102,18 +105,21 @@ public fun ScaleBar(
       val paths = ArrayList<List<Offset>>(2)
       val texts = ArrayList<Pair<Offset, TextLayoutResult>>(2)
 
+      val alignmentSpacePx = ceil(size.width - fullStrokeWidthPx).toInt()
+
       if (true) { // just want a scope here
+        val barLengthPx = params1.barLength.toPx().roundToInt()
         val offsetX =
           alignment.align(
-            size = params1.barLength.toPx().toInt(),
-            space = (size.width - fullStrokeWidthPx).toInt(),
+            size = barLengthPx,
+            space = alignmentSpacePx,
             layoutDirection = layoutDirection,
           )
         paths.add(
           listOf(
             Offset(offsetX + fullStrokeWidthPx / 2f, 0f + textHeightPx / 2f),
             Offset(0f, barEndsHeightPx),
-            Offset(params1.barLength.toPx(), 0f),
+            Offset(barLengthPx.toFloat(), 0f),
             Offset(0f, -barEndsHeightPx),
           )
         )
@@ -128,17 +134,18 @@ public fun ScaleBar(
       }
 
       if (params2 != null) {
+        val barLengthPx = params2.barLength.toPx().roundToInt()
         val offsetX =
           alignment.align(
-            size = params2.barLength.toPx().toInt(),
-            space = (size.width - fullStrokeWidthPx).toInt(),
+            size = barLengthPx,
+            space = alignmentSpacePx,
             layoutDirection = layoutDirection,
           )
         paths.add(
           listOf(
             Offset(offsetX + fullStrokeWidthPx / 2f, y + fullStrokeWidthPx / 2f + barEndsHeightPx),
             Offset(0f, -barEndsHeightPx),
-            Offset(params2.barLength.toPx(), 0f),
+            Offset(barLengthPx.toFloat(), 0f),
             Offset(0f, +barEndsHeightPx),
           )
         )
@@ -157,8 +164,8 @@ public fun ScaleBar(
         color = color,
         haloColor = haloColor,
         paths = paths,
-        strokeWidth = strokeWidth.toPx(),
-        haloWidth = haloStrokeWidth.toPx(),
+        strokeWidth = barWidth.toPx(),
+        haloWidth = haloWidth.toPx(),
         cap = StrokeCap.Round,
       )
 
@@ -166,7 +173,7 @@ public fun ScaleBar(
         val offsetX =
           alignment.align(
             size = textLayoutResult.size.width,
-            space = (size.width - 2 * offset.x).toInt(),
+            space = ceil(size.width - 2 * offset.x).toInt(),
             layoutDirection = layoutDirection,
           ) + offset.x
         drawTextWithHalo(
@@ -174,7 +181,7 @@ public fun ScaleBar(
           topLeft = Offset(offsetX, offset.y),
           color = color,
           haloColor = haloColor,
-          haloWidth = haloStrokeWidth.toPx(),
+          haloWidth = haloWidth.toPx(),
         )
       }
     }
