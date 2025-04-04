@@ -18,6 +18,8 @@ import org.maplibre.android.style.sources.VectorSource as MLNVectorSource
 internal class AndroidStyle(style: MLNStyle) : Style {
   private var impl: MLNStyle = style
 
+  override var isLoaded: Boolean = true
+
   override fun addImage(id: String, image: ImageBitmap, sdf: Boolean) {
     impl.addImage(id, image.asAndroidBitmap(), sdf)
   }
