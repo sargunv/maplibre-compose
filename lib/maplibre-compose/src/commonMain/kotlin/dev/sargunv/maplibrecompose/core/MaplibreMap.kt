@@ -175,4 +175,6 @@ internal interface StandardMaplibreMap : MaplibreMap {
   ): List<Feature>
 
   fun metersPerDpAtLatitude(latitude: Double): Double
+
+  fun getMapSnapshotter(): MapSnapshotter
 }
