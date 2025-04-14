@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -23,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,6 +33,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.TextLinkStyles
@@ -60,18 +64,34 @@ import org.jetbrains.compose.resources.stringResource
  *   [Source.attributionLinks][dev.sargunv.maplibrecompose.core.source.Source.attributionLinks] via
  *   [StyleState.sources][dev.sargunv.maplibrecompose.compose.StyleState.sources]
  * @param modifier the Modifier to be applied to this layout node
- * @param colors Colors that will be used for the info button
+ * @param iconColors Colors that will be used for the info button
  * @param textStyle Text style used for the attribution info
  * @param textLinkStyles Text link styles that should be used for the links in the attribution info
+ * @param popupEndPadding Padding that will be applied on the end of the popup (i.e. if the popup is
+ *   aligned to the start, padding will be applied on the end, but if the popup is aligned to the
+ *   end, padding will be applied to the start)
+ * @param popupShape Shape of the popup (applied to [Surface])
+ * @param popupColor Color of the popup (applied to [Surface])
+ * @param popupContentColor Content Color of the popup (applied to [Surface])
+ * @param popupTonalElevation Tonal Elevation of the popup (applied to [Surface])
+ * @param popupShadowElevation Shadow Elevation of the popup (applied to [Surface])
+ * @param popupBorder Border of the popup (applied to [Surface])
  */
 @Composable
 public fun AttributionButton(
   lastCameraMoveReason: CameraMoveReason,
   attributions: List<AttributionLink>,
   modifier: Modifier = Modifier,
-  colors: IconButtonColors = IconButtonDefaults.iconButtonColors(),
+  iconColors: IconButtonColors = IconButtonDefaults.iconButtonColors(),
   textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
   textLinkStyles: TextLinkStyles? = null,
+  popupEndPadding: Dp = 12.dp,
+  popupShape: Shape = RoundedCornerShape(24.dp),
+  popupColor: Color = MaterialTheme.colorScheme.surface,
+  popupContentColor: Color = contentColorFor(popupColor),
+  popupTonalElevation: Dp = 0.dp,
+  popupShadowElevation: Dp = 0.dp,
+  popupBorder: BorderStroke? = null,
 ) {
   if (attributions.isEmpty()) return
 
@@ -85,7 +105,7 @@ public fun AttributionButton(
   }
 
   Box(modifier) {
-    IconButton(onClick = { expanded.targetState = !expanded.currentState }, colors = colors) {
+    IconButton(onClick = { expanded.targetState = !expanded.currentState }, colors = iconColors) {
       InfoIcon()
     }
 
@@ -110,12 +130,19 @@ public fun AttributionButton(
         onDismissRequest = { expanded.targetState = false },
       ) {
         AnimatedVisibility(
-          modifier = Modifier.paddingEndOfPopup(24.dp, alignLeft, isRTL),
+          modifier = Modifier.paddingEndOfPopup(popupEndPadding, alignLeft, isRTL),
           visibleState = expanded,
           enter = fadeIn(),
-          exit = fadeOut()
+          exit = fadeOut(),
         ) {
-          Surface(shape = RoundedCornerShape(24.dp)) {
+          Surface(
+            shape = popupShape,
+            color = popupColor,
+            contentColor = popupContentColor,
+            tonalElevation = popupTonalElevation,
+            shadowElevation = popupShadowElevation,
+            border = popupBorder,
+          ) {
             // the content of the popup should be aligned centered vertically in general, only the
             // icon button should be in the corner, so that it exactly overlaps the original button
             Row(
@@ -124,7 +151,7 @@ public fun AttributionButton(
             ) {
               IconButton(
                 onClick = { expanded.targetState = false },
-                colors = colors,
+                colors = iconColors,
                 modifier = Modifier.align(verticalAlignment),
               ) {
                 InfoIcon()
