@@ -31,11 +31,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withLink
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
@@ -99,13 +102,19 @@ public fun AttributionButton(
       val verticalAlignment = if (alignTop) Alignment.Top else Alignment.Bottom
       val horizontalArrangement =
         if (alignLeft) Arrangement.Absolute.Left else Arrangement.Absolute.Reverse
+      val isRTL = LocalLayoutDirection.current == LayoutDirection.Rtl
 
       Popup(
         popupPositionProvider = popupPositionProvider,
         properties = PopupProperties(clippingEnabled = false),
         onDismissRequest = { expanded.targetState = false },
       ) {
-        AnimatedVisibility(visibleState = expanded, enter = fadeIn(), exit = fadeOut()) {
+        AnimatedVisibility(
+          modifier = Modifier.paddingEndOfPopup(24.dp, alignLeft, isRTL),
+          visibleState = expanded,
+          enter = fadeIn(),
+          exit = fadeOut()
+        ) {
           Surface(shape = RoundedCornerShape(24.dp)) {
             // the content of the popup should be aligned centered vertically in general, only the
             // icon button should be in the corner, so that it exactly overlaps the original button
@@ -135,6 +144,12 @@ public fun AttributionButton(
       }
     }
   }
+}
+
+private fun Modifier.paddingEndOfPopup(padding: Dp, alignLeft: Boolean, isRTL: Boolean): Modifier {
+  val alignEnd = if (isRTL) !alignLeft else alignLeft
+
+  return if (alignEnd) padding(end = padding) else padding(start = padding)
 }
 
 @Composable
