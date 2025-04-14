@@ -38,6 +38,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
 import dev.sargunv.maplibrecompose.compose.CameraState
 import dev.sargunv.maplibrecompose.core.CameraMoveReason
 import dev.sargunv.maplibrecompose.core.source.AttributionLink
@@ -101,6 +102,7 @@ public fun AttributionButton(
 
       Popup(
         popupPositionProvider = popupPositionProvider,
+        properties = PopupProperties(clippingEnabled = false),
         onDismissRequest = { expanded.targetState = false },
       ) {
         AnimatedVisibility(visibleState = expanded, enter = fadeIn(), exit = fadeOut()) {
