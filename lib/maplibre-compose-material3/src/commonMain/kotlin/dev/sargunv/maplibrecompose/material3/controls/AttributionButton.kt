@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,14 +36,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
@@ -122,7 +121,6 @@ public fun AttributionButton(
       val verticalAlignment = if (alignTop) Alignment.Top else Alignment.Bottom
       val horizontalArrangement =
         if (alignLeft) Arrangement.Absolute.Left else Arrangement.Absolute.Reverse
-      val isRTL = LocalLayoutDirection.current == LayoutDirection.Rtl
 
       Popup(
         popupPositionProvider = popupPositionProvider,
@@ -130,7 +128,7 @@ public fun AttributionButton(
         onDismissRequest = { expanded.targetState = false },
       ) {
         AnimatedVisibility(
-          modifier = Modifier.paddingEndOfPopup(popupEndPadding, alignLeft, isRTL),
+          modifier = Modifier.paddingEndOfPopup(popupEndPadding, alignLeft),
           visibleState = expanded,
           enter = fadeIn(),
           exit = fadeOut(),
@@ -173,11 +171,8 @@ public fun AttributionButton(
   }
 }
 
-private fun Modifier.paddingEndOfPopup(padding: Dp, alignLeft: Boolean, isRTL: Boolean): Modifier {
-  val alignEnd = if (isRTL) !alignLeft else alignLeft
-
-  return if (alignEnd) padding(end = padding) else padding(start = padding)
-}
+private fun Modifier.paddingEndOfPopup(padding: Dp, alignLeft: Boolean) =
+  if (alignLeft) absolutePadding(right = padding) else absolutePadding(left = padding)
 
 @Composable
 private fun InfoIcon(modifier: Modifier = Modifier) {
