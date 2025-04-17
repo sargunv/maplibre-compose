@@ -36,10 +36,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -84,7 +86,7 @@ public fun AttributionButton(
   iconColors: IconButtonColors = IconButtonDefaults.iconButtonColors(),
   textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
   textLinkStyles: TextLinkStyles? = null,
-  popupEndPadding: Dp = 12.dp,
+  popupEndPadding: Dp = 0.dp,
   popupShape: Shape = RoundedCornerShape(24.dp),
   popupColor: Color = MaterialTheme.colorScheme.surface,
   popupContentColor: Color = contentColorFor(popupColor),
@@ -112,15 +114,19 @@ public fun AttributionButton(
       // popup position provider places popup superimposed over the icon button, the arrangement
       // and alignment of its content depends on the position of the icon button in relation to the
       // screen.
+      val density = LocalDensity.current
       var alignLeft by remember { mutableStateOf(false) }
       var alignTop by remember { mutableStateOf(false) }
-      val popupPositionProvider = SuperimposingPopupPositionProvider { left, top ->
+      var popupWidth by remember { mutableStateOf(Dp.Unspecified) }
+      val popupPositionProvider = SuperimposingPopupPositionProvider { left, top, width ->
         alignLeft = left
         alignTop = top
+        popupWidth = with(density) { width.toDp() }
       }
       val verticalAlignment = if (alignTop) Alignment.Top else Alignment.Bottom
       val horizontalArrangement =
         if (alignLeft) Arrangement.Absolute.Left else Arrangement.Absolute.Reverse
+      val textAlign = if (alignLeft) TextAlign.Left else TextAlign.Right
 
       Popup(
         popupPositionProvider = popupPositionProvider,
@@ -128,7 +134,8 @@ public fun AttributionButton(
         onDismissRequest = { expanded.targetState = false },
       ) {
         AnimatedVisibility(
-          modifier = Modifier.paddingEndOfPopup(popupEndPadding, alignLeft),
+          modifier =
+            Modifier.widthIfSpecified(popupWidth).paddingEndOfPopup(popupEndPadding, alignLeft),
           visibleState = expanded,
           enter = fadeIn(),
           exit = fadeOut(),
@@ -158,6 +165,7 @@ public fun AttributionButton(
                 attributions = attributions,
                 textStyle = textStyle,
                 textLinkStyles = textLinkStyles,
+                textAlign = textAlign,
                 modifier = Modifier.padding(8.dp),
               )
               // icon buttons are automatically padded to have a certain click size, which makes the
@@ -174,6 +182,9 @@ public fun AttributionButton(
 private fun Modifier.paddingEndOfPopup(padding: Dp, alignLeft: Boolean) =
   if (alignLeft) absolutePadding(right = padding) else absolutePadding(left = padding)
 
+private fun Modifier.widthIfSpecified(width: Dp) =
+  if (width != Dp.Unspecified) width(width) else this
+
 @Composable
 private fun InfoIcon(modifier: Modifier = Modifier) {
   Icon(
@@ -189,6 +200,7 @@ private fun AttributionTexts(
   attributions: List<AttributionLink>,
   textStyle: TextStyle,
   textLinkStyles: TextLinkStyles?,
+  textAlign: TextAlign,
   modifier: Modifier = Modifier,
 ) {
   ProvideTextStyle(textStyle) {
@@ -198,7 +210,7 @@ private fun AttributionTexts(
           val link = LinkAnnotation.Url(url = it.url, styles = textLinkStyles)
           withLink(link) { append(it.title) }
         }
-        Text(attributionString)
+        Text(text = attributionString, textAlign = textAlign)
       }
     }
   }
