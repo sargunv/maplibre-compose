@@ -32,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -127,6 +128,7 @@ public fun AttributionButton(
       val horizontalArrangement =
         if (alignLeft) Arrangement.Absolute.Left else Arrangement.Absolute.Reverse
       val textAlign = if (alignLeft) TextAlign.Left else TextAlign.Right
+      val attributionAlignment = if (alignLeft) AbsoluteAlignment.Left else AbsoluteAlignment.Right
 
       Popup(
         popupPositionProvider = popupPositionProvider,
@@ -166,6 +168,7 @@ public fun AttributionButton(
                 textStyle = textStyle,
                 textLinkStyles = textLinkStyles,
                 textAlign = textAlign,
+                attributionAlignment = attributionAlignment,
                 modifier = Modifier.padding(8.dp),
               )
               // icon buttons are automatically padded to have a certain click size, which makes the
@@ -201,10 +204,11 @@ private fun AttributionTexts(
   textStyle: TextStyle,
   textLinkStyles: TextLinkStyles?,
   textAlign: TextAlign,
+  attributionAlignment: Alignment.Horizontal,
   modifier: Modifier = Modifier,
 ) {
   ProvideTextStyle(textStyle) {
-    FlowRow(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    FlowRow(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(8.dp, attributionAlignment)) {
       attributions.distinct().forEach {
         val attributionString = buildAnnotatedString {
           val link = LinkAnnotation.Url(url = it.url, styles = textLinkStyles)
