@@ -208,7 +208,10 @@ private fun AttributionTexts(
   modifier: Modifier = Modifier,
 ) {
   ProvideTextStyle(textStyle) {
-    FlowRow(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(8.dp, attributionAlignment)) {
+    FlowRow(
+      modifier = modifier,
+      horizontalArrangement = Arrangement.spacedBy(8.dp, attributionAlignment),
+    ) {
       attributions.distinct().forEach {
         val attributionString = buildAnnotatedString {
           val link = LinkAnnotation.Url(url = it.url, styles = textLinkStyles)
