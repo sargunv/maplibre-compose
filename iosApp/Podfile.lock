@@ -1,7 +1,7 @@
 PODS:
   - demo_app (0.0.0):
-    - MapLibre (= 6.9.0)
-  - MapLibre (6.9.0)
+    - MapLibre (= 6.13.0)
+  - MapLibre (6.13.0)
 
 DEPENDENCIES:
   - demo_app (from `../demo-app`)

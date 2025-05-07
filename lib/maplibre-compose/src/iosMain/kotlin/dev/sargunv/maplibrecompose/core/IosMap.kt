@@ -160,6 +160,12 @@ internal class IosMap(
       )
     }
 
+    override fun mapView(mapView: MLNMapView, sourceDidChange: MLNSource) {
+      val sourceId = sourceDidChange.identifier
+      map.logger?.i { "Source $sourceId changed" }
+      map.callbacks.onSourceChanged(map, sourceId)
+    }
+
     private val anyGesture =
       (MLNCameraChangeReasonGestureOneFingerZoom or
         MLNCameraChangeReasonGesturePan or

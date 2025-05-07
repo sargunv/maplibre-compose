@@ -1,9 +1,9 @@
 package dev.sargunv.maplibrecompose.compose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import dev.sargunv.maplibrecompose.core.Style
-import dev.sargunv.maplibrecompose.core.source.AttributionLink
 import dev.sargunv.maplibrecompose.core.source.Source
 
 /** Remember a new [StyleState]. */
@@ -16,23 +16,21 @@ public fun rememberStyleState(): StyleState {
 public class StyleState internal constructor() {
   private var style: Style? = null
 
+  public val sources: List<Source>
+    get() = sourcesState.value
+
+  private val sourcesState = mutableStateOf(emptyList<Source>())
+
   internal fun attach(style: Style?) {
     if (this.style != style) {
       this.style = style
+      updateSources()
     }
   }
 
-  public fun queryAttributionLinks(): List<AttributionLink> {
-    // TODO expose this as State somehow?
-    return style?.getSources()?.flatMap { it.attributionLinks } ?: emptyList()
+  internal fun updateSources() {
+    sourcesState.value = style?.getSources().orEmpty()
   }
-
-  /**
-   * Retrieves all sources from the style.
-   *
-   * @return A list of sources, or an empty list if the style is null or has no sources.
-   */
-  public fun getSources(): List<Source> = style?.getSources() ?: emptyList()
 
   /**
    * Retrieves a source by its [id].
