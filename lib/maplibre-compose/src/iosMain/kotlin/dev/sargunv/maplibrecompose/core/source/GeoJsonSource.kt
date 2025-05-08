@@ -61,7 +61,7 @@ public actual class GeoJsonSource : Source {
     try {
       impl.setURL(NSURL(string = uri))
     } catch (e: ForeignException) {
-      if (e.message.startsWith(MLNInvalidStyleSourceException))
+      if (e.message.startsWith(MLNInvalidStyleSourceException.toString()))
         println("Warning: Attempting to call setUri on an invalid source")
       else throw e
     }
@@ -72,7 +72,7 @@ public actual class GeoJsonSource : Source {
     try {
       impl.setShape(geoJson.toMLNShape())
     } catch (e: ForeignException) {
-      if (e.message.startsWith(MLNInvalidStyleSourceException))
+      if (e.message.startsWith(MLNInvalidStyleSourceException.toString()))
         println("Warning: Attempting to call setData on an invalid source")
       else throw e
     }
