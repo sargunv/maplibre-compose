@@ -1,5 +1,6 @@
 package dev.sargunv.maplibrecompose.core.source
 
+import cocoapods.MapLibre.MLNInvalidStyleSourceException
 import cocoapods.MapLibre.MLNShapeSource
 import cocoapods.MapLibre.MLNShapeSourceOptionBuffer
 import cocoapods.MapLibre.MLNShapeSourceOptionClusterProperties
@@ -15,6 +16,8 @@ import dev.sargunv.maplibrecompose.core.util.toNSExpression
 import dev.sargunv.maplibrecompose.expressions.ExpressionContext
 import dev.sargunv.maplibrecompose.expressions.ast.FunctionCall
 import io.github.dellisd.spatialk.geojson.GeoJson
+import kotlinx.cinterop.BetaInteropApi
+import kotlinx.cinterop.ForeignException
 import platform.Foundation.NSNumber
 import platform.Foundation.NSURL
 
@@ -53,11 +56,25 @@ public actual class GeoJsonSource : Source {
       )
     }
 
+  @OptIn(BetaInteropApi::class)
   public actual fun setUri(uri: String) {
-    impl.setURL(NSURL(string = uri))
+    try {
+      impl.setURL(NSURL(string = uri))
+    } catch (e: ForeignException) {
+      if (e.message.startsWith(MLNInvalidStyleSourceException))
+        println("Warning: Attempting to call setUri on an invalid source")
+      else throw e
+    }
   }
 
+  @OptIn(BetaInteropApi::class)
   public actual fun setData(geoJson: GeoJson) {
-    impl.setShape(geoJson.toMLNShape())
+    try {
+      impl.setShape(geoJson.toMLNShape())
+    } catch (e: ForeignException) {
+      if (e.message.startsWith(MLNInvalidStyleSourceException))
+        println("Warning: Attempting to call setData on an invalid source")
+      else throw e
+    }
   }
 }

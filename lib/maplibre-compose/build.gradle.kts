@@ -59,7 +59,10 @@ kotlin {
   cocoapods {
     noPodspec()
     ios.deploymentTarget = project.properties["iosDeploymentTarget"]!!.toString()
-    pod("MapLibre", libs.versions.maplibre.ios.get())
+    pod("MapLibre") {
+      version = libs.versions.maplibre.ios.get()
+      extraOpts = listOf("-Xforeign-exception-mode", "objc-wrap")
+    }
   }
 
   sourceSets {
