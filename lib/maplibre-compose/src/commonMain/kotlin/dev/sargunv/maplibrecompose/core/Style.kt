@@ -30,32 +30,4 @@ internal interface Style {
   fun addLayerAt(index: Int, layer: Layer)
 
   fun removeLayer(layer: Layer)
-
-  object Null : Style {
-    override fun addImage(id: String, image: ImageBitmap, sdf: Boolean) {}
-
-    override fun removeImage(id: String) {}
-
-    override fun getSource(id: String): Source? = null
-
-    override fun getSources(): List<Source> = emptyList()
-
-    override fun addSource(source: Source) {}
-
-    override fun removeSource(source: Source) {}
-
-    override fun getLayer(id: String): Layer? = null
-
-    override fun getLayers(): List<Layer> = emptyList()
-
-    override fun addLayer(layer: Layer) {}
-
-    override fun addLayerAbove(id: String, layer: Layer) {}
-
-    override fun addLayerBelow(id: String, layer: Layer) {}
-
-    override fun addLayerAt(index: Int, layer: Layer) {}
-
-    override fun removeLayer(layer: Layer) {}
-  }
 }
