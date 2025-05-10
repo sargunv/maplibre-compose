@@ -19,7 +19,6 @@ import androidx.compose.ui.platform.LocalUriHandler
 import dev.sargunv.maplibrecompose.compose.StyleState
 import dev.sargunv.maplibrecompose.material3.generated.Res
 import dev.sargunv.maplibrecompose.material3.generated.attribution
-import dev.sargunv.maplibrecompose.material3.generated.compass_needle
 import dev.sargunv.maplibrecompose.material3.generated.info
 import dev.sargunv.maplibrecompose.material3.generated.library_name
 import org.jetbrains.compose.resources.stringResource
@@ -34,7 +33,10 @@ public fun AttributionButton(
   var showDialog by remember { mutableStateOf(false) }
 
   IconButton(modifier = modifier, colors = colors, onClick = { showDialog = true }) {
-    Icon(imageVector = vectorResource(Res.drawable.info), contentDescription = stringResource(Res.string.attribution))
+    Icon(
+      imageVector = vectorResource(Res.drawable.info),
+      contentDescription = stringResource(Res.string.attribution),
+    )
   }
 
   if (showDialog) {
