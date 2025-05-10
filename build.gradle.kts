@@ -32,17 +32,17 @@ tasks.withType<MkdocsTask>().configureEach {
 dokka { moduleName = "MapLibre Compose API Reference" }
 
 tasks.register("generateDocs") {
-  dependsOn("dokkaGenerate", "mkdocsBuild")
-  doLast {
-    copy {
-      from(layout.buildDirectory.dir("mkdocs"))
-      into(layout.buildDirectory.dir("docs"))
+    dependsOn("dokkaGenerate", "mkdocsBuild")
+    doLast {
+      copy {
+        from(layout.buildDirectory.dir("mkdocs"))
+        into(layout.buildDirectory.dir("docs"))
+      }
+      copy {
+        from(layout.buildDirectory.dir("dokka/html"))
+        into(layout.buildDirectory.dir("docs/api"))
+      }
     }
-    copy {
-      from(layout.buildDirectory.dir("dokka/html"))
-      into(layout.buildDirectory.dir("docs/api"))
-    }
-  }
 }
 
 dependencies {
@@ -54,12 +54,13 @@ dependencies {
 }
 
 spotless {
+  val modulePaths = listOf("demo-app", "lib/*", "buildSrc")
   kotlinGradle {
-    target("**/*.gradle.kts")
+    target("*.gradle.kts", *(modulePaths.map { "${it}/*.gradle.kts" }).toTypedArray())
     ktfmt().googleStyle()
   }
   kotlin {
-    target("**/*.kt")
+    target(*modulePaths.map { "${it}/src/**/*.kt" }.toTypedArray())
     ktfmt().googleStyle()
   }
   if (System.getProperty("os.name").contains("Mac OS X")) {
