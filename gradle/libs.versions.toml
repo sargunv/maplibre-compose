@@ -1,3 +1,9 @@
+# Version matrix for Gradle, Kotlin, and AGP:
+# https://kotlinlang.org/docs/gradle-configure-project.html#apply-the-plugin
+
+# Version matrix for Compose:
+# https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-compatibility-and-versioning.html#jetpack-compose-artifacts-used
+
 [versions]
 androidx-activity = "1.10.1"
 androidx-composeUi = "1.8.1"
@@ -15,7 +21,7 @@ webpack-html = "5.6.3"
 webpack-htmlInlineScript = "3.2.1"
 webview = "1.9.40"
 
-gradle-android = "8.10.0"
+gradle-android = "8.7.3"
 gradle-compose = "1.8.0"
 gradle-dokka = "2.0.0"
 gradle-jgitver = "0.10.0-rc03"
