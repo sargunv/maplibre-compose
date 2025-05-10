@@ -32,17 +32,17 @@ tasks.withType<MkdocsTask>().configureEach {
 dokka { moduleName = "MapLibre Compose API Reference" }
 
 tasks.register("generateDocs") {
-    dependsOn("dokkaGenerate", "mkdocsBuild")
-    doLast {
-      copy {
-        from(layout.buildDirectory.dir("mkdocs"))
-        into(layout.buildDirectory.dir("docs"))
-      }
-      copy {
-        from(layout.buildDirectory.dir("dokka/html"))
-        into(layout.buildDirectory.dir("docs/api"))
-      }
+  dependsOn("dokkaGenerate", "mkdocsBuild")
+  doLast {
+    copy {
+      from(layout.buildDirectory.dir("mkdocs"))
+      into(layout.buildDirectory.dir("docs"))
     }
+    copy {
+      from(layout.buildDirectory.dir("dokka/html"))
+      into(layout.buildDirectory.dir("docs/api"))
+    }
+  }
 }
 
 dependencies {
