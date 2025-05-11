@@ -3,7 +3,6 @@ package dev.sargunv.maplibrecompose.core.source
 import cocoapods.MapLibre.MLNRasterTileSource
 import cocoapods.MapLibre.MLNTileCoordinateSystemTMS
 import cocoapods.MapLibre.MLNTileCoordinateSystemXYZ
-import cocoapods.MapLibre.MLNTileSourceOption
 import cocoapods.MapLibre.MLNTileSourceOptionAttributionHTMLString
 import cocoapods.MapLibre.MLNTileSourceOptionCoordinateBounds
 import cocoapods.MapLibre.MLNTileSourceOptionMaximumZoomLevel
@@ -30,23 +29,23 @@ public actual class RasterSource : Source {
     options: TileSetOptions,
     tileSize: Int,
   ) : super() {
-    MLNTileSourceOption
     this.impl =
       MLNRasterTileSource(
-        id,
-        tiles,
-        mapOf(
-          MLNTileSourceOptionMinimumZoomLevel to options.minZoom.toDouble(),
-          MLNTileSourceOptionMaximumZoomLevel to options.maxZoom.toDouble(),
-          MLNTileSourceOptionTileCoordinateSystem to
-            when (options.tileCoordinateSystem) {
-              TileCoordinateSystem.XYZ -> MLNTileCoordinateSystemXYZ
-              TileCoordinateSystem.TMS -> MLNTileCoordinateSystemTMS
-            },
-          MLNTileSourceOptionCoordinateBounds to options.boundingBox?.toMLNCoordinateBounds(),
-          MLNTileSourceOptionAttributionHTMLString to options.attributionHtml,
-          MLNTileSourceOptionTileSize to tileSize.toDouble(),
-        ),
+        identifier = id,
+        tileURLTemplates = tiles,
+        options =
+          mapOf(
+            MLNTileSourceOptionMinimumZoomLevel to options.minZoom.toDouble(),
+            MLNTileSourceOptionMaximumZoomLevel to options.maxZoom.toDouble(),
+            MLNTileSourceOptionTileCoordinateSystem to
+              when (options.tileCoordinateSystem) {
+                TileCoordinateSystem.XYZ -> MLNTileCoordinateSystemXYZ
+                TileCoordinateSystem.TMS -> MLNTileCoordinateSystemTMS
+              },
+            MLNTileSourceOptionCoordinateBounds to options.boundingBox?.toMLNCoordinateBounds(),
+            MLNTileSourceOptionAttributionHTMLString to options.attributionHtml,
+            MLNTileSourceOptionTileSize to tileSize.toDouble(),
+          ),
       )
   }
 }
