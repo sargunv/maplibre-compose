@@ -2,6 +2,7 @@ package dev.sargunv.maplibrecompose.core.source
 
 /** A map data source of tiled map pictures. */
 public expect class RasterSource : Source {
+
   /**
    * @param id Unique identifier for this source
    * @param uri URI pointing to a JSON file that conforms to the
