@@ -34,18 +34,21 @@ public actual class RasterSource : Source {
         identifier = id,
         tileURLTemplates = tiles,
         options =
-          mapOf(
-            MLNTileSourceOptionMinimumZoomLevel to options.minZoom.toDouble(),
-            MLNTileSourceOptionMaximumZoomLevel to options.maxZoom.toDouble(),
-            MLNTileSourceOptionTileCoordinateSystem to
+          buildMap {
+            this[MLNTileSourceOptionMinimumZoomLevel] = options.minZoom.toDouble()
+            this[MLNTileSourceOptionMaximumZoomLevel] = options.maxZoom.toDouble()
+            this[MLNTileSourceOptionTileSize] = tileSize.toDouble()
+            this[MLNTileSourceOptionTileCoordinateSystem] =
               when (options.tileCoordinateSystem) {
                 TileCoordinateSystem.XYZ -> MLNTileCoordinateSystemXYZ
                 TileCoordinateSystem.TMS -> MLNTileCoordinateSystemTMS
-              },
-            MLNTileSourceOptionCoordinateBounds to options.boundingBox?.toMLNCoordinateBounds(),
-            MLNTileSourceOptionAttributionHTMLString to options.attributionHtml,
-            MLNTileSourceOptionTileSize to tileSize.toDouble(),
-          ),
+              }
+            if (options.boundingBox != null)
+              this[MLNTileSourceOptionCoordinateBounds] =
+                options.boundingBox.toMLNCoordinateBounds()
+            if (options.attributionHtml != null)
+              this[MLNTileSourceOptionAttributionHTMLString] = options.attributionHtml
+          },
       )
   }
 }

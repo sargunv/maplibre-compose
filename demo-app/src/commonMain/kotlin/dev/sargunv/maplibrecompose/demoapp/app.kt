@@ -60,7 +60,7 @@ private val DEMOS = buildList {
     add(MarkersDemo)
     add(ClusteredPointsDemo)
     add(AnimatedLayerDemo)
-    add(LocalTilesDemo)
+    if (!Platform.isAndroid) add(LocalTilesDemo)
   }
   if (!Platform.isDesktop) add(CameraStateDemo)
   if (Platform.usesMaplibreNative) add(CameraFollowDemo)
