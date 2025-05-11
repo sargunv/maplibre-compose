@@ -10,9 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -45,11 +42,16 @@ import dev.sargunv.maplibrecompose.demoapp.demos.CameraStateDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.ClusteredPointsDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.EdgeToEdgeDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.FrameRateDemo
+import dev.sargunv.maplibrecompose.demoapp.demos.LocalTilesDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.MarkersDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.StyleSwitcherDemo
+import dev.sargunv.maplibrecompose.demoapp.generated.Res
+import dev.sargunv.maplibrecompose.demoapp.generated.arrow_back
+import dev.sargunv.maplibrecompose.demoapp.generated.info
 import dev.sargunv.maplibrecompose.material3.controls.AttributionButton
 import dev.sargunv.maplibrecompose.material3.controls.DisappearingCompassButton
 import dev.sargunv.maplibrecompose.material3.controls.DisappearingScaleBar
+import org.jetbrains.compose.resources.vectorResource
 
 private val DEMOS = buildList {
   add(StyleSwitcherDemo)
@@ -58,6 +60,7 @@ private val DEMOS = buildList {
     add(MarkersDemo)
     add(ClusteredPointsDemo)
     add(AnimatedLayerDemo)
+    add(LocalTilesDemo)
   }
   if (!Platform.isDesktop) add(CameraStateDemo)
   if (Platform.usesMaplibreNative) add(CameraFollowDemo)
@@ -118,13 +121,13 @@ fun DemoAppBar(demo: Demo, navigateUp: () -> Unit, alpha: Float = 1f) {
     title = { Text(demo.name) },
     navigationIcon = {
       IconButton(onClick = navigateUp) {
-        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+        Icon(imageVector = vectorResource(Res.drawable.arrow_back), contentDescription = "Back")
       }
     },
     actions = {
       if (Platform.supportsBlending) {
         IconButton(onClick = { showInfo = true }) {
-          Icon(imageVector = Icons.Default.Info, contentDescription = "Info")
+          Icon(imageVector = vectorResource(Res.drawable.info), contentDescription = "Info")
         }
       }
     },
