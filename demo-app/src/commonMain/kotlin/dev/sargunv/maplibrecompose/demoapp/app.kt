@@ -42,6 +42,7 @@ import dev.sargunv.maplibrecompose.demoapp.demos.CameraStateDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.ClusteredPointsDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.EdgeToEdgeDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.FrameRateDemo
+import dev.sargunv.maplibrecompose.demoapp.demos.LocalTilesDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.MarkersDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.StyleSwitcherDemo
 import dev.sargunv.maplibrecompose.demoapp.generated.Res
@@ -59,6 +60,7 @@ private val DEMOS = buildList {
     add(MarkersDemo)
     add(ClusteredPointsDemo)
     add(AnimatedLayerDemo)
+    add(LocalTilesDemo)
   }
   if (!Platform.isDesktop) add(CameraStateDemo)
   if (Platform.usesMaplibreNative) add(CameraFollowDemo)
