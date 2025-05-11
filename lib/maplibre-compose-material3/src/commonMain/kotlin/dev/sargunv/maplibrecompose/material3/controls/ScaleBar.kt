@@ -4,8 +4,8 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -20,6 +20,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import dev.sargunv.maplibrecompose.material3.backgroundColorFor
 import dev.sargunv.maplibrecompose.material3.defaultScaleBarMeasures
 import dev.sargunv.maplibrecompose.material3.drawPathsWithHalo
 import dev.sargunv.maplibrecompose.material3.drawTextWithHalo
@@ -42,9 +43,9 @@ public data class ScaleBarMeasures(
  * @param modifier the [Modifier] to be applied to this layout node
  * @param measures which measures to show on the scale bar. If `null`, measures will be selected
  *   based on the system settings or otherwise the user's locale.
+ * @param color scale bar and text color.
  * @param haloColor halo for better visibility when displayed on top of the map
  * @param haloWidth scale bar and text halo width
- * @param color scale bar and text color.
  * @param barWidth scale bar width
  * @param textStyle the text style. The text size is the deciding factor how large the scale bar is
  *   is displayed.
@@ -55,9 +56,9 @@ public fun ScaleBar(
   metersPerDp: Double,
   modifier: Modifier = Modifier,
   measures: ScaleBarMeasures = defaultScaleBarMeasures(),
-  haloColor: Color = MaterialTheme.colorScheme.surface,
+  color: Color = LocalContentColor.current,
+  haloColor: Color = backgroundColorFor(color),
   haloWidth: Dp = 0.dp,
-  color: Color = contentColorFor(haloColor),
   barWidth: Dp = 2.dp,
   textStyle: TextStyle = MaterialTheme.typography.labelSmall,
   alignment: Alignment.Horizontal = Alignment.Start,
