@@ -15,6 +15,8 @@ import dev.sargunv.maplibrecompose.demoapp.DemoMapControls
 import dev.sargunv.maplibrecompose.demoapp.DemoOrnamentSettings
 import dev.sargunv.maplibrecompose.demoapp.DemoScaffold
 import dev.sargunv.maplibrecompose.demoapp.generated.Res
+import dev.sargunv.maplibrecompose.material3.controls.ScaleBarMeasure
+import dev.sargunv.maplibrecompose.material3.controls.ScaleBarMeasures
 
 object LocalTilesDemo : Demo {
   override val name = "Local Tiles"
@@ -49,9 +51,14 @@ object LocalTilesDemo : Demo {
 
             RasterLayer(id = "fantasy-map", source = tiles)
           }
-          DemoMapControls(cameraState, styleState)
+          DemoMapControls(cameraState, styleState, scaleBarMeasures = ScaleBarMeasures(FakeMetric))
         }
       }
     }
   }
+}
+
+data object FakeMetric : ScaleBarMeasure by ScaleBarMeasure.Metric {
+  // hack to scale it down for the fantasy map
+  override val unitInMeters: Double = 20.0
 }

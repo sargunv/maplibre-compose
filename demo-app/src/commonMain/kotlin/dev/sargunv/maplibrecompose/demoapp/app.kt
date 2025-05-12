@@ -51,6 +51,8 @@ import dev.sargunv.maplibrecompose.demoapp.generated.info
 import dev.sargunv.maplibrecompose.material3.controls.AttributionButton
 import dev.sargunv.maplibrecompose.material3.controls.DisappearingCompassButton
 import dev.sargunv.maplibrecompose.material3.controls.DisappearingScaleBar
+import dev.sargunv.maplibrecompose.material3.controls.ScaleBarMeasures
+import dev.sargunv.maplibrecompose.material3.defaultScaleBarMeasures
 import org.jetbrains.compose.resources.vectorResource
 
 private val DEMOS = buildList {
@@ -156,6 +158,7 @@ fun DemoMapControls(
   styleState: StyleState,
   modifier: Modifier = Modifier,
   onCompassClick: () -> Unit = {},
+  scaleBarMeasures: ScaleBarMeasures = defaultScaleBarMeasures(),
 ) {
   if (Platform.supportsBlending) {
     Box(modifier = modifier.fillMaxSize().padding(8.dp)) {
@@ -163,6 +166,7 @@ fun DemoMapControls(
         metersPerDp = cameraState.metersPerDpAtTarget,
         zoom = cameraState.position.zoom,
         modifier = Modifier.align(Alignment.TopStart),
+        measures = scaleBarMeasures,
       )
       DisappearingCompassButton(
         cameraState,
