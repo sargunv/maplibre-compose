@@ -44,6 +44,7 @@ import dev.sargunv.maplibrecompose.demoapp.demos.EdgeToEdgeDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.FrameRateDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.LocalTilesDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.MarkersDemo
+import dev.sargunv.maplibrecompose.demoapp.demos.SnapshotterDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.StyleSwitcherDemo
 import dev.sargunv.maplibrecompose.demoapp.generated.Res
 import dev.sargunv.maplibrecompose.demoapp.generated.arrow_back
@@ -67,6 +68,7 @@ private val DEMOS = buildList {
   if (!Platform.isDesktop) add(CameraStateDemo)
   if (Platform.usesMaplibreNative) add(CameraFollowDemo)
   if (!Platform.isDesktop) add(FrameRateDemo)
+  if (Platform.supportsSnapshotter) add(SnapshotterDemo)
 }
 
 @Composable
