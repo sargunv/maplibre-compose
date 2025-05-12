@@ -121,6 +121,7 @@ public fun MaplibreMap(
 
         override fun onCameraMoveStarted(map: MaplibreMap, reason: CameraMoveReason) {
           cameraState.moveReasonState.value = reason
+          cameraState.isCameraMovingState.value = true
         }
 
         override fun onCameraMoved(map: MaplibreMap) {
@@ -130,7 +131,9 @@ public fun MaplibreMap(
             map.metersPerDpAtLatitude(map.getCameraPosition().target.latitude)
         }
 
-        override fun onCameraMoveEnded(map: MaplibreMap) {}
+        override fun onCameraMoveEnded(map: MaplibreMap) {
+          cameraState.isCameraMovingState.value = false
+        }
 
         private fun layerNodesInOrder(): List<LayerNode<*>> {
           val layerNodes =
