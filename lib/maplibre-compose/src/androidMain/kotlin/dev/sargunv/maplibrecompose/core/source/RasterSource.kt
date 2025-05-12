@@ -25,17 +25,18 @@ public actual class RasterSource : Source {
     impl =
       MLNRasterSource(
         id,
-        TileSet("{\"type\": \"raster\"}", *tiles.toTypedArray()).apply {
-          minZoom = options.minZoom.toFloat()
-          maxZoom = options.maxZoom.toFloat()
-          scheme =
-            when (options.tileCoordinateSystem) {
-              TileCoordinateSystem.XYZ -> "xyz"
-              TileCoordinateSystem.TMS -> "tms"
-            }
-          options.boundingBox?.let { setBounds(it.toLatLngBounds()) }
-          attribution = options.attributionHtml
-        },
+        TileSet("{\"type\": \"raster\"}", *tiles.map { it.correctedAndroidUri() }.toTypedArray())
+          .apply {
+            minZoom = options.minZoom.toFloat()
+            maxZoom = options.maxZoom.toFloat()
+            scheme =
+              when (options.tileCoordinateSystem) {
+                TileCoordinateSystem.XYZ -> "xyz"
+                TileCoordinateSystem.TMS -> "tms"
+              }
+            options.boundingBox?.let { setBounds(it.toLatLngBounds()) }
+            attribution = options.attributionHtml
+          },
         tileSize,
       )
   }
