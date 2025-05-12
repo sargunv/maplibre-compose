@@ -37,11 +37,13 @@ public fun rememberCameraState(firstPosition: CameraPosition = CameraPosition())
 public class CameraState(firstPosition: CameraPosition) {
   internal var map: MaplibreMap? = null
     set(map) {
-      if (map != null && map !== field) {
+      val previousField = field
+      field = map
+
+      if (map != null && map !== previousField) {
         (map as StandardMaplibreMap).setCameraPosition(position)
         mapAttachSignal.trySend(map)
       }
-      field = map
     }
 
   private val mapAttachSignal = Channel<MaplibreMap>()

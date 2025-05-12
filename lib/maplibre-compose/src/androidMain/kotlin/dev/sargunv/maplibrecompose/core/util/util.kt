@@ -37,11 +37,17 @@ import org.maplibre.android.style.expressions.Expression as MLNExpression
 
 internal fun String.correctedAndroidUri(): String {
   return try {
-    val uri = URI(this)
+    // tile URLs contain template params like {z}, {x}, {y}. These are illegal in a URI, so we need
+    // to parse only the constant part of the URI and then append the template part after correction
+    val partition = this.indexOf('{')
+    val constPart = if (partition == -1) this else this.substring(0, partition)
+    val templatePart = if (partition == -1) "" else this.substring(partition)
+    val uri = URI(constPart)
     if (uri.scheme == "file" && uri.path.startsWith("/android_asset/"))
-      URI("asset://${uri.path.removePrefix("/android_asset/")}").toString()
+      URI("asset://${uri.path.removePrefix("/android_asset/")}").toString() + templatePart
     else this
-  } catch (_: URISyntaxException) {
+  } catch (e: URISyntaxException) {
+    e.printStackTrace()
     this
   }
 }

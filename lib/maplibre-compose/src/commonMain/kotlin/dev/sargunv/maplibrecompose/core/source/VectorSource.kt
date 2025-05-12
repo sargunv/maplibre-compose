@@ -5,14 +5,23 @@ import dev.sargunv.maplibrecompose.expressions.dsl.const
 import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.Feature
 
-/**
- * A map data source of tiled vector data.
- *
- * @param id Unique identifier for this source
- * @param uri URI pointing to a JSON file that conforms to the
- *   [TileJSON specification](https://github.com/mapbox/tilejson-spec/)
- */
-public expect class VectorSource(id: String, uri: String) : Source {
+/** A map data source of tiled vector data. */
+public expect class VectorSource : Source {
+
+  /**
+   * @param id Unique identifier for this source
+   * @param uri URI pointing to a JSON file that conforms to the
+   *   [TileJSON specification](https://github.com/mapbox/tilejson-spec/)
+   */
+  public constructor(id: String, uri: String)
+
+  /**
+   * @param id Unique identifier for this source
+   * @param tiles List of URIs pointing to tile images
+   * @param options see [TileSetOptions]
+   */
+  public constructor(id: String, tiles: List<String>, options: TileSetOptions)
+
   /**
    * Returns a list of features from the vector source, limited to source layers with the given
    * [sourceLayerIds] and filtered by the given [predicate].
