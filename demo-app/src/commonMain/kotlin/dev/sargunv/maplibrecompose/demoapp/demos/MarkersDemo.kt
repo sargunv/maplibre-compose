@@ -27,13 +27,17 @@ import dev.sargunv.maplibrecompose.demoapp.DemoOrnamentSettings
 import dev.sargunv.maplibrecompose.demoapp.DemoScaffold
 import dev.sargunv.maplibrecompose.demoapp.generated.Res
 import dev.sargunv.maplibrecompose.demoapp.generated.marker
+import dev.sargunv.maplibrecompose.demoapp.generated.marker_blue
 import dev.sargunv.maplibrecompose.expressions.dsl.Feature.get
 import dev.sargunv.maplibrecompose.expressions.dsl.asString
+import dev.sargunv.maplibrecompose.expressions.dsl.condition
 import dev.sargunv.maplibrecompose.expressions.dsl.const
+import dev.sargunv.maplibrecompose.expressions.dsl.eq
 import dev.sargunv.maplibrecompose.expressions.dsl.format
 import dev.sargunv.maplibrecompose.expressions.dsl.image
 import dev.sargunv.maplibrecompose.expressions.dsl.offset
 import dev.sargunv.maplibrecompose.expressions.dsl.span
+import dev.sargunv.maplibrecompose.expressions.dsl.switch
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
 import org.jetbrains.compose.resources.painterResource
@@ -48,6 +52,7 @@ object MarkersDemo : Demo {
   override fun Component(navigateUp: () -> Unit) {
     DemoScaffold(this, navigateUp) {
       val marker = painterResource(Res.drawable.marker)
+      val marker2 = painterResource(Res.drawable.marker_blue)
       val cameraState =
         rememberCameraState(firstPosition = CameraPosition(target = CHICAGO, zoom = 7.0))
       val styleState = rememberStyleState()
@@ -73,7 +78,15 @@ object MarkersDemo : Demo {
               selectedFeature = features.firstOrNull()
               ClickResult.Consume
             },
-            iconImage = image(marker),
+            iconImage =
+              switch(
+                conditions =
+                  arrayOf(
+                    condition(get("STNTYPE").asString().eq(const("RAIL")), image(marker)),
+                    condition(get("STNTYPE").asString().eq(const("BUS")), image(marker2)),
+                  ),
+                fallback = image(marker),
+              ),
             textField =
               format(
                 span(image("railway")),
