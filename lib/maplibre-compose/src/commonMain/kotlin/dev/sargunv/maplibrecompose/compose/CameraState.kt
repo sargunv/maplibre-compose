@@ -28,9 +28,9 @@ import kotlinx.coroutines.channels.Channel
 @Composable
 public fun rememberCameraState(firstPosition: CameraPosition = CameraPosition()): CameraState {
   val layoutDirection = LocalLayoutDirection.current
-  return rememberSaveable(
-    saver = getCameraStateSaver(layoutDirection),
-  ) { CameraState(firstPosition) }
+  return rememberSaveable(saver = getCameraStateSaver(layoutDirection)) {
+    CameraState(firstPosition)
+  }
 }
 
 /** Use this class to access information about the map in relation to the camera. */
