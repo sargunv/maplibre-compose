@@ -65,7 +65,9 @@ internal fun IosMapView(
     UIKitView(
       modifier = modifier.fillMaxSize(),
       properties =
-        UIKitInteropProperties(interactionMode = UIKitInteropInteractionMode.NonCooperative),
+        UIKitInteropProperties(
+          interactionMode = UIKitInteropInteractionMode.Cooperative(delayMillis = Int.MAX_VALUE)
+        ),
       factory = {
         MLNMapView(
             frame =

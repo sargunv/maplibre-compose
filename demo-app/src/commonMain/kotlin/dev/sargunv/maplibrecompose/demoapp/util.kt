@@ -89,7 +89,7 @@ val Platform.supportsLayers: Boolean
   get() = isAndroid || isIos
 
 val Platform.supportsBlending: Boolean
-  get() = isAndroid || isIos
+  get() = isAndroid || isIos || isWeb
 
 val Platform.usesMaplibreNative: Boolean
   get() = isAndroid || isIos

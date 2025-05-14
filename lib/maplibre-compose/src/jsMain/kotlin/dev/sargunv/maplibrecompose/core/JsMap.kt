@@ -135,43 +135,13 @@ internal class JsMap(
   }
 
   override fun setGestureSettings(value: GestureSettings) {
-    if (value.isTiltGesturesEnabled) {
-      impl.touchPitch.enable()
-    } else {
-      impl.touchPitch.disable()
-    }
-
-    if (value.isRotateGesturesEnabled) {
-      impl.dragRotate.enable()
-      impl.keyboard.enableRotation()
-      impl.touchZoomRotate.enableRotation()
-    } else {
-      impl.dragRotate.disable()
-      impl.keyboard.disableRotation()
-      impl.touchZoomRotate.disableRotation()
-    }
-
-    if (value.isScrollGesturesEnabled) {
-      impl.dragPan.enable()
-    } else {
-      impl.dragPan.disable()
-    }
-
-    if (value.isZoomGesturesEnabled) {
-      impl.doubleClickZoom.enable()
-      impl.scrollZoom.enable()
-      impl.touchZoomRotate.enable()
-    } else {
-      impl.doubleClickZoom.disable()
-      impl.scrollZoom.disable()
-      impl.touchZoomRotate.disable()
-    }
-
-    if (value.isKeyboardGesturesEnabled) {
-      impl.keyboard.enable()
-    } else {
-      impl.keyboard.disable()
-    }
+    impl.touchPitch.disable()
+    impl.dragRotate.disable()
+    impl.keyboard.disable()
+    impl.dragPan.disable()
+    impl.doubleClickZoom.disable()
+    impl.scrollZoom.disable()
+    impl.touchZoomRotate.disable()
   }
 
   private var compassPosition: String? = null
