@@ -21,43 +21,53 @@ internal actual class FillExtrusionLayer actual constructor(id: String, source: 
   actual override var sourceLayer: String
     get() = impl.sourceLayerIdentifier!!
     set(value) {
-      impl.sourceLayerIdentifier = value
+      warnIfUnloaded("sourceLayerIdentifier")
+      if (!isUnloaded) impl.sourceLayerIdentifier = value
     }
 
   actual override fun setFilter(filter: CompiledExpression<BooleanValue>) {
-    impl.predicate = filter.toNSPredicate()
+    warnIfUnloaded("setFilter")
+    if (!isUnloaded) impl.predicate = filter.toNSPredicate()
   }
 
   actual fun setFillExtrusionOpacity(opacity: CompiledExpression<FloatValue>) {
-    impl.fillExtrusionOpacity = opacity.toNSExpression()
+    warnIfUnloaded("setFillExtrusionOpacity")
+    if (!isUnloaded) impl.fillExtrusionOpacity = opacity.toNSExpression()
   }
 
   actual fun setFillExtrusionColor(color: CompiledExpression<ColorValue>) {
-    impl.fillExtrusionColor = color.toNSExpression()
+    warnIfUnloaded("setFillExtrusionColor")
+    if (!isUnloaded) impl.fillExtrusionColor = color.toNSExpression()
   }
 
   actual fun setFillExtrusionTranslate(translate: CompiledExpression<DpOffsetValue>) {
-    impl.fillExtrusionTranslation = translate.toNSExpression()
+    warnIfUnloaded("setFillExtrusionTranslate")
+    if (!isUnloaded) impl.fillExtrusionTranslation = translate.toNSExpression()
   }
 
   actual fun setFillExtrusionTranslateAnchor(anchor: CompiledExpression<TranslateAnchor>) {
-    impl.fillExtrusionTranslationAnchor = anchor.toNSExpression()
+    warnIfUnloaded("setFillExtrusionTranslateAnchor")
+    if (!isUnloaded) impl.fillExtrusionTranslationAnchor = anchor.toNSExpression()
   }
 
   actual fun setFillExtrusionPattern(pattern: CompiledExpression<ImageValue>) {
+    warnIfUnloaded("setFillExtrusionPattern")
     // TODO figure out how to unset pattern
-    if (pattern != NullLiteral) impl.fillExtrusionPattern = pattern.toNSExpression()
+    if (pattern != NullLiteral && !isUnloaded) impl.fillExtrusionPattern = pattern.toNSExpression()
   }
 
   actual fun setFillExtrusionHeight(height: CompiledExpression<FloatValue>) {
-    impl.fillExtrusionHeight = height.toNSExpression()
+    warnIfUnloaded("setFillExtrusionHeight")
+    if (!isUnloaded) impl.fillExtrusionHeight = height.toNSExpression()
   }
 
   actual fun setFillExtrusionBase(base: CompiledExpression<FloatValue>) {
-    impl.fillExtrusionBase = base.toNSExpression()
+    warnIfUnloaded("setFillExtrusionBase")
+    if (!isUnloaded) impl.fillExtrusionBase = base.toNSExpression()
   }
 
   actual fun setFillExtrusionVerticalGradient(verticalGradient: CompiledExpression<BooleanValue>) {
-    impl.fillExtrusionHasVerticalGradient = verticalGradient.toNSExpression()
+    warnIfUnloaded("setFillExtrusionVerticalGradient")
+    if (!isUnloaded) impl.fillExtrusionHasVerticalGradient = verticalGradient.toNSExpression()
   }
 }

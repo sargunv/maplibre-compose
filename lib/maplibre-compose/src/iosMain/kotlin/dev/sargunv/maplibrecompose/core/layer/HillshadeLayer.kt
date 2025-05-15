@@ -14,26 +14,32 @@ internal actual class HillshadeLayer actual constructor(id: String, actual val s
   override val impl = MLNHillshadeStyleLayer(id, source.impl)
 
   actual fun setHillshadeIlluminationDirection(direction: CompiledExpression<FloatValue>) {
-    impl.hillshadeIlluminationDirection = direction.toNSExpression()
+    warnIfUnloaded("setHillshadeIlluminationDirection")
+    if (!isUnloaded) impl.hillshadeIlluminationDirection = direction.toNSExpression()
   }
 
   actual fun setHillshadeIlluminationAnchor(anchor: CompiledExpression<IlluminationAnchor>) {
-    impl.hillshadeIlluminationAnchor = anchor.toNSExpression()
+    warnIfUnloaded("setHillshadeIlluminationAnchor")
+    if (!isUnloaded) impl.hillshadeIlluminationAnchor = anchor.toNSExpression()
   }
 
   actual fun setHillshadeExaggeration(exaggeration: CompiledExpression<FloatValue>) {
-    impl.hillshadeExaggeration = exaggeration.toNSExpression()
+    warnIfUnloaded("setHillshadeExaggeration")
+    if (!isUnloaded) impl.hillshadeExaggeration = exaggeration.toNSExpression()
   }
 
   actual fun setHillshadeShadowColor(shadowColor: CompiledExpression<ColorValue>) {
-    impl.hillshadeShadowColor = shadowColor.toNSExpression()
+    warnIfUnloaded("setHillshadeShadowColor")
+    if (!isUnloaded) impl.hillshadeShadowColor = shadowColor.toNSExpression()
   }
 
   actual fun setHillshadeHighlightColor(highlightColor: CompiledExpression<ColorValue>) {
-    impl.hillshadeHighlightColor = highlightColor.toNSExpression()
+    warnIfUnloaded("setHillshadeHighlightColor")
+    if (!isUnloaded) impl.hillshadeHighlightColor = highlightColor.toNSExpression()
   }
 
   actual fun setHillshadeAccentColor(accentColor: CompiledExpression<ColorValue>) {
-    impl.hillshadeAccentColor = accentColor.toNSExpression()
+    warnIfUnloaded("setHillshadeAccentColor")
+    if (!isUnloaded) impl.hillshadeAccentColor = accentColor.toNSExpression()
   }
 }

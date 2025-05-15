@@ -21,45 +21,53 @@ internal actual class FillLayer actual constructor(id: String, source: Source) :
   actual override var sourceLayer: String
     get() = impl.sourceLayerIdentifier!!
     set(value) {
-      impl.sourceLayerIdentifier = value
+      warnIfUnloaded("sourceLayerIdentifier")
+      if (!isUnloaded) impl.sourceLayerIdentifier = value
     }
 
   actual override fun setFilter(filter: CompiledExpression<BooleanValue>) {
-    impl.predicate = filter.toNSPredicate()
+    warnIfUnloaded("setFilter")
+    if (!isUnloaded) impl.predicate = filter.toNSPredicate()
   }
 
   actual fun setFillSortKey(sortKey: CompiledExpression<FloatValue>) {
-    impl.fillSortKey = sortKey.toNSExpression()
+    warnIfUnloaded("setFillSortKey")
+    if (!isUnloaded) impl.fillSortKey = sortKey.toNSExpression()
   }
 
   actual fun setFillAntialias(antialias: CompiledExpression<BooleanValue>) {
-    impl.fillAntialiased = antialias.toNSExpression()
+    warnIfUnloaded("setFillAntialias")
+    if (!isUnloaded) impl.fillAntialiased = antialias.toNSExpression()
   }
 
   actual fun setFillOpacity(opacity: CompiledExpression<FloatValue>) {
-    impl.fillOpacity = opacity.toNSExpression()
+    warnIfUnloaded("setFillOpacity")
+    if (!isUnloaded) impl.fillOpacity = opacity.toNSExpression()
   }
 
   actual fun setFillColor(color: CompiledExpression<ColorValue>) {
-    impl.fillColor = color.toNSExpression()
+    warnIfUnloaded("setFillColor")
+    if (!isUnloaded) impl.fillColor = color.toNSExpression()
   }
 
   actual fun setFillOutlineColor(outlineColor: CompiledExpression<ColorValue>) {
-    impl.fillOutlineColor = outlineColor.toNSExpression()
+    warnIfUnloaded("setFillOutlineColor")
+    if (!isUnloaded) impl.fillOutlineColor = outlineColor.toNSExpression()
   }
 
   actual fun setFillTranslate(translate: CompiledExpression<DpOffsetValue>) {
-    impl.fillTranslation = translate.toNSExpression()
+    warnIfUnloaded("setFillTranslate")
+    if (!isUnloaded) impl.fillTranslation = translate.toNSExpression()
   }
 
   actual fun setFillTranslateAnchor(translateAnchor: CompiledExpression<TranslateAnchor>) {
-    impl.fillTranslationAnchor = translateAnchor.toNSExpression()
+    warnIfUnloaded("setFillTranslateAnchor")
+    if (!isUnloaded) impl.fillTranslationAnchor = translateAnchor.toNSExpression()
   }
 
   actual fun setFillPattern(pattern: CompiledExpression<ImageValue>) {
+    warnIfUnloaded("setFillPattern")
     // TODO: figure out how to unset a pattern in iOS
-    if (pattern != NullLiteral) {
-      impl.fillPattern = pattern.toNSExpression()
-    }
+    if (pattern != NullLiteral && !isUnloaded) impl.fillPattern = pattern.toNSExpression()
   }
 }

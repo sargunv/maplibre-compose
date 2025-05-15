@@ -53,11 +53,19 @@ public actual class GeoJsonSource : Source {
       )
     }
 
+  private fun warnIfUnloaded(methodName: String) {
+    if (isUnloaded) {
+      println("Warning: Attempting to call $methodName on an unloaded source")
+    }
+  }
+
   public actual fun setUri(uri: String) {
-    impl.setURL(NSURL(string = uri))
+    warnIfUnloaded("setUri")
+    if (!isUnloaded) impl.setURL(NSURL(string = uri))
   }
 
   public actual fun setData(geoJson: GeoJson) {
-    impl.setShape(geoJson.toMLNShape())
+    warnIfUnloaded("setData")
+    if (!isUnloaded) impl.setShape(geoJson.toMLNShape())
   }
 }

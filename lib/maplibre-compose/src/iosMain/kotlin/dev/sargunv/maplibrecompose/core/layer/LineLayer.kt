@@ -25,77 +25,93 @@ internal actual class LineLayer actual constructor(id: String, source: Source) :
   actual override var sourceLayer: String
     get() = impl.sourceLayerIdentifier!!
     set(value) {
-      impl.sourceLayerIdentifier = value
+      warnIfUnloaded("sourceLayerIdentifier")
+      if (!isUnloaded) impl.sourceLayerIdentifier = value
     }
 
   actual override fun setFilter(filter: CompiledExpression<BooleanValue>) {
-    impl.predicate = filter.toNSPredicate()
+    warnIfUnloaded("setFilter")
+    if (!isUnloaded) impl.predicate = filter.toNSPredicate()
   }
 
   actual fun setLineCap(cap: CompiledExpression<LineCap>) {
-    impl.lineCap = cap.toNSExpression()
+    warnIfUnloaded("setLineCap")
+    if (!isUnloaded) impl.lineCap = cap.toNSExpression()
   }
 
   actual fun setLineJoin(join: CompiledExpression<LineJoin>) {
-    impl.lineJoin = join.toNSExpression()
+    warnIfUnloaded("setLineJoin")
+    if (!isUnloaded) impl.lineJoin = join.toNSExpression()
   }
 
   actual fun setLineMiterLimit(miterLimit: CompiledExpression<FloatValue>) {
-    impl.lineMiterLimit = miterLimit.toNSExpression()
+    warnIfUnloaded("setLineMiterLimit")
+    if (!isUnloaded) impl.lineMiterLimit = miterLimit.toNSExpression()
   }
 
   actual fun setLineRoundLimit(roundLimit: CompiledExpression<FloatValue>) {
-    impl.lineRoundLimit = roundLimit.toNSExpression()
+    warnIfUnloaded("setLineRoundLimit")
+    if (!isUnloaded) impl.lineRoundLimit = roundLimit.toNSExpression()
   }
 
   actual fun setLineSortKey(sortKey: CompiledExpression<FloatValue>) {
-    impl.lineSortKey = sortKey.toNSExpression()
+    warnIfUnloaded("setLineSortKey")
+    if (!isUnloaded) impl.lineSortKey = sortKey.toNSExpression()
   }
 
   actual fun setLineOpacity(opacity: CompiledExpression<FloatValue>) {
-    impl.lineOpacity = opacity.toNSExpression()
+    warnIfUnloaded("setLineOpacity")
+    if (!isUnloaded) impl.lineOpacity = opacity.toNSExpression()
   }
 
   actual fun setLineColor(color: CompiledExpression<ColorValue>) {
-    impl.lineColor = color.toNSExpression()
+    warnIfUnloaded("setLineColor")
+    if (!isUnloaded) impl.lineColor = color.toNSExpression()
   }
 
   actual fun setLineTranslate(translate: CompiledExpression<DpOffsetValue>) {
-    impl.lineTranslation = translate.toNSExpression()
+    warnIfUnloaded("setLineTranslate")
+    if (!isUnloaded) impl.lineTranslation = translate.toNSExpression()
   }
 
   actual fun setLineTranslateAnchor(translateAnchor: CompiledExpression<TranslateAnchor>) {
-    impl.lineTranslationAnchor = translateAnchor.toNSExpression()
+    warnIfUnloaded("setLineTranslateAnchor")
+    if (!isUnloaded) impl.lineTranslationAnchor = translateAnchor.toNSExpression()
   }
 
   actual fun setLineWidth(width: CompiledExpression<DpValue>) {
-    impl.lineWidth = width.toNSExpression()
+    warnIfUnloaded("setLineWidth")
+    if (!isUnloaded) impl.lineWidth = width.toNSExpression()
   }
 
   actual fun setLineGapWidth(gapWidth: CompiledExpression<DpValue>) {
-    impl.lineGapWidth = gapWidth.toNSExpression()
+    warnIfUnloaded("setLineGapWidth")
+    if (!isUnloaded) impl.lineGapWidth = gapWidth.toNSExpression()
   }
 
   actual fun setLineOffset(offset: CompiledExpression<DpValue>) {
-    impl.lineOffset = offset.toNSExpression()
+    warnIfUnloaded("setLineOffset")
+    if (!isUnloaded) impl.lineOffset = offset.toNSExpression()
   }
 
   actual fun setLineBlur(blur: CompiledExpression<DpValue>) {
-    impl.lineBlur = blur.toNSExpression()
+    warnIfUnloaded("setLineBlur")
+    if (!isUnloaded) impl.lineBlur = blur.toNSExpression()
   }
 
   actual fun setLineDasharray(dasharray: CompiledExpression<VectorValue<Number>>) {
-    impl.lineDashPattern = dasharray.toNSExpression()
+    warnIfUnloaded("setLineDasharray")
+    if (!isUnloaded) impl.lineDashPattern = dasharray.toNSExpression()
   }
 
   actual fun setLinePattern(pattern: CompiledExpression<ImageValue>) {
+    warnIfUnloaded("setLinePattern")
     // TODO: figure out how to unset a pattern in iOS
-    if (pattern != NullLiteral) {
-      impl.linePattern = pattern.toNSExpression()
-    }
+    if (pattern != NullLiteral && !isUnloaded) impl.linePattern = pattern.toNSExpression()
   }
 
   actual fun setLineGradient(gradient: CompiledExpression<ColorValue>) {
-    impl.lineGradient = gradient.toNSExpression()
+    warnIfUnloaded("setLineGradient")
+    if (!isUnloaded) impl.lineGradient = gradient.toNSExpression()
   }
 }

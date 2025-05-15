@@ -8,6 +8,7 @@ public actual sealed class Source {
   internal abstract val impl: MLNSource
 
   internal actual val id: String by lazy { impl.id }
+  internal actual var isUnloaded: Boolean = false
 
   public actual val attributionLinks: List<AttributionLink>
     get() {
@@ -24,4 +25,8 @@ public actual sealed class Source {
     }
 
   override fun toString(): String = "${this::class.simpleName}(id=\"$id\")"
+
+  internal actual fun unload() {
+    isUnloaded = true
+  }
 }
