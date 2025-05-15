@@ -5,7 +5,10 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import org.maplibre.android.maps.MapView
 
-internal class MapViewLifecycleObserver(private val mapView: MapView) : LifecycleEventObserver {
+internal class MapViewLifecycleObserver(
+  private val mapView: MapView,
+  private val style: SafeStyle?
+) : LifecycleEventObserver {
   override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
     when (event) {
       Lifecycle.Event.ON_CREATE -> mapView.onCreate(null)
@@ -13,7 +16,10 @@ internal class MapViewLifecycleObserver(private val mapView: MapView) : Lifecycl
       Lifecycle.Event.ON_RESUME -> mapView.onResume()
       Lifecycle.Event.ON_PAUSE -> mapView.onPause()
       Lifecycle.Event.ON_STOP -> mapView.onStop()
-      Lifecycle.Event.ON_DESTROY -> mapView.onDestroy()
+      Lifecycle.Event.ON_DESTROY -> {
+        style?.unload()
+        mapView.onDestroy()
+      }
       Lifecycle.Event.ON_ANY -> {}
     }
   }
