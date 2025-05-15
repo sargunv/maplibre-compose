@@ -5,7 +5,7 @@ import dev.sargunv.maplibrecompose.core.layer.Layer
 import dev.sargunv.maplibrecompose.core.source.Source
 
 internal class SafeStyle(private val delegate: Style) : Style {
-  private var isUnloaded = false
+  internal var isUnloaded = false
 
   internal fun unload() {
     isUnloaded = true

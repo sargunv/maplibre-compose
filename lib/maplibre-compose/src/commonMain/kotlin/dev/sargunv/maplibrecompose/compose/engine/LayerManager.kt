@@ -1,6 +1,7 @@
 package dev.sargunv.maplibrecompose.compose.engine
 
 import dev.sargunv.maplibrecompose.compose.layer.Anchor
+import dev.sargunv.maplibrecompose.core.SafeStyle
 import dev.sargunv.maplibrecompose.core.layer.Layer
 
 internal class LayerManager(private val styleNode: StyleNode) {
@@ -125,11 +126,12 @@ internal class LayerManager(private val styleNode: StyleNode) {
   }
 
   private val Anchor.layerIdOrNull: String?
-    get() =
+    get() = if ((styleNode.style as? SafeStyle)?.isUnloaded != true) {
       when (this) {
         is Anchor.Above -> layerId
         is Anchor.Below -> layerId
         is Anchor.Replace -> layerId
         else -> null
       }
+    } else null
 }
