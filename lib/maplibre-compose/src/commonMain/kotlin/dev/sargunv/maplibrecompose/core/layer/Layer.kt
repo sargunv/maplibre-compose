@@ -5,6 +5,4 @@ internal expect sealed class Layer {
   var minZoom: Float
   var maxZoom: Float
   var visible: Boolean
-  internal var isUnloaded: Boolean
-  internal fun unload()
 }

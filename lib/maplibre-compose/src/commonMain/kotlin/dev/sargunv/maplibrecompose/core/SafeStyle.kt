@@ -7,22 +7,8 @@ import dev.sargunv.maplibrecompose.core.source.Source
 internal class SafeStyle(private val delegate: Style) : Style {
   internal var isUnloaded = false
 
-  fun unload() {
-    unloadLayers()
-    unloadSources()
+  internal fun unload() {
     isUnloaded = true
-  }
-
-  private fun unloadLayers() {
-    getLayers().forEach {
-      it.unload()
-    }
-  }
-
-  private fun unloadSources() {
-    getSources().forEach {
-      it.unload()
-    }
   }
 
   private fun warnIfUnloaded(methodName: String) {
@@ -92,7 +78,6 @@ internal class SafeStyle(private val delegate: Style) : Style {
   }
 
   override fun removeLayer(layer: Layer) {
-    println("ASDF removeLayer $layer, isUnloaded: $isUnloaded")
     warnIfUnloaded("removeLayer")
     if (!isUnloaded) delegate.removeLayer(layer)
   }

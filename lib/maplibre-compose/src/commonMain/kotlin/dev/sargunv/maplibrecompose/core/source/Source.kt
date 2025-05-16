@@ -4,6 +4,4 @@ package dev.sargunv.maplibrecompose.core.source
 public expect sealed class Source {
   internal val id: String
   public val attributionLinks: List<AttributionLink>
-  internal var isUnloaded: Boolean
-  internal fun unload()
 }

@@ -22,72 +22,58 @@ internal actual class CircleLayer actual constructor(id: String, source: Source)
   actual override var sourceLayer: String
     get() = impl.sourceLayerIdentifier!!
     set(value) {
-      warnIfUnloaded("sourceLayerIdentifier")
-      if (!isUnloaded) impl.sourceLayerIdentifier = value
+      impl.sourceLayerIdentifier = value
     }
 
   actual override fun setFilter(filter: CompiledExpression<BooleanValue>) {
-    warnIfUnloaded("setFilter")
-    if (!isUnloaded) impl.predicate = filter.toNSPredicate()
+    impl.predicate = filter.toNSPredicate()
   }
 
   actual fun setCircleSortKey(sortKey: CompiledExpression<FloatValue>) {
-    warnIfUnloaded("setCircleSortKey")
-    if (!isUnloaded) impl.circleSortKey = sortKey.toNSExpression()
+    impl.circleSortKey = sortKey.toNSExpression()
   }
 
   actual fun setCircleRadius(radius: CompiledExpression<DpValue>) {
-    warnIfUnloaded("setCircleRadius")
-    if (!isUnloaded) impl.circleRadius = radius.toNSExpression()
+    impl.circleRadius = radius.toNSExpression()
   }
 
   actual fun setCircleColor(color: CompiledExpression<ColorValue>) {
-    warnIfUnloaded("setCircleColor")
-    if (!isUnloaded) impl.circleColor = color.toNSExpression()
+    impl.circleColor = color.toNSExpression()
   }
 
   actual fun setCircleBlur(blur: CompiledExpression<FloatValue>) {
-    warnIfUnloaded("setCircleBlur")
-    if (!isUnloaded) impl.circleBlur = blur.toNSExpression()
+    impl.circleBlur = blur.toNSExpression()
   }
 
   actual fun setCircleOpacity(opacity: CompiledExpression<FloatValue>) {
-    warnIfUnloaded("setCircleOpacity")
-    if (!isUnloaded) impl.circleOpacity = opacity.toNSExpression()
+    impl.circleOpacity = opacity.toNSExpression()
   }
 
   actual fun setCircleTranslate(translate: CompiledExpression<DpOffsetValue>) {
-    warnIfUnloaded("setCircleTranslate")
-    if (!isUnloaded) impl.circleTranslation = translate.toNSExpression()
+    impl.circleTranslation = translate.toNSExpression()
   }
 
   actual fun setCircleTranslateAnchor(translateAnchor: CompiledExpression<TranslateAnchor>) {
-    warnIfUnloaded("setCircleTranslateAnchor")
-    if (!isUnloaded) impl.circleTranslationAnchor = translateAnchor.toNSExpression()
+    impl.circleTranslationAnchor = translateAnchor.toNSExpression()
   }
 
   actual fun setCirclePitchScale(pitchScale: CompiledExpression<CirclePitchScale>) {
-    warnIfUnloaded("setCirclePitchScale")
-    if (!isUnloaded) impl.circleScaleAlignment = pitchScale.toNSExpression()
+    impl.circleScaleAlignment = pitchScale.toNSExpression()
   }
 
   actual fun setCirclePitchAlignment(pitchAlignment: CompiledExpression<CirclePitchAlignment>) {
-    warnIfUnloaded("setCirclePitchAlignment")
-    if (!isUnloaded) impl.circlePitchAlignment = pitchAlignment.toNSExpression()
+    impl.circlePitchAlignment = pitchAlignment.toNSExpression()
   }
 
   actual fun setCircleStrokeWidth(strokeWidth: CompiledExpression<DpValue>) {
-    warnIfUnloaded("setCircleStrokeWidth")
-    if (!isUnloaded) impl.circleStrokeWidth = strokeWidth.toNSExpression()
+    impl.circleStrokeWidth = strokeWidth.toNSExpression()
   }
 
   actual fun setCircleStrokeColor(strokeColor: CompiledExpression<ColorValue>) {
-    warnIfUnloaded("setCircleStrokeColor")
-    if (!isUnloaded) impl.circleStrokeColor = strokeColor.toNSExpression()
+    impl.circleStrokeColor = strokeColor.toNSExpression()
   }
 
   actual fun setCircleStrokeOpacity(strokeOpacity: CompiledExpression<FloatValue>) {
-    warnIfUnloaded("setCircleStrokeOpacity")
-    if (!isUnloaded) impl.circleStrokeOpacity = strokeOpacity.toNSExpression()
+    impl.circleStrokeOpacity = strokeOpacity.toNSExpression()
   }
 }

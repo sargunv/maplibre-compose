@@ -7,7 +7,6 @@ import cocoapods.MapLibre.MLNTileSource
 public actual sealed class Source {
   internal abstract val impl: MLNSource
   internal actual val id: String by lazy { impl.identifier }
-  internal actual var isUnloaded: Boolean = false
 
   public actual val attributionLinks: List<AttributionLink>
     get() =
@@ -18,8 +17,4 @@ public actual sealed class Source {
       } ?: emptyList()
 
   override fun toString(): String = "${this::class.simpleName}(id=\"$id\")"
-
-  internal actual fun unload() {
-    isUnloaded = true
-  }
 }

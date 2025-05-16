@@ -8,7 +8,6 @@ internal actual sealed class Layer {
   abstract val impl: MlnLayer
 
   actual val id: String by lazy { impl.id }
-  internal actual var isUnloaded = false
 
   actual var minZoom: Float
     get() = impl.minZoom
@@ -29,8 +28,4 @@ internal actual sealed class Layer {
     }
 
   override fun toString() = "${this::class.simpleName}(id=\"$id\")"
-
-  internal actual fun unload() {
-    isUnloaded = true
-  }
 }

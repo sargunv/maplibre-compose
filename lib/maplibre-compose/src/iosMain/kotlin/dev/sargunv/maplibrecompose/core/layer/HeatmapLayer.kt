@@ -18,37 +18,30 @@ internal actual class HeatmapLayer actual constructor(id: String, source: Source
   actual override var sourceLayer: String
     get() = impl.sourceLayerIdentifier!!
     set(value) {
-      warnIfUnloaded("sourceLayerIdentifier")
-      if (!isUnloaded) impl.sourceLayerIdentifier = value
+      impl.sourceLayerIdentifier = value
     }
 
   actual override fun setFilter(filter: CompiledExpression<BooleanValue>) {
-    warnIfUnloaded("setFilter")
-    if (!isUnloaded) impl.predicate = filter.toNSPredicate()
+    impl.predicate = filter.toNSPredicate()
   }
 
   actual fun setHeatmapRadius(radius: CompiledExpression<DpValue>) {
-    warnIfUnloaded("setHeatmapRadius")
-    if (!isUnloaded) impl.heatmapRadius = radius.toNSExpression()
+    impl.heatmapRadius = radius.toNSExpression()
   }
 
   actual fun setHeatmapWeight(weight: CompiledExpression<FloatValue>) {
-    warnIfUnloaded("setHeatmapWeight")
-    if (!isUnloaded) impl.heatmapWeight = weight.toNSExpression()
+    impl.heatmapWeight = weight.toNSExpression()
   }
 
   actual fun setHeatmapIntensity(intensity: CompiledExpression<FloatValue>) {
-    warnIfUnloaded("setHeatmapIntensity")
-    if (!isUnloaded) impl.heatmapIntensity = intensity.toNSExpression()
+    impl.heatmapIntensity = intensity.toNSExpression()
   }
 
   actual fun setHeatmapColor(color: CompiledExpression<ColorValue>) {
-    warnIfUnloaded("setHeatmapColor")
-    if (!isUnloaded) impl.heatmapColor = color.toNSExpression()
+    impl.heatmapColor = color.toNSExpression()
   }
 
   actual fun setHeatmapOpacity(opacity: CompiledExpression<FloatValue>) {
-    warnIfUnloaded("setHeatmapOpacity")
-    if (!isUnloaded) impl.heatmapOpacity = opacity.toNSExpression()
+    impl.heatmapOpacity = opacity.toNSExpression()
   }
 }
