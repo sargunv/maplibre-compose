@@ -7,7 +7,7 @@ import org.maplibre.android.maps.MapView
 
 internal class MapViewLifecycleObserver(
   private val mapView: MapView,
-  private val style: SafeStyle?
+  private val style: SafeStyle?,
 ) : LifecycleEventObserver {
   override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
     when (event) {

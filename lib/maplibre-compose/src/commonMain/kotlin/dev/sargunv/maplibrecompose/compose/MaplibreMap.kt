@@ -217,6 +217,6 @@ public fun MaplibreMap(
     },
     logger = logger,
     callbacks = callbacks,
-    rememberedStyle = rememberedStyle
+    rememberedStyle = rememberedStyle,
   )
 }

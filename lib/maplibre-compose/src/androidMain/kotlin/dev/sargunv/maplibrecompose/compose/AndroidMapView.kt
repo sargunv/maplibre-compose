@@ -11,7 +11,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.viewinterop.AndroidView
 import co.touchlab.kermit.Logger
-import dev.sargunv.maplibrecompose.compose.engine.LocalStyleNode
 import dev.sargunv.maplibrecompose.core.AndroidMap
 import dev.sargunv.maplibrecompose.core.AndroidScaleBar
 import dev.sargunv.maplibrecompose.core.MaplibreMap
