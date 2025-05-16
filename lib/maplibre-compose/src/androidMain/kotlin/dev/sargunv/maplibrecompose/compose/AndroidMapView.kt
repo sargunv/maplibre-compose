@@ -78,6 +78,8 @@ internal fun AndroidMapView(
               styleUri = styleUri,
               logger = logger,
             )
+
+          currentMap?.let { update(it) }
         }
       }
     },

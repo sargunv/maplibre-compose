@@ -84,7 +84,7 @@ internal val regionsUsingYardsAndMiles =
  * available)
  */
 @Composable
-internal fun defaultScaleBarMeasures(): ScaleBarMeasures {
+public fun defaultScaleBarMeasures(): ScaleBarMeasures {
   val region = Locale.current.region
   val primary = systemDefaultPrimaryMeasure() ?: fallbackDefaultPrimaryMeasure(region)
   return ScaleBarMeasures(primary = primary, secondary = defaultSecondaryMeasure(primary, region))

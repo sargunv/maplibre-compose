@@ -6,8 +6,8 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -15,6 +15,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import dev.sargunv.maplibrecompose.material3.backgroundColorFor
 import dev.sargunv.maplibrecompose.material3.defaultScaleBarMeasures
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -31,8 +34,10 @@ import kotlinx.coroutines.delay
  * @param modifier the [Modifier] to be applied to this layout node
  * @param measures which measures to show on the scale bar. If `null`, measures will be selected
  *   based on the system settings or otherwise the user's locale.
- * @param haloColor halo for better visibility when displayed on top of the map
  * @param color scale bar and text color.
+ * @param haloColor halo for better visibility when displayed on top of the map
+ * @param haloWidth scale bar and text halo width
+ * @param barWidth scale bar width
  * @param textStyle the text style. The text size is the deciding factor how large the scale bar is
  *   is displayed.
  * @param alignment horizontal alignment of the scale bar and text
@@ -46,8 +51,10 @@ public fun DisappearingScaleBar(
   zoom: Double,
   modifier: Modifier = Modifier,
   measures: ScaleBarMeasures = defaultScaleBarMeasures(),
-  haloColor: Color = MaterialTheme.colorScheme.surface,
-  color: Color = contentColorFor(haloColor),
+  color: Color = LocalContentColor.current,
+  haloColor: Color = backgroundColorFor(color),
+  haloWidth: Dp = 0.dp,
+  barWidth: Dp = 2.dp,
   textStyle: TextStyle = MaterialTheme.typography.labelMedium,
   alignment: Alignment.Horizontal = Alignment.Start,
   visibilityDuration: Duration = 3.seconds,
@@ -74,7 +81,9 @@ public fun DisappearingScaleBar(
       metersPerDp = metersPerDp,
       measures = measures,
       haloColor = haloColor,
+      haloWidth = haloWidth,
       color = color,
+      barWidth = barWidth,
       textStyle = textStyle,
       alignment = alignment,
     )

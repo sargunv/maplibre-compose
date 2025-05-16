@@ -27,10 +27,8 @@ import dev.sargunv.maplibrecompose.expressions.value.IlluminationAnchor
  * @param accentColor The shading color used to accentuate rugged terrain like sharp cliffs and
  *   gorges.
  * @param illuminationDirection The direction of the light source used to generate the hillshading
- *   in degrees. A value in the range of `[0..360)`. `0` means
- *     - the top of the viewport if [illuminationAnchor] = [IlluminationAnchor.Viewport] or
- *     - north if [illuminationAnchor] = [IlluminationAnchor.Map]
- *
+ *   in degrees. A value in the range of `[0..360)`. `0` means the top of the viewport or north,
+ *   depending on the value of [illuminationAnchor].
  * @param illuminationAnchor Direction of light source when map is rotated. See
  *   [illuminationDirection].
  * @param exaggeration Intensity of the hillshade. A value in the range of `[0..1]`.
