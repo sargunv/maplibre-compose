@@ -451,7 +451,10 @@ internal class IosMap(
     suspendCoroutine { cont ->
       mapView.flyToCamera(
         camera =
-          mapView.cameraThatFitsCoordinateBounds(boundingBox.toMLNCoordinateBounds()).apply {
+          mapView.cameraThatFitsCoordinateBounds(
+            bounds = boundingBox.toMLNCoordinateBounds(),
+            edgePadding = padding.toEdgeInsets(),
+          ).apply {
             heading = bearing
             pitch = tilt
           },
