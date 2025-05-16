@@ -126,7 +126,7 @@ internal class LayerManager(private val styleNode: StyleNode) {
   }
 
   private val Anchor.layerIdOrNull: String?
-    get() = if ((styleNode.style as? SafeStyle)?.isUnloaded != true) {
+    get() = if (!styleNode.style.isUnloaded) {
       when (this) {
         is Anchor.Above -> layerId
         is Anchor.Below -> layerId
