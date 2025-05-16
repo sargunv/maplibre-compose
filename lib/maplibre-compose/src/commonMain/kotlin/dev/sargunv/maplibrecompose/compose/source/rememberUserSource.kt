@@ -10,7 +10,7 @@ import dev.sargunv.maplibrecompose.core.source.Source
 internal fun <T : Source> rememberUserSource(factory: () -> T, update: T.() -> Unit): T {
   val node = LocalStyleNode.current
   val source = remember(node) { factory().also { node.sourceManager.addReference(it) } }
-  remember(source, update) { source.update() }
+  remember(source, update, node.style.isUnloaded) { if (!node.style.isUnloaded) source.update() }
   DisposableEffect(node, source) { onDispose { node.sourceManager.removeReference(source) } }
   return source
 }
