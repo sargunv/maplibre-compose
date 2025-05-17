@@ -11,7 +11,7 @@ import dev.sargunv.maplibrecompose.core.CameraPosition
 import io.github.dellisd.spatialk.geojson.Position
 
 internal object CameraStateSaver : Saver<CameraState, Map<String, Double>> {
-  override fun SaverScope.save(value: CameraState): Map<String, Double>? {
+  override fun SaverScope.save(value: CameraState): Map<String, Double> {
     val position = value.position
     return mapOf(
       Keys.BEARING to position.bearing,
@@ -28,7 +28,7 @@ internal object CameraStateSaver : Saver<CameraState, Map<String, Double>> {
     )
   }
 
-  override fun restore(value: Map<String, Double>): CameraState? {
+  override fun restore(value: Map<String, Double>): CameraState {
     return CameraState(
       CameraPosition(
         bearing = value[Keys.BEARING]!!,
