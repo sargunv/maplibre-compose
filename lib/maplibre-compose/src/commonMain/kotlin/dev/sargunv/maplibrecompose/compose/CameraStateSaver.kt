@@ -5,13 +5,13 @@ import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.SaverScope
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrecompose.core.CameraPosition
 import io.github.dellisd.spatialk.geojson.Position
 
-internal object CameraStateSaver : Saver<CameraState, Map<String, Any>> {
-  override fun SaverScope.save(value: CameraState): Map<String, Any>? {
+internal object CameraStateSaver : Saver<CameraState, Map<String, Double>> {
+  override fun SaverScope.save(value: CameraState): Map<String, Double>? {
     val position = value.position
     return mapOf(
       Keys.BEARING to position.bearing,
@@ -19,30 +19,28 @@ internal object CameraStateSaver : Saver<CameraState, Map<String, Any>> {
       Keys.LONGITUDE to position.target.longitude,
       Keys.TILT to position.tilt,
       Keys.ZOOM to position.zoom,
-      Keys.PADDING_LEFT to position.padding.calculateStartPadding(LayoutDirection.Ltr),
-      Keys.PADDING_TOP to position.padding.calculateTopPadding(),
-      Keys.PADDING_RIGHT to position.padding.calculateEndPadding(LayoutDirection.Ltr),
-      Keys.PADDING_BOTTOM to position.padding.calculateBottomPadding(),
+      Keys.PADDING_LEFT to
+        position.padding.calculateStartPadding(LayoutDirection.Ltr).value.toDouble(),
+      Keys.PADDING_TOP to position.padding.calculateTopPadding().value.toDouble(),
+      Keys.PADDING_RIGHT to
+        position.padding.calculateEndPadding(LayoutDirection.Ltr).value.toDouble(),
+      Keys.PADDING_BOTTOM to position.padding.calculateBottomPadding().value.toDouble(),
     )
   }
 
-  override fun restore(value: Map<String, Any>): CameraState? {
+  override fun restore(value: Map<String, Double>): CameraState? {
     return CameraState(
       CameraPosition(
-        bearing = value[Keys.BEARING] as Double,
-        target =
-          Position(
-            latitude = value[Keys.LATITUDE] as Double,
-            longitude = value[Keys.LONGITUDE] as Double,
-          ),
-        tilt = value[Keys.TILT] as Double,
-        zoom = value[Keys.ZOOM] as Double,
+        bearing = value[Keys.BEARING]!!,
+        target = Position(latitude = value[Keys.LATITUDE]!!, longitude = value[Keys.LONGITUDE]!!),
+        tilt = value[Keys.TILT]!!,
+        zoom = value[Keys.ZOOM]!!,
         padding =
           PaddingValues.Absolute(
-            left = value[Keys.PADDING_LEFT] as Dp,
-            top = value[Keys.PADDING_TOP] as Dp,
-            right = value[Keys.PADDING_RIGHT] as Dp,
-            bottom = value[Keys.PADDING_BOTTOM] as Dp,
+            left = value[Keys.PADDING_LEFT]!!.dp,
+            top = value[Keys.PADDING_TOP]!!.dp,
+            right = value[Keys.PADDING_RIGHT]!!.dp,
+            bottom = value[Keys.PADDING_BOTTOM]!!.dp,
           ),
       )
     )
