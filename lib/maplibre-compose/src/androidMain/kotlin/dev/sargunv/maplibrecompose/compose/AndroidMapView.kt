@@ -14,6 +14,7 @@ import co.touchlab.kermit.Logger
 import dev.sargunv.maplibrecompose.core.AndroidMap
 import dev.sargunv.maplibrecompose.core.AndroidScaleBar
 import dev.sargunv.maplibrecompose.core.MaplibreMap
+import dev.sargunv.maplibrecompose.core.SafeStyle
 import org.maplibre.android.MapLibre
 import org.maplibre.android.maps.MapLibreMapOptions
 import org.maplibre.android.maps.MapView
@@ -22,6 +23,7 @@ import org.maplibre.android.maps.MapView
 internal actual fun ComposableMapView(
   modifier: Modifier,
   styleUri: String,
+  rememberedStyle: SafeStyle?,
   update: (map: MaplibreMap) -> Unit,
   onReset: () -> Unit,
   logger: Logger?,
@@ -30,6 +32,7 @@ internal actual fun ComposableMapView(
   AndroidMapView(
     modifier = modifier,
     styleUri = styleUri,
+    rememberedStyle = rememberedStyle,
     update = update,
     onReset = onReset,
     logger = logger,
@@ -41,6 +44,7 @@ internal actual fun ComposableMapView(
 internal fun AndroidMapView(
   modifier: Modifier,
   styleUri: String,
+  rememberedStyle: SafeStyle?,
   update: (map: MaplibreMap) -> Unit,
   onReset: () -> Unit,
   logger: Logger?,
@@ -53,7 +57,7 @@ internal fun AndroidMapView(
   var currentMapView by remember { mutableStateOf<MapView?>(null) }
   var currentMap by remember { mutableStateOf<AndroidMap?>(null) }
 
-  MapViewLifecycleEffect(currentMapView)
+  MapViewLifecycleEffect(currentMapView, rememberedStyle)
 
   AndroidView(
     modifier = modifier,

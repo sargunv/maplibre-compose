@@ -11,12 +11,12 @@ import androidx.compose.runtime.rememberCompositionContext
 import androidx.compose.runtime.staticCompositionLocalOf
 import co.touchlab.kermit.Logger
 import dev.sargunv.maplibrecompose.compose.MaplibreComposable
-import dev.sargunv.maplibrecompose.core.Style
+import dev.sargunv.maplibrecompose.core.SafeStyle
 import kotlinx.coroutines.awaitCancellation
 
 @Composable
 internal fun rememberStyleComposition(
-  maybeStyle: Style?,
+  maybeStyle: SafeStyle?,
   logger: Logger?,
   content: @Composable @MaplibreComposable () -> Unit,
 ): State<StyleNode?> {
@@ -36,7 +36,6 @@ internal fun rememberStyleComposition(
       awaitCancellation()
     } finally {
       nodeState.value = null
-      rootNode.style = Style.Null
       composition.dispose()
     }
   }

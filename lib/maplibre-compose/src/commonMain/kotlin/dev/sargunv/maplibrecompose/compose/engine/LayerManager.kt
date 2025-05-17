@@ -120,7 +120,10 @@ internal class LayerManager(private val styleNode: StyleNode) {
 
   private fun Anchor.validate() {
     layerIdOrNull?.let { layerId ->
-      require(baseLayers.containsKey(layerId)) { "Layer ID '$layerId' not found in base style" }
+      // hack: if the style unloaded before baseLayers was initialized, there's nothing to validate
+      require(baseLayers.containsKey(layerId) || styleNode.style.isUnloaded) {
+        "Layer ID '$layerId' not found in base style"
+      }
     }
   }
 
