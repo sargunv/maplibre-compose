@@ -39,6 +39,7 @@ import cocoapods.MapLibre.MLNOrnamentPositionBottomLeft
 import cocoapods.MapLibre.MLNOrnamentPositionBottomRight
 import cocoapods.MapLibre.MLNOrnamentPositionTopLeft
 import cocoapods.MapLibre.MLNOrnamentPositionTopRight
+import cocoapods.MapLibre.MLNSource
 import cocoapods.MapLibre.MLNStyle
 import cocoapods.MapLibre.allowsTilting
 import dev.sargunv.maplibrecompose.core.util.toBoundingBox
