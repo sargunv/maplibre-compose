@@ -16,6 +16,7 @@ import dev.sargunv.maplibrecompose.core.CameraMoveReason
 import dev.sargunv.maplibrecompose.core.GestureSettings
 import dev.sargunv.maplibrecompose.core.MaplibreMap
 import dev.sargunv.maplibrecompose.core.OrnamentSettings
+import dev.sargunv.maplibrecompose.core.SafeStyle
 import dev.sargunv.maplibrecompose.core.StandardMaplibreMap
 import dev.sargunv.maplibrecompose.core.Style
 import dev.sargunv.maplibrecompose.core.util.PlatformUtils
@@ -105,7 +106,7 @@ public fun MaplibreMap(
   logger: Logger? = remember { Logger.withTag("maplibre-compose") },
   content: @Composable @MaplibreComposable () -> Unit = {},
 ) {
-  var rememberedStyle by remember { mutableStateOf<Style?>(null) }
+  var rememberedStyle by remember { mutableStateOf<SafeStyle?>(null) }
   val styleComposition by rememberStyleComposition(rememberedStyle, logger, content)
 
   val callbacks =
@@ -113,8 +114,10 @@ public fun MaplibreMap(
       object : MaplibreMap.Callbacks {
         override fun onStyleChanged(map: MaplibreMap, style: Style?) {
           map as StandardMaplibreMap
-          styleState.attach(style)
-          rememberedStyle = style
+          rememberedStyle?.unload()
+          val safeStyle = style?.let { SafeStyle(it) }
+          styleState.attach(safeStyle)
+          rememberedStyle = safeStyle
           cameraState.metersPerDpAtTargetState.value =
             map.metersPerDpAtLatitude(map.getCameraPosition().target.latitude)
         }
@@ -125,6 +128,7 @@ public fun MaplibreMap(
 
         override fun onCameraMoveStarted(map: MaplibreMap, reason: CameraMoveReason) {
           cameraState.moveReasonState.value = reason
+          cameraState.isCameraMovingState.value = true
         }
 
         override fun onCameraMoved(map: MaplibreMap) {
@@ -134,7 +138,9 @@ public fun MaplibreMap(
             map.metersPerDpAtLatitude(map.getCameraPosition().target.latitude)
         }
 
-        override fun onCameraMoveEnded(map: MaplibreMap) {}
+        override fun onCameraMoveEnded(map: MaplibreMap) {
+          cameraState.isCameraMovingState.value = false
+        }
 
         private fun layerNodesInOrder(): List<LayerNode<*>> {
           val layerNodes =
@@ -218,5 +224,6 @@ public fun MaplibreMap(
     },
     logger = logger,
     callbacks = callbacks,
+    rememberedStyle = rememberedStyle,
   )
 }

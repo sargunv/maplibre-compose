@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonColors
@@ -54,7 +52,9 @@ import dev.sargunv.maplibrecompose.core.source.AttributionLink
 import dev.sargunv.maplibrecompose.material3.Reverse
 import dev.sargunv.maplibrecompose.material3.generated.Res
 import dev.sargunv.maplibrecompose.material3.generated.attribution
+import dev.sargunv.maplibrecompose.material3.generated.info
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 /**
  * Info button from which an attribution popup text is expanded from. The attribution text retracts
@@ -191,7 +191,7 @@ private fun Modifier.widthIfSpecified(width: Dp) =
 @Composable
 private fun InfoIcon(modifier: Modifier = Modifier) {
   Icon(
-    imageVector = Icons.Outlined.Info,
+    imageVector = vectorResource(Res.drawable.info),
     contentDescription = stringResource(Res.string.attribution),
     modifier = modifier,
   )

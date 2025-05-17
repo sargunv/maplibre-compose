@@ -5,6 +5,7 @@ import androidx.compose.ui.test.runComposeUiTest
 import dev.sargunv.maplibrecompose.compose.engine.LayerNode
 import dev.sargunv.maplibrecompose.compose.engine.StyleNode
 import dev.sargunv.maplibrecompose.compose.layer.Anchor
+import dev.sargunv.maplibrecompose.core.SafeStyle
 import dev.sargunv.maplibrecompose.core.layer.Layer
 import dev.sargunv.maplibrecompose.core.layer.LineLayer
 import dev.sargunv.maplibrecompose.core.source.GeoJsonOptions
@@ -36,7 +37,7 @@ abstract class StyleNodeTest {
   }
 
   private fun makeStyleNode(): StyleNode {
-    return StyleNode(FakeStyle(emptyList(), testSources, testLayers), null)
+    return StyleNode(SafeStyle(FakeStyle(emptyList(), testSources, testLayers)), null)
   }
 
   @BeforeTest open fun platformSetup() {}
