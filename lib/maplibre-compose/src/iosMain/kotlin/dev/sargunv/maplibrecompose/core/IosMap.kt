@@ -105,7 +105,7 @@ internal class IosMap(
         val point = locationInView(this@IosMap.mapView).toDpOffset()
         callbacks.onClick(this@IosMap, positionFromScreenLocation(point), point)
       },
-      Gesture(UILongPressGestureRecognizer()) {
+      Gesture(UILongPressGestureRecognizer(), isCooperative = false) {
         if (state != UIGestureRecognizerStateBegan) return@Gesture
         val point = locationInView(this@IosMap.mapView).toDpOffset()
         callbacks.onLongClick(this@IosMap, positionFromScreenLocation(point), point)
