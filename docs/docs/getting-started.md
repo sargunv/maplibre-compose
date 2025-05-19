@@ -32,7 +32,7 @@ This library is published via [Maven Central][maven], and snapshot builds of
     ```kotlin title="settings.gradle.kts"
     repositories {
       maven {
-        url = uri("https://maven.pkg.github.com/sargunv/maplibre-compose")
+        url = uri("https://maven.pkg.github.com/maplibre/maplibre-compose")
         credentials {
           username = project.findProperty("gpr.user") as String? ?: System.getenv("GH_USERNAME")
           password = project.findProperty("gpr.key") as String? ?: System.getenv("GH_TOKEN")
@@ -106,11 +106,11 @@ For Web, you'll additionally need to add the MapLibre CSS to your page. The
 easiest way to do this is via the CDN:
 
 ```kotlin title="index.html"
-<!doctype html>
-<html lang="en">
-  <head>
-    <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@{{ gradle.maplibre_js_version }}/dist/maplibre-gl.css'/>
-  </head>
+<!doctype html >
+<html lang ="en">
+<head >
+<link rel ='stylesheet' href = 'https://unpkg.com/maplibre-gl@{{ gradle.maplibre_js_version }}/dist/maplibre-gl.css'/>
+</head>
 </html>
 ```
 
@@ -137,7 +137,10 @@ Add these JVM flags to your app:
 compose.desktop {
   application {
     jvmArgs("--add-opens", "java.desktop/sun.awt=ALL-UNNAMED")
-    jvmArgs("--add-opens", "java.desktop/java.awt.peer=ALL-UNNAMED") // recommended but not necessary
+    jvmArgs(
+      "--add-opens",
+      "java.desktop/java.awt.peer=ALL-UNNAMED"
+    ) // recommended but not necessary
 
     if (System.getProperty("os.name").contains("Mac")) {
       jvmArgs("--add-opens", "java.desktop/sun.lwawt=ALL-UNNAMED")
@@ -175,6 +178,6 @@ to get a detailed map with all the features you'd expect, proceed to
 [gh-packages-guide]:
   https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry#using-a-published-package
 [kotlin-cocoapods]: https://kotlinlang.org/docs/native-cocoapods.html
-[repo]: https://github.com/sargunv/maplibre-compose
+[repo]: https://github.com/maplibre/maplibre-compose
 [demotiles]: https://demotiles.maplibre.org/
 [kcef]: https://github.com/DatL4g/KCEF

@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'demo_app'
     spec.version                  = '0.0.0'
-    spec.homepage                 = 'https://github.com/sargunv/maplibre-compose'
+    spec.homepage                 = 'https://github.com/maplibre/maplibre-compose'
     spec.source                   = { :http=> ''}
     spec.authors                  = ''
     spec.license                  = ''

@@ -1,10 +1,10 @@
 site_name: MapLibre Compose
 
 site_description: MapLibre Compose embeds interactive vector maps in your Compose Multiplatform apps.
-site_url: https://sargunv.github.io/maplibre-compose
+site_url: https://maplibre.org/maplibre-compose
 
 repo_name: maplibre-compose
-repo_url: http://github.com/sargunv/maplibre-compose
+repo_url: http://github.com/maplibre/maplibre-compose
 edit_uri: "edit/main/docs/docs/"
 
 copyright: "Copyright &copy; 2024 Sargun Vohra"

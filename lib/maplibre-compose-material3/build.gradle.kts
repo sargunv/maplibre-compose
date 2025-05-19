@@ -21,7 +21,7 @@ mavenPublishing {
   pom {
     name = "MapLibre Compose Material 3"
     description = "Material 3 extensions for MapLibre Compose."
-    url = "https://github.com/sargunv/maplibre-compose"
+    url = "https://github.com/maplibre/maplibre-compose"
   }
 }
 

@@ -45,7 +45,7 @@ public fun <T : ExpressionValue> switch(
   vararg conditions: Condition<T>,
   fallback: Expression<T>,
 ): Expression<T> {
-  // HACK: See https://github.com/sargunv/maplibre-compose/issues/310
+  // HACK: See https://github.com/maplibre/maplibre-compose/issues/310
   // The `case` expr supports multiple conditions, but on iOS it crashes when used with iconImage.
   // So we split multiple conditions into cascaded `case` calls, each with a single condition.
   // Can remove this hack when https://github.com/maplibre/maplibre-native/issues/3477 is resolved.

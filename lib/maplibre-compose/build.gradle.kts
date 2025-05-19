@@ -21,7 +21,7 @@ mavenPublishing {
   pom {
     name = "MapLibre Compose"
     description = "Add interactive vector tile maps to your Compose app"
-    url = "https://github.com/sargunv/maplibre-compose"
+    url = "https://github.com/maplibre/maplibre-compose"
   }
 }
 
