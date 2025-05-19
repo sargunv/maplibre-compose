@@ -105,12 +105,16 @@ androidMain.dependencies {
 For Web, you'll additionally need to add the MapLibre CSS to your page. The
 easiest way to do this is via the CDN:
 
-```kotlin title="index.html"
-<!doctype html >
-<html lang ="en">
-<head >
-<link rel ='stylesheet' href = 'https://unpkg.com/maplibre-gl@{{ gradle.maplibre_js_version }}/dist/maplibre-gl.css'/>
-</head>
+```html title="index.html"
+<!doctype html>
+<html lang="en">
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/maplibre-gl@{{ gradle.maplibre_js_version }}/dist/maplibre-gl.css"
+    />
+    <title>Example Map</title>
+  </head>
 </html>
 ```
 
@@ -155,7 +159,7 @@ Wrap your app with `KcefProvider` to download KCEF on first lanch, and
 is running in:
 
 ```kotlin title="Main.kt"
--8<- "demo-app/src/desktopMain/kotlin/dev/sargunv/maplibrecompose/demoapp/Main.kt:main"
+-8 < -"demo-app/src/desktopMain/kotlin/dev/sargunv/maplibrecompose/demoapp/Main.kt:main"
 ```
 
 ## Display your first map
@@ -163,7 +167,7 @@ is running in:
 In your Composable UI, add a map:
 
 ```kotlin title="App.kt"
--8<- "demo-app/src/commonMain/kotlin/dev/sargunv/maplibrecompose/demoapp/docs/GettingStarted.kt:app"
+-8 < -"demo-app/src/commonMain/kotlin/dev/sargunv/maplibrecompose/demoapp/docs/GettingStarted.kt:app"
 ```
 
 When you run your app, you should see the default [demotiles] map. To learn how
