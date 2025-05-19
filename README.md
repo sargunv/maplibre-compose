@@ -1,9 +1,11 @@
-[![Github Actions](https://github.com/sargunv/maplibre-compose/actions/workflows/ci.yml/badge.svg)](https://github.com/sargunv/maplibre-compose/actions/workflows/ci.yml?query=branch%3Amain)
-[![Maven Central Version](https://img.shields.io/maven-central/v/dev.sargunv.maplibre-compose/maplibre-compose)](https://central.sonatype.com/namespace/dev.sargunv.maplibre-compose)
-[![License](https://img.shields.io/github/license/sargunv/maplibre-compose)](https://github.com/sargunv/maplibre-compose/blob/main/LICENSE)
+[![Maven Central Version](https://img.shields.io/maven-central/v/dev.sargunv.maplibre-compose/maplibre-compose?label=Maven)](https://central.sonatype.com/namespace/dev.sargunv.maplibre-compose)
+[![License](https://img.shields.io/github/license/sargunv/maplibre-compose?label=License)](https://github.com/sargunv/maplibre-compose/blob/main/LICENSE)
+[![Kotlin Version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fsargunv%2Fmaplibre-compose%2Frefs%2Fheads%2Fmain%2Fgradle%2Flibs.versions.toml&query=versions.gradle-kotlin&prefix=v&logo=kotlin&label=Kotlin)](./gradle/libs.versions.toml)
+[![Compose Version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fsargunv%2Fmaplibre-compose%2Frefs%2Fheads%2Fmain%2Fgradle%2Flibs.versions.toml&query=versions.gradle-compose&prefix=v&logo=jetpackcompose&label=Compose)](./gradle/libs.versions.toml)
 [![Documentation](https://img.shields.io/badge/Documentation-blue?logo=MaterialForMkDocs&logoColor=white)](https://sargunv.github.io/maplibre-compose/)
 [![API Reference](https://img.shields.io/badge/API_Reference-blue?logo=Kotlin&logoColor=white)](https://sargunv.github.io/maplibre-compose/api/)
 [![Slack](https://img.shields.io/badge/Slack-4A154B?logo=slack&logoColor=white)](https://osmus.slack.com/archives/maplibre-compose)
+
 
 # MapLibre for Compose Multiplatform
 
