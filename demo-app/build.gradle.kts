@@ -53,7 +53,7 @@ kotlin {
 
   cocoapods {
     summary = "MapLibre Compose demo app"
-    homepage = "https://github.com/sargunv/maplibre-compose"
+    homepage = "https://github.com/maplibre/maplibre-compose"
     ios.deploymentTarget = "15.3" // TODO reduce this to same as library target?
     podfile = project.file("../iosApp/Podfile")
     framework {
