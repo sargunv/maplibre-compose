@@ -25,6 +25,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,14 +36,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.LinkAnnotation.Url
 import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrecompose.compose.CameraState
 import dev.sargunv.maplibrecompose.compose.StyleState
@@ -50,7 +50,10 @@ import dev.sargunv.maplibrecompose.core.CameraMoveReason
 import dev.sargunv.maplibrecompose.material3.generated.Res
 import dev.sargunv.maplibrecompose.material3.generated.attribution
 import dev.sargunv.maplibrecompose.material3.generated.info
-import dev.sargunv.maplibrecompose.material3.reversed
+import dev.sargunv.maplibrecompose.material3.horizontal
+import dev.sargunv.maplibrecompose.material3.reverse
+import dev.sargunv.maplibrecompose.material3.toArrangement
+import dev.sargunv.maplibrecompose.material3.vertical
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
@@ -61,9 +64,8 @@ import org.jetbrains.compose.resources.vectorResource
  * @param cameraState Used to dismiss the attribution when the user interacts with the map.
  * @param styleState Used to get the attribution links to display.
  * @param modifier the Modifier to be applied to this layout node
+ * @param contentAlignment Will be used to determine layout of the attribution icon and text.
  * @param iconColors Colors that will be used for the info button
- * @param iconAlignment Will be used to determine layout of the attribution icon and text. Supports
- *   the four corners.
  * @param textStyle Text style used for the attribution info
  * @param textLinkStyles Text link styles that should be used for the links in the attribution info
  * @param shape Shape of the attribution (applied to [Surface])
@@ -76,8 +78,8 @@ public fun AttributionButton(
   cameraState: CameraState,
   styleState: StyleState,
   modifier: Modifier = Modifier,
+  contentAlignment: Alignment = Alignment.BottomEnd,
   iconColors: IconButtonColors = IconButtonDefaults.iconButtonColors(),
-  iconAlignment: Alignment = Alignment.BottomEnd,
   textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
   textLinkStyles: TextLinkStyles? = null,
   shape: Shape = RoundedCornerShape(24.dp),
@@ -101,20 +103,6 @@ public fun AttributionButton(
   if (attributions.isEmpty()) return
 
   val expanded = remember { MutableTransitionState(true) }
-
-  // we align a fake point inside a 2x2 grid, to determine arrangement and alignment of contents
-  val testAlignment =
-    remember(iconAlignment) {
-      iconAlignment.align(
-        size = IntSize(1, 1),
-        space = IntSize(2, 2),
-        layoutDirection = LayoutDirection.Ltr,
-      )
-    }
-
-  val reverseArrangement = testAlignment.x == 1
-  val rowArrangement = if (reverseArrangement) Arrangement.End.reversed() else Arrangement.Start
-  val iconVerticalAlignment = if (testAlignment.y == 0) Alignment.Top else Alignment.Bottom
 
   var collapsedOnce by remember { mutableStateOf(false) }
 
@@ -153,41 +141,44 @@ public fun AttributionButton(
       shadowElevation = surfaceShadowElevation,
       border = border,
     ) {
-      Row(horizontalArrangement = rowArrangement, verticalAlignment = Alignment.CenterVertically) {
-        IconButton(
-          onClick = { expanded.targetState = !expanded.targetState },
-          colors = iconColors,
-          modifier = Modifier.align(iconVerticalAlignment),
-        ) {
-          Icon(
-            imageVector = vectorResource(Res.drawable.info),
-            contentDescription = stringResource(Res.string.attribution),
-          )
-        }
+      val rowArrangement = contentAlignment.horizontal.toArrangement()
+      val ldr = LocalLayoutDirection.current
+      val rowLayoutDir = if (rowArrangement == Arrangement.End) ldr.reverse() else ldr
 
-        AnimatedVisibility(
-          modifier = Modifier.align(iconVerticalAlignment),
-          visibleState = expanded,
-          enter = expandIn(expandFrom = iconAlignment) + fadeIn(),
-          exit = shrinkOut(shrinkTowards = iconAlignment) + fadeOut(),
+      CompositionLocalProvider(LocalLayoutDirection provides rowLayoutDir) {
+        Row(
+          horizontalArrangement = rowArrangement,
+          verticalAlignment = Alignment.CenterVertically,
         ) {
-          ProvideTextStyle(value = textStyle) {
-            FlowRow(
-              modifier =
-                Modifier.padding(
-                  start = if (reverseArrangement) 16.dp else 0.dp,
-                  end = if (reverseArrangement) 0.dp else 16.dp,
-                  top = 8.dp,
-                  bottom = 8.dp,
-                ),
-              horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-              attributions.distinct().forEach {
-                val attributionString = buildAnnotatedString {
-                  val link = Url(url = it.url, styles = textLinkStyles)
-                  withLink(link) { this.append(it.title) }
+          IconButton(
+            onClick = { expanded.targetState = !expanded.targetState },
+            colors = iconColors,
+            modifier = Modifier.align(contentAlignment.vertical),
+          ) {
+            Icon(
+              imageVector = vectorResource(Res.drawable.info),
+              contentDescription = stringResource(Res.string.attribution),
+            )
+          }
+
+          AnimatedVisibility(
+            modifier = Modifier.align(contentAlignment.vertical),
+            visibleState = expanded,
+            enter = expandIn(expandFrom = contentAlignment) + fadeIn(),
+            exit = shrinkOut(shrinkTowards = contentAlignment) + fadeOut(),
+          ) {
+            ProvideTextStyle(value = textStyle) {
+              FlowRow(
+                modifier = Modifier.padding(start = 0.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+              ) {
+                attributions.distinct().forEach {
+                  val attributionString = buildAnnotatedString {
+                    val link = Url(url = it.url, styles = textLinkStyles)
+                    withLink(link) { this.append(it.title) }
+                  }
+                  Text(text = attributionString)
                 }
-                Text(text = attributionString)
               }
             }
           }

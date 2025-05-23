@@ -177,7 +177,7 @@ fun DemoMapControls(
         cameraState = cameraState,
         styleState = styleState,
         modifier = Modifier.align(Alignment.BottomEnd),
-        iconAlignment = Alignment.BottomEnd,
+        contentAlignment = Alignment.BottomEnd,
       )
     }
   }
