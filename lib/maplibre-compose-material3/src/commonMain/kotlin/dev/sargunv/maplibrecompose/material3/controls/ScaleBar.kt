@@ -212,5 +212,7 @@ private fun scaleBarParameters(
  */
 private fun findStop(max: Length, stops: List<Length>): Length {
   val i = stops.binarySearch { it.compareTo(max) }
+  // i is the inverted insertion point if the value is not found
+  // -i - 2 inverts it back
   return if (i >= 0) stops[i] else stops[(-i - 2).coerceAtLeast(0)]
 }
