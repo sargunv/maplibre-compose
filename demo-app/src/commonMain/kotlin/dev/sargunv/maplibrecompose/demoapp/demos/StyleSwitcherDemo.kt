@@ -33,7 +33,7 @@ object StyleSwitcherDemo : Demo {
 
   @Composable
   override fun Component(navigateUp: () -> Unit) {
-    var selectedIndex by remember { mutableStateOf(0) }
+    var selectedIndex by remember { mutableStateOf(ALL_STYLES.lastIndex) }
 
     MaterialTheme(colorScheme = getDefaultColorScheme(isDark = ALL_STYLES[selectedIndex].isDark)) {
       DemoScaffold(this, navigateUp) {

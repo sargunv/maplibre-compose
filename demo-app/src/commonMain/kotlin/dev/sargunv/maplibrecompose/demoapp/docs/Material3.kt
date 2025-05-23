@@ -36,7 +36,7 @@ fun Material3() {
       ScaleBar(cameraState.metersPerDpAtTarget, modifier = Modifier.align(Alignment.TopStart))
       CompassButton(cameraState, modifier = Modifier.align(Alignment.TopEnd))
       AttributionButton(
-        lastCameraMoveReason = cameraState.moveReason,
+        isCameraMoving = cameraState.isCameraMoving,
         attributions = styleState.sources.flatMap { it.attributionLinks },
         modifier = Modifier.align(Alignment.BottomEnd),
       )
@@ -60,7 +60,7 @@ fun Material3() {
       ) // (1)!
       DisappearingCompassButton(cameraState, modifier = Modifier.align(Alignment.TopEnd)) // (2)!
       AttributionButton(
-        lastCameraMoveReason = cameraState.moveReason,
+        isCameraMoving = cameraState.isCameraMoving,
         attributions = styleState.sources.flatMap { it.attributionLinks },
         modifier = Modifier.align(Alignment.BottomEnd),
       )
