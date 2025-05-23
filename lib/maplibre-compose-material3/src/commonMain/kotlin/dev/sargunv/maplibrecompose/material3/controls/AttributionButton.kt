@@ -41,6 +41,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrecompose.compose.CameraState
 import dev.sargunv.maplibrecompose.compose.StyleState
@@ -77,7 +78,6 @@ public fun AttributionButton(
   styleState: StyleState,
   modifier: Modifier = Modifier,
   contentAlignment: Alignment = Alignment.BottomEnd,
-  contentSeparator: String? = null,
   iconColors: IconButtonColors = IconButtonDefaults.iconButtonColors(),
   textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
   textLinkStyles: TextLinkStyles? = null,
@@ -144,6 +144,9 @@ public fun AttributionButton(
       val originalLayoutDir = LocalLayoutDirection.current
       val buttonLayoutDir =
         if (rowArrangement == Arrangement.End) originalLayoutDir.reverse() else originalLayoutDir
+      val expandAlignment =
+        if (originalLayoutDir == LayoutDirection.Rtl) contentAlignment
+        else contentAlignment.reverse()
 
       CompositionLocalProvider(LocalLayoutDirection provides buttonLayoutDir) {
         Row(
@@ -161,33 +164,24 @@ public fun AttributionButton(
             )
           }
 
-          CompositionLocalProvider(LocalLayoutDirection provides originalLayoutDir) {
-            AnimatedVisibility(
-              modifier = Modifier.align(Alignment.CenterVertically),
-              visibleState = expanded,
-              enter =
-                expandIn(
-                  expandFrom = contentAlignment.reverse().horizontal + Alignment.CenterVertically
-                ),
-              exit =
-                shrinkOut(
-                  shrinkTowards = contentAlignment.reverse().horizontal + Alignment.CenterVertically
-                ),
-            ) {
-              ProvideTextStyle(value = textStyle) {
-                FlowRow(
-                  modifier = Modifier.padding(start = 16.dp, end = 0.dp, top = 8.dp, bottom = 8.dp),
-                  horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                  attributions.forEachIndexed { i, attr ->
-                    val attributionString = buildAnnotatedString {
-                      val link = Url(url = attr.url, styles = textLinkStyles)
-                      withLink(link) { this.append(attr.title) }
-                    }
-                    Text(attributionString)
-                    if (contentSeparator != null && i < attributions.lastIndex)
-                      Text(contentSeparator)
+          AnimatedVisibility(
+            modifier = Modifier.align(Alignment.CenterVertically),
+            visibleState = expanded,
+            enter = expandIn(expandFrom = expandAlignment.horizontal + Alignment.CenterVertically),
+            exit =
+              shrinkOut(shrinkTowards = expandAlignment.horizontal + Alignment.CenterVertically),
+          ) {
+            ProvideTextStyle(value = textStyle) {
+              FlowRow(
+                modifier = Modifier.padding(start = 0.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+              ) {
+                attributions.forEachIndexed { i, attr ->
+                  val attributionString = buildAnnotatedString {
+                    val link = Url(url = attr.url, styles = textLinkStyles)
+                    withLink(link) { this.append(attr.title) }
                   }
+                  Text(attributionString)
                 }
               }
             }
