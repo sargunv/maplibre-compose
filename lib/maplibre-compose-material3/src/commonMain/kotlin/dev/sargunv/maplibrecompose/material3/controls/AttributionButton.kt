@@ -79,6 +79,7 @@ public fun AttributionButton(
   styleState: StyleState,
   modifier: Modifier = Modifier,
   contentAlignment: Alignment = Alignment.BottomEnd,
+  contentSeparator: String? = "\u2022",
   iconColors: IconButtonColors = IconButtonDefaults.iconButtonColors(),
   textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
   textLinkStyles: TextLinkStyles? = null,
@@ -183,9 +184,10 @@ public fun AttributionButton(
                     val attributionString = buildAnnotatedString {
                       val link = Url(url = attr.url, styles = textLinkStyles)
                       withLink(link) { this.append(attr.title) }
-                      if (i < attributions.lastIndex) this.append(" \u2022")
                     }
-                    Text(text = attributionString)
+                    Text(attributionString)
+                    if (contentSeparator != null && i < attributions.lastIndex)
+                      Text(contentSeparator)
                   }
                 }
               }
