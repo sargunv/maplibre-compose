@@ -175,9 +175,10 @@ fun DemoMapControls(
       listOf(Alignment.TopStart, Alignment.TopEnd, Alignment.BottomStart, Alignment.BottomEnd)
         .forEach { alignment ->
           AttributionButton(
-            isCameraMoving = cameraState.isCameraMoving,
-            attributions = styleState.sources.flatMap { it.attributionLinks },
+            cameraState = cameraState,
+            styleState = styleState,
             modifier = Modifier.align(alignment),
+            iconAlignment = alignment,
           )
         }
     }
