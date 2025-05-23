@@ -49,6 +49,8 @@ import dev.sargunv.maplibrecompose.demoapp.generated.Res
 import dev.sargunv.maplibrecompose.demoapp.generated.arrow_back
 import dev.sargunv.maplibrecompose.demoapp.generated.info
 import dev.sargunv.maplibrecompose.material3.controls.AttributionButton
+import dev.sargunv.maplibrecompose.material3.controls.DisappearingCompassButton
+import dev.sargunv.maplibrecompose.material3.controls.DisappearingScaleBar
 import dev.sargunv.maplibrecompose.material3.controls.ScaleBarMeasures
 import dev.sargunv.maplibrecompose.material3.defaultScaleBarMeasures
 import org.jetbrains.compose.resources.vectorResource
@@ -160,27 +162,23 @@ fun DemoMapControls(
 ) {
   if (Platform.supportsBlending) {
     Box(modifier = modifier.fillMaxSize().padding(8.dp)) {
-      //      DisappearingScaleBar(
-      //        metersPerDp = cameraState.metersPerDpAtTarget,
-      //        zoom = cameraState.position.zoom,
-      //        modifier = Modifier.align(Alignment.TopStart),
-      //        measures = scaleBarMeasures,
-      //      )
-      //      DisappearingCompassButton(
-      //        cameraState,
-      //        modifier = Modifier.align(Alignment.TopEnd),
-      //        onClick = onCompassClick,
-      //      )
-
-      listOf(Alignment.TopStart, Alignment.TopEnd, Alignment.BottomStart, Alignment.BottomEnd)
-        .forEach { alignment ->
-          AttributionButton(
-            cameraState = cameraState,
-            styleState = styleState,
-            modifier = Modifier.align(alignment),
-            iconAlignment = alignment,
-          )
-        }
+      DisappearingScaleBar(
+        metersPerDp = cameraState.metersPerDpAtTarget,
+        zoom = cameraState.position.zoom,
+        modifier = Modifier.align(Alignment.TopStart),
+        measures = scaleBarMeasures,
+      )
+      DisappearingCompassButton(
+        cameraState,
+        modifier = Modifier.align(Alignment.TopEnd),
+        onClick = onCompassClick,
+      )
+      AttributionButton(
+        cameraState = cameraState,
+        styleState = styleState,
+        modifier = Modifier.align(Alignment.BottomEnd),
+        iconAlignment = Alignment.BottomEnd,
+      )
     }
   }
 }
