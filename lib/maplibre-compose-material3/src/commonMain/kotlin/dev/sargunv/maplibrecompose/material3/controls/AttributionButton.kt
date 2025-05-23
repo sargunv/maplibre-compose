@@ -4,6 +4,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +26,9 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -89,6 +93,7 @@ public fun AttributionButton(
   if (attributions.isEmpty()) return
 
   val expanded = remember { MutableTransitionState(true) }
+  var collapsedOnce by remember { mutableStateOf(false) }
 
   val surfaceColor by
     animateColorAsState(if (expanded.targetState) expandedColor else collapsedColor)
@@ -107,10 +112,12 @@ public fun AttributionButton(
   val rowArrangement = if (reverseArrangement) Arrangement.Absolute.Reverse else Arrangement.Start
   val iconVerticalAlignment = if (testAlignment.y == 0) Alignment.Top else Alignment.Bottom
 
-  // collapse on first moving the map
-  LaunchedEffect(cameraState.moveReason) {
-    if (cameraState.moveReason == CameraMoveReason.GESTURE) {
-      expanded.targetState = false
+  if (!collapsedOnce) {
+    LaunchedEffect(cameraState.isCameraMoving, cameraState.moveReason) {
+      if (cameraState.isCameraMoving && cameraState.moveReason == CameraMoveReason.GESTURE) {
+        expanded.targetState = false
+        collapsedOnce = true
+      }
     }
   }
 
@@ -137,8 +144,8 @@ public fun AttributionButton(
 
         AnimatedVisibility(
           visibleState = expanded,
-          enter = expandHorizontally(),
-          exit = shrinkHorizontally(),
+          enter = expandHorizontally() + fadeIn(),
+          exit = shrinkHorizontally() + fadeOut(),
         ) {
           ProvideTextStyle(value = textStyle) {
             FlowRow(
