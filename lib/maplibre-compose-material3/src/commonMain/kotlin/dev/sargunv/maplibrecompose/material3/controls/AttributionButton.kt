@@ -99,7 +99,7 @@ public fun AttributionButton(
       shadowElevation = 0.dp,
     ),
 ) {
-  val attributions = styleState.sources.flatMap { it.attributionLinks }
+  val attributions = styleState.sources.flatMap { it.attributionLinks }.distinct()
   if (attributions.isEmpty()) return
 
   val expanded = remember { MutableTransitionState(true) }
@@ -142,10 +142,11 @@ public fun AttributionButton(
       border = border,
     ) {
       val rowArrangement = contentAlignment.horizontal.toArrangement()
-      val ldr = LocalLayoutDirection.current
-      val rowLayoutDir = if (rowArrangement == Arrangement.End) ldr.reverse() else ldr
+      val originalLayoutDir = LocalLayoutDirection.current
+      val buttonLayoutDir =
+        if (rowArrangement == Arrangement.End) originalLayoutDir.reverse() else originalLayoutDir
 
-      CompositionLocalProvider(LocalLayoutDirection provides rowLayoutDir) {
+      CompositionLocalProvider(LocalLayoutDirection provides buttonLayoutDir) {
         Row(
           horizontalArrangement = rowArrangement,
           verticalAlignment = Alignment.CenterVertically,
@@ -161,23 +162,31 @@ public fun AttributionButton(
             )
           }
 
-          AnimatedVisibility(
-            modifier = Modifier.align(contentAlignment.vertical),
-            visibleState = expanded,
-            enter = expandIn(expandFrom = contentAlignment) + fadeIn(),
-            exit = shrinkOut(shrinkTowards = contentAlignment) + fadeOut(),
-          ) {
-            ProvideTextStyle(value = textStyle) {
-              FlowRow(
-                modifier = Modifier.padding(start = 0.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-              ) {
-                attributions.distinct().forEach {
-                  val attributionString = buildAnnotatedString {
-                    val link = Url(url = it.url, styles = textLinkStyles)
-                    withLink(link) { this.append(it.title) }
+          CompositionLocalProvider(LocalLayoutDirection provides originalLayoutDir) {
+            AnimatedVisibility(
+              modifier = Modifier.align(Alignment.CenterVertically),
+              visibleState = expanded,
+              enter =
+                expandIn(expandFrom = contentAlignment.horizontal + Alignment.CenterVertically) +
+                  fadeIn(),
+              exit =
+                shrinkOut(
+                  shrinkTowards = contentAlignment.horizontal + Alignment.CenterVertically
+                ) + fadeOut(),
+            ) {
+              ProvideTextStyle(value = textStyle) {
+                FlowRow(
+                  modifier = Modifier.padding(start = 16.dp, end = 0.dp, top = 8.dp, bottom = 8.dp),
+                  horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                  attributions.forEachIndexed { i, attr ->
+                    val attributionString = buildAnnotatedString {
+                      val link = Url(url = attr.url, styles = textLinkStyles)
+                      withLink(link) { this.append(attr.title) }
+                      if (i < attributions.lastIndex) this.append(" \u2022")
+                    }
+                    Text(text = attributionString)
                   }
-                  Text(text = attributionString)
                 }
               }
             }
