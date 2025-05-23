@@ -17,6 +17,8 @@ import dev.sargunv.maplibrecompose.demoapp.DemoScaffold
 import dev.sargunv.maplibrecompose.demoapp.generated.Res
 import dev.sargunv.maplibrecompose.material3.controls.ScaleBarMeasure
 import dev.sargunv.maplibrecompose.material3.controls.ScaleBarMeasures
+import io.github.kevincianfarini.alchemist.scalar.kilometers
+import io.github.kevincianfarini.alchemist.unit.LengthUnit
 
 object LocalTilesDemo : Demo {
   override val name = "Local Tiles"
@@ -51,14 +53,21 @@ object LocalTilesDemo : Demo {
 
             RasterLayer(id = "fantasy-map", source = tiles)
           }
-          DemoMapControls(cameraState, styleState, scaleBarMeasures = ScaleBarMeasures(FakeMetric))
+          DemoMapControls(
+            cameraState,
+            styleState,
+            scaleBarMeasures = ScaleBarMeasures(LeaguesMeasure),
+          )
         }
       }
     }
   }
 }
 
-data object FakeMetric : ScaleBarMeasure by ScaleBarMeasure.Metric {
-  // hack to scale it down for the fantasy map
-  override val unitInMeters: Double = 20.0
+data object League : LengthUnit {
+  // roman league (2.22km) scaled 20x to better fit the map data
+  override val nanometerScale = (2.22.kilometers * 20).toLong(LengthUnit.International.Nanometer)
+  override val symbol = "lea"
 }
+
+data object LeaguesMeasure : ScaleBarMeasure.Default(League)
