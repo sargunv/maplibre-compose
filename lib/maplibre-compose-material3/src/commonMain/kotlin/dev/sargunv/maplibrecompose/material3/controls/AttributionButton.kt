@@ -3,10 +3,11 @@ package dev.sargunv.maplibrecompose.material3.controls
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +25,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -65,12 +67,9 @@ import org.jetbrains.compose.resources.vectorResource
  * @param textStyle Text style used for the attribution info
  * @param textLinkStyles Text link styles that should be used for the links in the attribution info
  * @param shape Shape of the attribution (applied to [Surface])
- * @param collapsedColor Color of the attribution when collapsed (applied to [Surface])
- * @param expandedColor Color of the attribution when expanded (applied to [Surface])
- * @param contentColor Content Color of the attribution (applied to [Surface])
- * @param tonalElevation Tonal Elevation of the attribution (applied to [Surface])
- * @param shadowElevation Shadow Elevation of the attribution (applied to [Surface])
  * @param border Border of the attribution (applied to [Surface])
+ * @param collapsedStyle Style of the attribution [Surface] when it is expanded
+ * @param expandedStyle Style of the attribution [Surface] when it is collapsed
  */
 @Composable
 public fun AttributionButton(
@@ -82,21 +81,26 @@ public fun AttributionButton(
   textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
   textLinkStyles: TextLinkStyles? = null,
   shape: Shape = RoundedCornerShape(24.dp),
-  expandedColor: Color = MaterialTheme.colorScheme.surface,
-  collapsedColor: Color = MaterialTheme.colorScheme.surface.copy(alpha = 0f),
-  contentColor: Color = contentColorFor(expandedColor),
-  tonalElevation: Dp = 0.dp,
-  shadowElevation: Dp = 0.dp,
   border: BorderStroke? = null,
+  expandedStyle: AttributionButtonStyle =
+    AttributionButtonStyle(
+      containerColor = MaterialTheme.colorScheme.surface,
+      contentColor = contentColorFor(MaterialTheme.colorScheme.surface),
+      tonalElevation = 0.dp,
+      shadowElevation = 0.dp,
+    ),
+  collapsedStyle: AttributionButtonStyle =
+    AttributionButtonStyle(
+      containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0f),
+      contentColor = contentColorFor(MaterialTheme.colorScheme.surface),
+      tonalElevation = 0.dp,
+      shadowElevation = 0.dp,
+    ),
 ) {
   val attributions = styleState.sources.flatMap { it.attributionLinks }
   if (attributions.isEmpty()) return
 
   val expanded = remember { MutableTransitionState(true) }
-  var collapsedOnce by remember { mutableStateOf(false) }
-
-  val surfaceColor by
-    animateColorAsState(if (expanded.targetState) expandedColor else collapsedColor)
 
   // we align a fake point inside a 2x2 grid, to determine arrangement and alignment of contents
   val testAlignment =
@@ -112,6 +116,8 @@ public fun AttributionButton(
   val rowArrangement = if (reverseArrangement) Arrangement.End.reversed() else Arrangement.Start
   val iconVerticalAlignment = if (testAlignment.y == 0) Alignment.Top else Alignment.Bottom
 
+  var collapsedOnce by remember { mutableStateOf(false) }
+
   if (!collapsedOnce) {
     LaunchedEffect(cameraState.isCameraMoving, cameraState.moveReason) {
       if (cameraState.isCameraMoving && cameraState.moveReason == CameraMoveReason.GESTURE) {
@@ -122,12 +128,29 @@ public fun AttributionButton(
   }
 
   Box(modifier) {
+    val surfaceColor by
+      animateColorAsState(
+        if (expanded.targetState) expandedStyle.containerColor else collapsedStyle.containerColor
+      )
+    val surfaceContentColor by
+      animateColorAsState(
+        if (expanded.targetState) expandedStyle.contentColor else collapsedStyle.contentColor
+      )
+    val surfaceTonalElevation by
+      animateDpAsState(
+        if (expanded.targetState) expandedStyle.tonalElevation else collapsedStyle.tonalElevation
+      )
+    val surfaceShadowElevation by
+      animateDpAsState(
+        if (expanded.targetState) expandedStyle.shadowElevation else collapsedStyle.shadowElevation
+      )
+
     Surface(
       shape = shape,
       color = surfaceColor,
-      contentColor = contentColor,
-      tonalElevation = tonalElevation,
-      shadowElevation = shadowElevation,
+      contentColor = surfaceContentColor,
+      tonalElevation = surfaceTonalElevation,
+      shadowElevation = surfaceShadowElevation,
       border = border,
     ) {
       Row(horizontalArrangement = rowArrangement, verticalAlignment = Alignment.CenterVertically) {
@@ -143,9 +166,10 @@ public fun AttributionButton(
         }
 
         AnimatedVisibility(
+          modifier = Modifier.align(iconVerticalAlignment),
           visibleState = expanded,
-          enter = expandHorizontally() + fadeIn(),
-          exit = shrinkHorizontally() + fadeOut(),
+          enter = expandIn(expandFrom = iconAlignment) + fadeIn(),
+          exit = shrinkOut(shrinkTowards = iconAlignment) + fadeOut(),
         ) {
           ProvideTextStyle(value = textStyle) {
             FlowRow(
@@ -172,3 +196,18 @@ public fun AttributionButton(
     }
   }
 }
+
+@Immutable
+public data class AttributionButtonStyle(
+  /** Color of the attribution [Surface]. */
+  public val containerColor: Color,
+
+  /** Content Color of the attribution [Surface]. */
+  public val contentColor: Color,
+
+  /** Tonal Elevation of the attribution [Surface]. */
+  public val tonalElevation: Dp,
+
+  /** Shadow Elevation of the attribution [Surface]. */
+  public val shadowElevation: Dp,
+)
