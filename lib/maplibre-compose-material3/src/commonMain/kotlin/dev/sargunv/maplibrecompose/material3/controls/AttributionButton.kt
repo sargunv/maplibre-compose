@@ -5,8 +5,6 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.expandIn
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -95,7 +93,7 @@ public fun AttributionButton(
   collapsedStyle: AttributionButtonStyle =
     AttributionButtonStyle(
       containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0f),
-      contentColor = contentColorFor(MaterialTheme.colorScheme.surface),
+      contentColor = contentColorFor(MaterialTheme.colorScheme.surface).copy(alpha = 0f),
       tonalElevation = 0.dp,
       shadowElevation = 0.dp,
     ),
@@ -168,12 +166,13 @@ public fun AttributionButton(
               modifier = Modifier.align(Alignment.CenterVertically),
               visibleState = expanded,
               enter =
-                expandIn(expandFrom = contentAlignment.horizontal + Alignment.CenterVertically) +
-                  fadeIn(),
+                expandIn(
+                  expandFrom = contentAlignment.reverse().horizontal + Alignment.CenterVertically
+                ),
               exit =
                 shrinkOut(
-                  shrinkTowards = contentAlignment.horizontal + Alignment.CenterVertically
-                ) + fadeOut(),
+                  shrinkTowards = contentAlignment.reverse().horizontal + Alignment.CenterVertically
+                ),
             ) {
               ProvideTextStyle(value = textStyle) {
                 FlowRow(

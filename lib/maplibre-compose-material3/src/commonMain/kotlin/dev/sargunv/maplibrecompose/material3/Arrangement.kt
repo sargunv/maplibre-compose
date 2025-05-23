@@ -24,6 +24,8 @@ private val Alignment.verticalBias: Float
 internal val Alignment.vertical: Alignment.Vertical
   get() = BiasAlignment.Vertical(verticalBias)
 
+internal fun Alignment.reverse(): Alignment = BiasAlignment(-horizontalBias, -verticalBias)
+
 internal fun Alignment.Horizontal.toArrangement(): Arrangement.Horizontal {
   val align = align(0, 2, LayoutDirection.Ltr)
   return when {
