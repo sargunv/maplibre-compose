@@ -3,8 +3,8 @@ package dev.sargunv.maplibrecompose.material3.controls
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.expandIn
-import androidx.compose.animation.shrinkOut
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -135,7 +135,11 @@ public fun AttributionButton(
           )
         }
 
-        AnimatedVisibility(visibleState = expanded, enter = expandIn(), exit = shrinkOut()) {
+        AnimatedVisibility(
+          visibleState = expanded,
+          enter = expandHorizontally(),
+          exit = shrinkHorizontally(),
+        ) {
           ProvideTextStyle(value = textStyle) {
             FlowRow(
               modifier =
