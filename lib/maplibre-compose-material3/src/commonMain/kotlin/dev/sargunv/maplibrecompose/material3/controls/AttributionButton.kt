@@ -45,10 +45,10 @@ import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrecompose.compose.CameraState
 import dev.sargunv.maplibrecompose.compose.StyleState
 import dev.sargunv.maplibrecompose.core.CameraMoveReason
-import dev.sargunv.maplibrecompose.material3.Reverse
 import dev.sargunv.maplibrecompose.material3.generated.Res
 import dev.sargunv.maplibrecompose.material3.generated.attribution
 import dev.sargunv.maplibrecompose.material3.generated.info
+import dev.sargunv.maplibrecompose.material3.reversed
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
@@ -109,7 +109,7 @@ public fun AttributionButton(
     }
 
   val reverseArrangement = testAlignment.x == 1
-  val rowArrangement = if (reverseArrangement) Arrangement.Absolute.Reverse else Arrangement.Start
+  val rowArrangement = if (reverseArrangement) Arrangement.End.reversed() else Arrangement.Start
   val iconVerticalAlignment = if (testAlignment.y == 0) Alignment.Top else Alignment.Bottom
 
   if (!collapsedOnce) {
