@@ -79,7 +79,7 @@ public fun AttributionButton(
   styleState: StyleState,
   modifier: Modifier = Modifier,
   contentAlignment: Alignment = Alignment.BottomEnd,
-  contentSeparator: String? = "\u2022",
+  contentSeparator: String? = null,
   iconColors: IconButtonColors = IconButtonDefaults.iconButtonColors(),
   textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
   textLinkStyles: TextLinkStyles? = null,
