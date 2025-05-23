@@ -45,6 +45,7 @@ kotlin {
 
   sourceSets {
     commonMain.dependencies {
+      api(libs.alchemist)
       implementation(compose.material3)
       implementation(compose.components.resources)
       api(project(":lib:maplibre-compose"))

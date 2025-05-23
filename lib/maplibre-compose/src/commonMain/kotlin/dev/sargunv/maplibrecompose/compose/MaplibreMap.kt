@@ -116,7 +116,7 @@ public fun MaplibreMap(
           map as StandardMaplibreMap
           rememberedStyle?.unload()
           val safeStyle = style?.let { SafeStyle(it) }
-          styleState.attach(safeStyle)
+          styleState.updateSources()
           rememberedStyle = safeStyle
           cameraState.metersPerDpAtTargetState.value =
             map.metersPerDpAtLatitude(map.getCameraPosition().target.latitude)
@@ -195,6 +195,7 @@ public fun MaplibreMap(
       when (map) {
         is StandardMaplibreMap -> {
           cameraState.map = map
+          styleState.attach(styleComposition)
           map.setDebugEnabled(isDebugEnabled)
           map.setMinZoom(zoomRange.start.toDouble())
           map.setMaxZoom(zoomRange.endInclusive.toDouble())
@@ -220,6 +221,7 @@ public fun MaplibreMap(
     },
     onReset = {
       cameraState.map = null
+      styleState.attach(null)
       rememberedStyle = null
     },
     logger = logger,

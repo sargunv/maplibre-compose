@@ -24,6 +24,9 @@ import dev.sargunv.maplibrecompose.material3.backgroundColorFor
 import dev.sargunv.maplibrecompose.material3.defaultScaleBarMeasures
 import dev.sargunv.maplibrecompose.material3.drawPathsWithHalo
 import dev.sargunv.maplibrecompose.material3.drawTextWithHalo
+import io.github.kevincianfarini.alchemist.scalar.meters
+import io.github.kevincianfarini.alchemist.type.Length
+import io.github.kevincianfarini.alchemist.unit.LengthUnit
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
@@ -109,7 +112,7 @@ public fun ScaleBar(
       val alignmentSpacePx = ceil(size.width - fullStrokeWidthPx).toInt()
 
       if (true) { // just want a scope here
-        val barLengthPx = params1.barLength.toPx().roundToInt()
+        val barLengthPx = params1.barWidth.toPx().roundToInt()
         val offsetX =
           alignment.align(
             size = barLengthPx,
@@ -135,7 +138,7 @@ public fun ScaleBar(
       }
 
       if (params2 != null) {
-        val barLengthPx = params2.barLength.toPx().roundToInt()
+        val barLengthPx = params2.barWidth.toPx().roundToInt()
         val offsetX =
           alignment.align(
             size = barLengthPx,
@@ -189,7 +192,7 @@ public fun ScaleBar(
   }
 }
 
-private data class ScaleBarParams(val barLength: Dp, val text: String)
+private data class ScaleBarParams(val barWidth: Dp, val text: String)
 
 @Composable
 private fun scaleBarParameters(
@@ -197,16 +200,19 @@ private fun scaleBarParameters(
   metersPerDp: Double,
   maxBarLength: Dp,
 ): ScaleBarParams {
-  val max = maxBarLength.value * metersPerDp / measure.unitInMeters
+  val max = metersPerDp.meters * maxBarLength.value.toDouble()
   val stop = findStop(max, measure.stops)
-  return ScaleBarParams((stop * measure.unitInMeters / metersPerDp).dp, measure.getText(stop))
+  val stopMeters = stop.toDouble(LengthUnit.International.Meter)
+  return ScaleBarParams(barWidth = (stopMeters / metersPerDp).dp, text = measure.getText(stop))
 }
 
 /**
  * find the largest stop in the list of stops (sorted in ascending order) that is below or equal
  * [max].
  */
-private fun findStop(max: Double, stops: List<Double>): Double {
+private fun findStop(max: Length, stops: List<Length>): Length {
   val i = stops.binarySearch { it.compareTo(max) }
+  // i is the inverted insertion point if the value is not found
+  // -i - 2 inverts it back
   return if (i >= 0) stops[i] else stops[(-i - 2).coerceAtLeast(0)]
 }
