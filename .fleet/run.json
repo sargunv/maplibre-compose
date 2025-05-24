@@ -29,7 +29,7 @@
       "type": "gradle",
       "workingDir": "$PROJECT_DIR$",
       "tasks": [
-        ":demo-app:jsRun"
+        ":demo-app:jsBrowserDevelopmentRun"
       ]
     },
     {

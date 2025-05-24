@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import cocoapods.MapLibre.MLNCoordinateBounds
+import cocoapods.MapLibre.MLNCoordinateBoundsMake
 import cocoapods.MapLibre.MLNFeatureProtocol
 import cocoapods.MapLibre.MLNOrnamentPosition
 import cocoapods.MapLibre.MLNOrnamentPositionBottomLeft
@@ -110,6 +111,12 @@ internal fun Position.toCLLocationCoordinate2D(): CValue<CLLocationCoordinate2D>
 internal fun CValue<MLNCoordinateBounds>.toBoundingBox(): BoundingBox = useContents {
   BoundingBox(northeast = ne.toPosition(), southwest = sw.toPosition())
 }
+
+internal fun BoundingBox.toMLNCoordinateBounds(): CValue<MLNCoordinateBounds> =
+  MLNCoordinateBoundsMake(
+    ne = northeast.toCLLocationCoordinate2D(),
+    sw = southwest.toCLLocationCoordinate2D(),
+  )
 
 internal fun GeoJson.toMLNShape(): MLNShape {
   return MLNShape.shapeWithData(

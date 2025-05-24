@@ -1,10 +1,12 @@
 package dev.sargunv.maplibrecompose.compose
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpRect
+import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrecompose.core.CameraMoveReason
 import dev.sargunv.maplibrecompose.core.CameraPosition
 import dev.sargunv.maplibrecompose.core.MaplibreMap
@@ -23,19 +25,20 @@ import kotlinx.coroutines.channels.Channel
 
 /** Remember a new [CameraState] in the initial state as given in [firstPosition]. */
 @Composable
-public fun rememberCameraState(firstPosition: CameraPosition = CameraPosition()): CameraState {
-  return remember { CameraState(firstPosition) }
-}
+public fun rememberCameraState(firstPosition: CameraPosition = CameraPosition()): CameraState =
+  rememberSaveable(saver = CameraStateSaver) { CameraState(firstPosition) }
 
 /** Use this class to access information about the map in relation to the camera. */
-public class CameraState internal constructor(firstPosition: CameraPosition) {
+public class CameraState(firstPosition: CameraPosition) {
   internal var map: MaplibreMap? = null
     set(map) {
-      if (map != null && map !== field) {
+      val previousField = field
+      field = map
+
+      if (map != null && map !== previousField) {
         (map as StandardMaplibreMap).setCameraPosition(position)
         mapAttachSignal.trySend(map)
       }
-      field = map
     }
 
   private val mapAttachSignal = Channel<MaplibreMap>()
@@ -43,6 +46,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
   internal val positionState = mutableStateOf(firstPosition)
   internal val moveReasonState = mutableStateOf(CameraMoveReason.NONE)
   internal val metersPerDpAtTargetState = mutableStateOf(0.0)
+  internal val isCameraMovingState = mutableStateOf(false)
 
   /** how the camera is oriented towards the map */
   // if the map is not yet initialized, we store the value to apply it later
@@ -57,9 +61,13 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
   public val moveReason: CameraMoveReason
     get() = moveReasonState.value
 
-  /** meters per dp at the target position */
+  /** meters per dp at the target position. Zero when the map is not initialized yet. */
   public val metersPerDpAtTarget: Double
     get() = metersPerDpAtTargetState.value
+
+  /** whether the camera is currently moving */
+  public val isCameraMoving: Boolean
+    get() = isCameraMovingState.value
 
   /** suspends until the map has been initialized */
   public suspend fun awaitInitialized() {
@@ -73,6 +81,27 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
   ) {
     val map = map ?: mapAttachSignal.receive()
     map.animateCameraPosition(finalPosition, duration)
+  }
+
+  /**
+   * Animates the camera towards the specified [boundingBox] in the given [duration] time with the
+   * specified [bearing], [tilt], and [padding].
+   *
+   * @param boundingBox The bounds to animate the camera to.
+   * @param bearing The bearing to set during the animation. Defaults to 0.0.
+   * @param tilt The tilt to set during the animation. Defaults to 0.0.
+   * @param padding The padding to apply during the animation. Defaults to no padding.
+   * @param duration The duration of the animation. Defaults to 300 ms. Has no effect on JS.
+   */
+  public suspend fun animateTo(
+    boundingBox: BoundingBox,
+    bearing: Double = 0.0,
+    tilt: Double = 0.0,
+    padding: PaddingValues = PaddingValues(0.dp),
+    duration: Duration = 300.milliseconds,
+  ) {
+    val map = map ?: mapAttachSignal.receive()
+    map.animateCameraPosition(boundingBox, bearing, tilt, padding, duration)
   }
 
   private fun requireMap(): StandardMaplibreMap {

@@ -14,6 +14,7 @@ import dev.sargunv.maplibrecompose.core.util.correctedAndroidUri
 import dev.sargunv.maplibrecompose.core.util.toBoundingBox
 import dev.sargunv.maplibrecompose.core.util.toGravity
 import dev.sargunv.maplibrecompose.core.util.toLatLng
+import dev.sargunv.maplibrecompose.core.util.toLatLngBounds
 import dev.sargunv.maplibrecompose.core.util.toMLNExpression
 import dev.sargunv.maplibrecompose.core.util.toOffset
 import dev.sargunv.maplibrecompose.core.util.toPointF
@@ -24,6 +25,7 @@ import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
+import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
@@ -86,7 +88,7 @@ internal class AndroidMap(
     lastStyleUri = styleUri
     logger?.i { "Setting style URI" }
     callbacks.onStyleChanged(this, null)
-    val builder = MlnStyle.Builder().fromUri(styleUri.correctedAndroidUri().toString())
+    val builder = MlnStyle.Builder().fromUri(styleUri.correctedAndroidUri())
     map.setStyle(builder) {
       logger?.i { "Style finished loading" }
       callbacks.onStyleChanged(this, AndroidStyle(it))
@@ -94,6 +96,11 @@ internal class AndroidMap(
   }
 
   init {
+    mapView.addOnSourceChangedListener {
+      logger?.i { "Source $it changed" }
+      callbacks.onSourceChanged(this, it)
+    }
+
     map.addOnCameraMoveStartedListener { reason ->
       // MapLibre doesn't have docs on these reasons, and even though they're named like Google's:
       // https://developers.google.com/android/reference/com/google/android/gms/maps/GoogleMap.OnCameraMoveStartedListener#constants
@@ -172,7 +179,7 @@ internal class AndroidMap(
 
     map.addOnMapLongClickListener { coords ->
       val pos = coords.toPosition()
-      callbacks.onClick(this, pos, screenLocationFromPosition(pos))
+      callbacks.onLongClick(this, pos, screenLocationFromPosition(pos))
       true
     }
 
@@ -252,21 +259,23 @@ internal class AndroidMap(
   }
 
   private fun MLNCameraPosition.toCameraPosition(): CameraPosition =
-    CameraPosition(
-      target = target?.toPosition() ?: Position(0.0, 0.0),
-      zoom = zoom,
-      bearing = bearing,
-      tilt = tilt,
-      padding =
-        padding?.let {
-          PaddingValues.Absolute(
-            left = it[0].dp,
-            top = it[1].dp,
-            right = it[2].dp,
-            bottom = it[3].dp,
-          )
-        } ?: PaddingValues.Absolute(0.dp),
-    )
+    with(density) {
+      CameraPosition(
+        target = target?.toPosition() ?: Position(0.0, 0.0),
+        zoom = zoom,
+        bearing = bearing,
+        tilt = tilt,
+        padding =
+          padding?.let {
+            PaddingValues.Absolute(
+              left = it[0].toInt().toDp(),
+              top = it[1].toInt().toDp(),
+              right = it[2].toInt().toDp(),
+              bottom = it[3].toInt().toDp(),
+            )
+          } ?: PaddingValues.Absolute(0.dp),
+      )
+    }
 
   private fun CameraPosition.toMLNCameraPosition(): MLNCameraPosition =
     with(density) {
@@ -292,18 +301,45 @@ internal class AndroidMap(
     map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition.toMLNCameraPosition()))
   }
 
+  private class CancelableCoroutineCallback(private val cont: Continuation<Unit>) :
+    MLNMap.CancelableCallback {
+    override fun onCancel() = cont.resume(Unit)
+
+    override fun onFinish() = cont.resume(Unit)
+  }
+
   override suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration) =
     suspendCoroutine { cont ->
       map.animateCamera(
         CameraUpdateFactory.newCameraPosition(finalPosition.toMLNCameraPosition()),
         duration.toInt(DurationUnit.MILLISECONDS),
-        object : MLNMap.CancelableCallback {
-          override fun onFinish() = cont.resume(Unit)
-
-          override fun onCancel() = cont.resume(Unit)
-        },
+        CancelableCoroutineCallback(cont),
       )
     }
+
+  override suspend fun animateCameraPosition(
+    boundingBox: BoundingBox,
+    bearing: Double,
+    tilt: Double,
+    padding: PaddingValues,
+    duration: Duration,
+  ) = suspendCoroutine { cont ->
+    with(density) {
+      map.animateCamera(
+        CameraUpdateFactory.newLatLngBounds(
+          bounds = boundingBox.toLatLngBounds(),
+          bearing = bearing,
+          tilt = tilt,
+          paddingLeft = padding.calculateLeftPadding(layoutDir).roundToPx(),
+          paddingTop = padding.calculateTopPadding().roundToPx(),
+          paddingRight = padding.calculateRightPadding(layoutDir).roundToPx(),
+          paddingBottom = padding.calculateBottomPadding().roundToPx(),
+        ),
+        duration.toInt(DurationUnit.MILLISECONDS),
+        CancelableCoroutineCallback(cont),
+      )
+    }
+  }
 
   override fun positionFromScreenLocation(offset: DpOffset): Position =
     map.projection.fromScreenLocation(offset.toPointF(density)).toPosition()

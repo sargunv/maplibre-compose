@@ -30,16 +30,25 @@ import dev.sargunv.maplibrecompose.expressions.ast.StringLiteral
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Position
 import java.net.URI
+import java.net.URISyntaxException
 import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.geometry.LatLngBounds
 import org.maplibre.android.style.expressions.Expression as MLNExpression
 
-internal fun String.correctedAndroidUri(): URI {
-  val uri = URI(this)
-  return if (uri.scheme == "file" && uri.path.startsWith("/android_asset/")) {
-    URI("asset://${uri.path.removePrefix("/android_asset/")}")
-  } else {
-    uri
+internal fun String.correctedAndroidUri(): String {
+  return try {
+    // tile URLs contain template params like {z}, {x}, {y}. These are illegal in a URI, so we need
+    // to parse only the constant part of the URI and then append the template part after correction
+    val partition = this.indexOf('{')
+    val constPart = if (partition == -1) this else this.substring(0, partition)
+    val templatePart = if (partition == -1) "" else this.substring(partition)
+    val uri = URI(constPart)
+    if (uri.scheme == "file" && uri.path.startsWith("/android_asset/"))
+      URI("asset://${uri.path.removePrefix("/android_asset/")}").toString() + templatePart
+    else this
+  } catch (e: URISyntaxException) {
+    e.printStackTrace()
+    this
   }
 }
 
@@ -58,6 +67,14 @@ internal fun Position.toLatLng(): LatLng = LatLng(latitude = latitude, longitude
 
 internal fun LatLngBounds.toBoundingBox(): BoundingBox =
   BoundingBox(northeast = northEast.toPosition(), southwest = southWest.toPosition())
+
+internal fun BoundingBox.toLatLngBounds(): LatLngBounds =
+  LatLngBounds.from(
+    latNorth = northeast.latitude,
+    lonEast = northeast.longitude,
+    latSouth = southwest.latitude,
+    lonWest = southwest.longitude,
+  )
 
 internal fun CompiledExpression<*>.toMLNExpression(): MLNExpression? =
   if (this == NullLiteral) null else MLNExpression.Converter.convert(normalizeJsonLike(false))

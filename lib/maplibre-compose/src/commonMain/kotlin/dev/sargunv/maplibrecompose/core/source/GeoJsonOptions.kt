@@ -52,8 +52,8 @@ import androidx.compose.runtime.Immutable
  */
 @Immutable
 public data class GeoJsonOptions(
-  val minZoom: Int = 0,
-  val maxZoom: Int = 18,
+  val minZoom: Int = Defaults.MIN_ZOOM,
+  val maxZoom: Int = Defaults.MAX_ZOOM,
   val buffer: Int = 128,
   val tolerance: Float = 0.375f,
   val cluster: Boolean = false,

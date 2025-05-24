@@ -5,10 +5,12 @@ import androidx.compose.ui.test.runComposeUiTest
 import dev.sargunv.maplibrecompose.compose.engine.LayerNode
 import dev.sargunv.maplibrecompose.compose.engine.StyleNode
 import dev.sargunv.maplibrecompose.compose.layer.Anchor
+import dev.sargunv.maplibrecompose.core.SafeStyle
 import dev.sargunv.maplibrecompose.core.layer.Layer
 import dev.sargunv.maplibrecompose.core.layer.LineLayer
 import dev.sargunv.maplibrecompose.core.source.GeoJsonOptions
 import dev.sargunv.maplibrecompose.core.source.GeoJsonSource
+import dev.sargunv.maplibrecompose.core.source.VectorSource
 import io.github.dellisd.spatialk.geojson.FeatureCollection
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -20,7 +22,7 @@ import kotlin.test.assertNull
 abstract class StyleNodeTest {
   private val testSources by lazy {
     listOf(
-      GeoJsonSource("foo", FeatureCollection(), GeoJsonOptions()),
+      VectorSource("foo", "https://example.com/{z}/{x}/{y}.pbf"),
       GeoJsonSource("bar", FeatureCollection(), GeoJsonOptions()),
       GeoJsonSource("baz", FeatureCollection(), GeoJsonOptions()),
     )
@@ -35,7 +37,7 @@ abstract class StyleNodeTest {
   }
 
   private fun makeStyleNode(): StyleNode {
-    return StyleNode(FakeStyle(emptyList(), testSources, testLayers), null)
+    return StyleNode(SafeStyle(FakeStyle(emptyList(), testSources, testLayers)), null)
   }
 
   @BeforeTest open fun platformSetup() {}

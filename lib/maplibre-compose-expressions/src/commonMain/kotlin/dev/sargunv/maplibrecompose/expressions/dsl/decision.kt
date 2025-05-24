@@ -44,17 +44,26 @@ import kotlin.jvm.JvmName
 public fun <T : ExpressionValue> switch(
   vararg conditions: Condition<T>,
   fallback: Expression<T>,
-): Expression<T> =
-  FunctionCall.of(
-      "case",
-      *conditions.foldToArgs { (test, output) ->
-        add(test)
-        add(output)
-      },
-      fallback,
-    )
-    .cast()
+): Expression<T> {
+  // HACK: See https://github.com/maplibre/maplibre-compose/issues/310
+  // The `case` expr supports multiple conditions, but on iOS it crashes when used with iconImage.
+  // So we split multiple conditions into cascaded `case` calls, each with a single condition.
+  // Can remove this hack when https://github.com/maplibre/maplibre-native/issues/3477 is resolved.
+  return when (conditions.size) {
+    0 -> fallback
+    1 -> FunctionCall.of("case", conditions[0].test, conditions[0].output, fallback).cast()
+    else ->
+      FunctionCall.of(
+          "case",
+          conditions[0].test,
+          conditions[0].output,
+          switch(*conditions.sliceArray(1 until conditions.size), fallback = fallback),
+        )
+        .cast()
+  }
+}
 
+/** See [case] */
 public data class Condition<T : ExpressionValue>
 internal constructor(
   internal val test: Expression<BooleanValue>,
@@ -114,6 +123,7 @@ public fun <I : MatchableValue, O : ExpressionValue> switch(
     )
     .cast()
 
+/** See [switch] */
 public data class Case<@Suppress("unused") I : MatchableValue, O : ExpressionValue>
 internal constructor(internal val label: Expression<*>, internal val output: Expression<O>)
 

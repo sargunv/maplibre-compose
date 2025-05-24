@@ -4,8 +4,7 @@ import cocoapods.MapLibre.MLNStyleLayer
 
 internal actual sealed class Layer {
   abstract val impl: MLNStyleLayer
-  actual val id: String
-    get() = impl.identifier
+  actual val id: String by lazy { impl.identifier }
 
   actual var minZoom: Float
     get() = impl.minimumZoomLevel

@@ -22,6 +22,10 @@ import platform.Foundation.NSURL
 public actual class GeoJsonSource : Source {
   override val impl: MLNShapeSource
 
+  internal constructor(source: MLNShapeSource) {
+    impl = source
+  }
+
   public actual constructor(id: String, uri: String, options: GeoJsonOptions) {
     impl =
       MLNShapeSource(identifier = id, URL = NSURL(string = uri), options = buildOptionMap(options))

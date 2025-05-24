@@ -14,7 +14,7 @@ mavenPublishing {
   pom {
     name = "Compose HTML Interop"
     description = "Include an HTML element in a Compose Web UI."
-    url = "https://github.com/sargunv/maplibre-compose"
+    url = "https://github.com/maplibre/maplibre-compose"
   }
 }
 
