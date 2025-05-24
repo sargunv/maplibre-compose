@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import co.touchlab.kermit.Logger
 import dev.sargunv.composehtmlinterop.HtmlElement
 import dev.sargunv.maplibrecompose.core.JsMap
+import dev.sargunv.maplibrecompose.core.MapPlatformOptions
 import dev.sargunv.maplibrecompose.core.MaplibreMap
 import dev.sargunv.maplibrecompose.core.SafeStyle
 import kotlinx.browser.document
@@ -27,6 +28,7 @@ internal actual fun ComposableMapView(
   onReset: () -> Unit,
   logger: Logger?,
   callbacks: MaplibreMap.Callbacks,
+  platformOptions: MapPlatformOptions,
 ) =
   WebMapView(
     modifier = modifier,

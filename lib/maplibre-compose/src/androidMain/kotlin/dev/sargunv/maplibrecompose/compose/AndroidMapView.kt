@@ -13,6 +13,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import co.touchlab.kermit.Logger
 import dev.sargunv.maplibrecompose.core.AndroidMap
 import dev.sargunv.maplibrecompose.core.AndroidScaleBar
+import dev.sargunv.maplibrecompose.core.MapPlatformOptions
 import dev.sargunv.maplibrecompose.core.MaplibreMap
 import dev.sargunv.maplibrecompose.core.SafeStyle
 import org.maplibre.android.MapLibre
@@ -28,6 +29,7 @@ internal actual fun ComposableMapView(
   onReset: () -> Unit,
   logger: Logger?,
   callbacks: MaplibreMap.Callbacks,
+  platformOptions: MapPlatformOptions,
 ) {
   AndroidMapView(
     modifier = modifier,
@@ -37,6 +39,7 @@ internal actual fun ComposableMapView(
     onReset = onReset,
     logger = logger,
     callbacks = callbacks,
+    platformOptions = platformOptions,
   )
 }
 
@@ -49,6 +52,7 @@ internal fun AndroidMapView(
   onReset: () -> Unit,
   logger: Logger?,
   callbacks: MaplibreMap.Callbacks,
+  platformOptions: MapPlatformOptions,
 ) {
   val layoutDir = LocalLayoutDirection.current
   val density = LocalDensity.current
@@ -63,25 +67,28 @@ internal fun AndroidMapView(
     modifier = modifier,
     factory = { context ->
       MapLibre.getInstance(context)
-      MapView(context, MapLibreMapOptions.createFromAttributes(context).textureMode(false)).also {
-        mapView ->
-        currentMapView = mapView
-        mapView.getMapAsync { map ->
-          currentMap =
-            AndroidMap(
-              mapView = mapView,
-              map = map,
-              scaleBar = AndroidScaleBar(context, mapView, map),
-              layoutDir = layoutDir,
-              density = density,
-              callbacks = callbacks,
-              styleUri = styleUri,
-              logger = logger,
-            )
+      MapView(
+          context,
+          MapLibreMapOptions.createFromAttributes(context).textureMode(platformOptions.textureMode),
+        )
+        .also { mapView ->
+          currentMapView = mapView
+          mapView.getMapAsync { map ->
+            currentMap =
+              AndroidMap(
+                mapView = mapView,
+                map = map,
+                scaleBar = AndroidScaleBar(context, mapView, map),
+                layoutDir = layoutDir,
+                density = density,
+                callbacks = callbacks,
+                styleUri = styleUri,
+                logger = logger,
+              )
 
-          currentMap?.let { update(it) }
+            currentMap?.let { update(it) }
+          }
         }
-      }
     },
     update = { _ ->
       val map = currentMap ?: return@AndroidView
