@@ -1,6 +1,6 @@
 package dev.sargunv.maplibrecompose.core
 
-public actual data class MapPlatformOptions(
+public actual data class MapOptions(
   /**
    * Enable [android.view.TextureView] as rendered surface instead of
    * [android.opengl.GLSurfaceView]. This improves compatibility with certain Compose
@@ -11,4 +11,4 @@ public actual data class MapPlatformOptions(
   val textureMode: Boolean = false
 )
 
-public actual fun defaultMapPlatformOptions(): MapPlatformOptions = MapPlatformOptions()
+public actual fun defaultMapOptions(): MapOptions = MapOptions()

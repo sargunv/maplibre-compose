@@ -14,13 +14,13 @@ import dev.sargunv.maplibrecompose.compose.engine.LayerNode
 import dev.sargunv.maplibrecompose.compose.engine.rememberStyleComposition
 import dev.sargunv.maplibrecompose.core.CameraMoveReason
 import dev.sargunv.maplibrecompose.core.GestureSettings
-import dev.sargunv.maplibrecompose.core.MapPlatformOptions
+import dev.sargunv.maplibrecompose.core.MapOptions
 import dev.sargunv.maplibrecompose.core.MaplibreMap
 import dev.sargunv.maplibrecompose.core.OrnamentSettings
 import dev.sargunv.maplibrecompose.core.SafeStyle
 import dev.sargunv.maplibrecompose.core.StandardMaplibreMap
 import dev.sargunv.maplibrecompose.core.Style
-import dev.sargunv.maplibrecompose.core.defaultMapPlatformOptions
+import dev.sargunv.maplibrecompose.core.defaultMapOptions
 import dev.sargunv.maplibrecompose.core.util.PlatformUtils
 import io.github.dellisd.spatialk.geojson.Position
 import kotlin.math.roundToInt
@@ -106,7 +106,7 @@ public fun MaplibreMap(
   isDebugEnabled: Boolean = false,
   maximumFps: Int = PlatformUtils.getSystemRefreshRate().roundToInt(),
   logger: Logger? = remember { Logger.withTag("maplibre-compose") },
-  platformOptions: MapPlatformOptions = defaultMapPlatformOptions(),
+  platformOptions: MapOptions = defaultMapOptions(),
   content: @Composable @MaplibreComposable () -> Unit = {},
 ) {
   var rememberedStyle by remember { mutableStateOf<SafeStyle?>(null) }

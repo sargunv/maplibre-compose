@@ -13,7 +13,7 @@ import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.WebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
-import dev.sargunv.maplibrecompose.core.MapPlatformOptions
+import dev.sargunv.maplibrecompose.core.MapOptions
 import dev.sargunv.maplibrecompose.core.MaplibreMap
 import dev.sargunv.maplibrecompose.core.SafeStyle
 import dev.sargunv.maplibrecompose.core.WebviewBridge
@@ -28,7 +28,7 @@ internal actual fun ComposableMapView(
   onReset: () -> Unit,
   logger: Logger?,
   callbacks: MaplibreMap.Callbacks,
-  platformOptions: MapPlatformOptions,
+  platformOptions: MapOptions,
 ) =
   DesktopMapView(
     modifier = modifier,

@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import dev.sargunv.maplibrecompose.compose.MaplibreMap
 import dev.sargunv.maplibrecompose.compose.rememberCameraState
 import dev.sargunv.maplibrecompose.compose.rememberStyleState
-import dev.sargunv.maplibrecompose.core.MapPlatformOptions
+import dev.sargunv.maplibrecompose.core.MapOptions
 import dev.sargunv.maplibrecompose.demoapp.DEFAULT_STYLE
 import dev.sargunv.maplibrecompose.demoapp.Demo
 import dev.sargunv.maplibrecompose.demoapp.DemoMapControls
@@ -32,7 +32,7 @@ object TextureModeDemo : Demo {
           cameraState = cameraState,
           styleState = styleState,
           ornamentSettings = DemoOrnamentSettings(),
-          platformOptions = MapPlatformOptions(textureMode = true),
+          platformOptions = MapOptions(textureMode = true),
         )
         DemoMapControls(cameraState, styleState)
       }

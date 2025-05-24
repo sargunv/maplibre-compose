@@ -3,7 +3,7 @@ package dev.sargunv.maplibrecompose.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import co.touchlab.kermit.Logger
-import dev.sargunv.maplibrecompose.core.MapPlatformOptions
+import dev.sargunv.maplibrecompose.core.MapOptions
 import dev.sargunv.maplibrecompose.core.MaplibreMap
 import dev.sargunv.maplibrecompose.core.SafeStyle
 
@@ -16,5 +16,5 @@ internal expect fun ComposableMapView(
   onReset: () -> Unit,
   logger: Logger?,
   callbacks: MaplibreMap.Callbacks,
-  platformOptions: MapPlatformOptions,
+  platformOptions: MapOptions,
 )
