@@ -14,10 +14,13 @@ import dev.sargunv.maplibrecompose.compose.engine.LayerNode
 import dev.sargunv.maplibrecompose.compose.engine.rememberStyleComposition
 import dev.sargunv.maplibrecompose.core.CameraMoveReason
 import dev.sargunv.maplibrecompose.core.GestureSettings
+import dev.sargunv.maplibrecompose.core.MapOptions
 import dev.sargunv.maplibrecompose.core.MaplibreMap
 import dev.sargunv.maplibrecompose.core.OrnamentSettings
+import dev.sargunv.maplibrecompose.core.SafeStyle
 import dev.sargunv.maplibrecompose.core.StandardMaplibreMap
 import dev.sargunv.maplibrecompose.core.Style
+import dev.sargunv.maplibrecompose.core.defaultMapOptions
 import dev.sargunv.maplibrecompose.core.util.PlatformUtils
 import io.github.dellisd.spatialk.geojson.Position
 import kotlin.math.roundToInt
@@ -103,9 +106,10 @@ public fun MaplibreMap(
   isDebugEnabled: Boolean = false,
   maximumFps: Int = PlatformUtils.getSystemRefreshRate().roundToInt(),
   logger: Logger? = remember { Logger.withTag("maplibre-compose") },
+  platformOptions: MapOptions = defaultMapOptions(),
   content: @Composable @MaplibreComposable () -> Unit = {},
 ) {
-  var rememberedStyle by remember { mutableStateOf<Style?>(null) }
+  var rememberedStyle by remember { mutableStateOf<SafeStyle?>(null) }
   val styleComposition by rememberStyleComposition(rememberedStyle, logger, content)
 
   val callbacks =
@@ -113,14 +117,21 @@ public fun MaplibreMap(
       object : MaplibreMap.Callbacks {
         override fun onStyleChanged(map: MaplibreMap, style: Style?) {
           map as StandardMaplibreMap
-          styleState.attach(style)
-          rememberedStyle = style
+          rememberedStyle?.unload()
+          val safeStyle = style?.let { SafeStyle(it) }
+          styleState.updateSources()
+          rememberedStyle = safeStyle
           cameraState.metersPerDpAtTargetState.value =
             map.metersPerDpAtLatitude(map.getCameraPosition().target.latitude)
         }
 
+        override fun onSourceChanged(map: MaplibreMap, id: String) {
+          styleState.updateSources()
+        }
+
         override fun onCameraMoveStarted(map: MaplibreMap, reason: CameraMoveReason) {
           cameraState.moveReasonState.value = reason
+          cameraState.isCameraMovingState.value = true
         }
 
         override fun onCameraMoved(map: MaplibreMap) {
@@ -130,7 +141,9 @@ public fun MaplibreMap(
             map.metersPerDpAtLatitude(map.getCameraPosition().target.latitude)
         }
 
-        override fun onCameraMoveEnded(map: MaplibreMap) {}
+        override fun onCameraMoveEnded(map: MaplibreMap) {
+          cameraState.isCameraMovingState.value = false
+        }
 
         private fun layerNodesInOrder(): List<LayerNode<*>> {
           val layerNodes =
@@ -185,6 +198,7 @@ public fun MaplibreMap(
       when (map) {
         is StandardMaplibreMap -> {
           cameraState.map = map
+          styleState.attach(styleComposition)
           map.setDebugEnabled(isDebugEnabled)
           map.setMinZoom(zoomRange.start.toDouble())
           map.setMaxZoom(zoomRange.endInclusive.toDouble())
@@ -210,9 +224,12 @@ public fun MaplibreMap(
     },
     onReset = {
       cameraState.map = null
+      styleState.attach(null)
       rememberedStyle = null
     },
     logger = logger,
     callbacks = callbacks,
+    rememberedStyle = rememberedStyle,
+    platformOptions = platformOptions,
   )
 }

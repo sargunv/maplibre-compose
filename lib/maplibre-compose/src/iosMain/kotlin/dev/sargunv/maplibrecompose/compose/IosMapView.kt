@@ -20,7 +20,9 @@ import androidx.compose.ui.viewinterop.UIKitView
 import co.touchlab.kermit.Logger
 import cocoapods.MapLibre.MLNMapView
 import dev.sargunv.maplibrecompose.core.IosMap
+import dev.sargunv.maplibrecompose.core.MapOptions
 import dev.sargunv.maplibrecompose.core.MaplibreMap
+import dev.sargunv.maplibrecompose.core.SafeStyle
 import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGSizeMake
 import platform.Foundation.NSURL
@@ -29,10 +31,12 @@ import platform.Foundation.NSURL
 internal actual fun ComposableMapView(
   modifier: Modifier,
   styleUri: String,
+  rememberedStyle: SafeStyle?,
   update: (map: MaplibreMap) -> Unit,
   onReset: () -> Unit,
   logger: Logger?,
   callbacks: MaplibreMap.Callbacks,
+  platformOptions: MapOptions,
 ) {
   IosMapView(
     modifier = modifier,

@@ -1,5 +1,6 @@
 package dev.sargunv.maplibrecompose.core
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.LayoutDirection
@@ -114,6 +115,14 @@ internal class WebviewMap(private val bridge: WebviewBridge) : MaplibreMap {
   }
 
   override suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration) {}
+
+  override suspend fun animateCameraPosition(
+    boundingBox: BoundingBox,
+    bearing: Double,
+    tilt: Double,
+    padding: PaddingValues,
+    duration: Duration,
+  ) {}
 
   override suspend fun asyncGetPosFromScreenLocation(offset: DpOffset): Position {
     return Position(0.0, 0.0)

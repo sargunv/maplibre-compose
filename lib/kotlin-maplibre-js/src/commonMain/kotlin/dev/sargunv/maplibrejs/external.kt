@@ -61,6 +61,8 @@ public external class Map public constructor(options: MapOptions) {
 
   public fun easeTo(options: EaseToOptions)
 
+  public fun fitBounds(bounds: LngLatBounds, options: FitBoundsOptions?)
+
   public fun flyTo(options: FlyToOptions)
 
   public fun addControl(control: IControl, position: String)
@@ -510,6 +512,15 @@ public sealed external interface EaseToOptions : CameraOptions {
   public var padding: PaddingOptions?
   public var duration: Double?
   public var easing: (t: Double) -> Double?
+}
+
+/**
+ * [FitBoundsOptions](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/FitBoundsOptions/)
+ */
+public sealed external interface FitBoundsOptions : FlyToOptions {
+  public var linear: Boolean?
+  public var maxZoom: Double?
+  public var offset: Point?
 }
 
 /** [FlyToOptions](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/FlyToOptions/) */

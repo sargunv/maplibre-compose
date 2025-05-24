@@ -1,7 +1,7 @@
 package dev.sargunv.maplibrecompose.core.util
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.interop.LocalUIViewController
+import androidx.compose.ui.uikit.LocalUIViewController
 
 public actual object PlatformUtils {
   @Composable

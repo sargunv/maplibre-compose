@@ -5,12 +5,14 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import dev.sargunv.maplibrecompose.core.MapViewLifecycleObserver
+import dev.sargunv.maplibrecompose.core.SafeStyle
 import org.maplibre.android.maps.MapView
 
 @Composable
-internal fun MapViewLifecycleEffect(mapView: MapView?) {
+internal fun MapViewLifecycleEffect(mapView: MapView?, rememberedStyle: SafeStyle?) {
   if (mapView == null) return
-  val observer = remember(mapView) { MapViewLifecycleObserver(mapView) }
+  val observer =
+    remember(mapView, rememberedStyle) { MapViewLifecycleObserver(mapView, rememberedStyle) }
   val lifecycle = LocalLifecycleOwner.current.lifecycle
   DisposableEffect(lifecycle, observer) {
     lifecycle.addObserver(observer)

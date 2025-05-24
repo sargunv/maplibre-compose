@@ -1,5 +1,6 @@
 package dev.sargunv.maplibrecompose.core
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpRect
@@ -8,6 +9,7 @@ import co.touchlab.kermit.Logger
 import dev.sargunv.maplibrecompose.core.util.toBoundingBox
 import dev.sargunv.maplibrecompose.core.util.toControlPosition
 import dev.sargunv.maplibrecompose.core.util.toDpOffset
+import dev.sargunv.maplibrecompose.core.util.toLatLngBounds
 import dev.sargunv.maplibrecompose.core.util.toLngLat
 import dev.sargunv.maplibrecompose.core.util.toPaddingOptions
 import dev.sargunv.maplibrecompose.core.util.toPaddingValuesAbsolute
@@ -17,6 +19,7 @@ import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
 import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import dev.sargunv.maplibrejs.AttributionControl
 import dev.sargunv.maplibrejs.EaseToOptions
+import dev.sargunv.maplibrejs.FitBoundsOptions
 import dev.sargunv.maplibrejs.JumpToOptions
 import dev.sargunv.maplibrejs.LngLat
 import dev.sargunv.maplibrejs.LogoControl
@@ -250,6 +253,25 @@ internal class JsMap(
         duration = duration.toDouble(DurationUnit.MILLISECONDS),
         easing = { t -> t },
       )
+    )
+  }
+
+  override suspend fun animateCameraPosition(
+    boundingBox: BoundingBox,
+    bearing: Double,
+    tilt: Double,
+    padding: PaddingValues,
+    duration: Duration,
+  ) {
+    impl.fitBounds(
+      bounds = boundingBox.toLatLngBounds(),
+      options =
+        FitBoundsOptions(
+          linear = true,
+          bearing = bearing,
+          pitch = tilt,
+          padding = padding.toPaddingOptions(layoutDir),
+        ),
     )
   }
 

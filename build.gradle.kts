@@ -54,17 +54,20 @@ dependencies {
 }
 
 spotless {
+  val modulePaths = listOf("demo-app", "lib/*", "buildSrc")
   kotlinGradle {
-    target("**/*.gradle.kts")
+    target("*.gradle.kts", *(modulePaths.map { "${it}/*.gradle.kts" }).toTypedArray())
     ktfmt().googleStyle()
   }
   kotlin {
-    target("**/*.kt")
+    target(*modulePaths.map { "${it}/src/**/*.kt" }.toTypedArray())
     ktfmt().googleStyle()
   }
-  format("swift") {
-    target("iosApp/iosApp/**/*.swift")
-    nativeCmd("swiftFormat", "/usr/bin/env", listOf("swift", "format"))
+  if (System.getProperty("os.name").contains("Mac OS X")) {
+    format("swift") {
+      target("iosApp/iosApp/**/*.swift")
+      nativeCmd("swiftFormat", "/usr/bin/env", listOf("swift", "format"))
+    }
   }
   format("markdown") {
     target("**/*.md")

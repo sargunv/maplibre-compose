@@ -6,8 +6,7 @@ import cocoapods.MapLibre.MLNTileSource
 
 public actual sealed class Source {
   internal abstract val impl: MLNSource
-  internal actual val id: String
-    get() = impl.identifier
+  internal actual val id: String by lazy { impl.identifier }
 
   public actual val attributionLinks: List<AttributionLink>
     get() =

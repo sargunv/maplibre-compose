@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'demo_app'
     spec.version                  = '0.0.0'
-    spec.homepage                 = 'https://github.com/sargunv/maplibre-compose'
+    spec.homepage                 = 'https://github.com/maplibre/maplibre-compose'
     spec.source                   = { :http=> ''}
     spec.authors                  = ''
     spec.license                  = ''
@@ -9,7 +9,7 @@ Pod::Spec.new do |spec|
     spec.vendored_frameworks      = 'build/cocoapods/framework/DemoApp.framework'
     spec.libraries                = 'c++'
     spec.ios.deployment_target    = '15.3'
-    spec.dependency 'MapLibre', '6.9.0'
+    spec.dependency 'MapLibre', '6.13.0'
                 
     if !Dir.exist?('build/cocoapods/framework/DemoApp.framework') || Dir.empty?('build/cocoapods/framework/DemoApp.framework')
         raise "

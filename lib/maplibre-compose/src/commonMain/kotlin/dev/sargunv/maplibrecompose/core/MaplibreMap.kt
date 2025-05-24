@@ -1,5 +1,6 @@
 package dev.sargunv.maplibrecompose.core
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpRect
 import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
@@ -11,6 +12,14 @@ import kotlin.time.Duration
 
 internal interface MaplibreMap {
   suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration)
+
+  suspend fun animateCameraPosition(
+    boundingBox: BoundingBox,
+    bearing: Double,
+    tilt: Double,
+    padding: PaddingValues,
+    duration: Duration,
+  )
 
   suspend fun asyncSetStyleUri(styleUri: String)
 
@@ -58,6 +67,8 @@ internal interface MaplibreMap {
 
   interface Callbacks {
     fun onStyleChanged(map: MaplibreMap, style: Style?)
+
+    fun onSourceChanged(map: MaplibreMap, id: String)
 
     fun onCameraMoveStarted(map: MaplibreMap, reason: CameraMoveReason)
 

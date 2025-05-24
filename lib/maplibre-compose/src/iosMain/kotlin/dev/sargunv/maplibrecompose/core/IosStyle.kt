@@ -1,13 +1,19 @@
 package dev.sargunv.maplibrecompose.core
 
 import androidx.compose.ui.graphics.ImageBitmap
+import cocoapods.MapLibre.MLNRasterTileSource
+import cocoapods.MapLibre.MLNShapeSource
 import cocoapods.MapLibre.MLNSource
 import cocoapods.MapLibre.MLNStyle
 import cocoapods.MapLibre.MLNStyleLayer
+import cocoapods.MapLibre.MLNVectorTileSource
 import dev.sargunv.maplibrecompose.core.layer.Layer
 import dev.sargunv.maplibrecompose.core.layer.UnknownLayer
+import dev.sargunv.maplibrecompose.core.source.GeoJsonSource
+import dev.sargunv.maplibrecompose.core.source.RasterSource
 import dev.sargunv.maplibrecompose.core.source.Source
 import dev.sargunv.maplibrecompose.core.source.UnknownSource
+import dev.sargunv.maplibrecompose.core.source.VectorSource
 import dev.sargunv.maplibrecompose.core.util.toUIImage
 
 internal class IosStyle(style: MLNStyle, private val getScale: () -> Float) : Style {
@@ -21,12 +27,20 @@ internal class IosStyle(style: MLNStyle, private val getScale: () -> Float) : St
     impl.removeImageForName(id)
   }
 
+  private fun MLNSource.toSource() =
+    when (this) {
+      is MLNVectorTileSource -> VectorSource(this)
+      is MLNShapeSource -> GeoJsonSource(this)
+      is MLNRasterTileSource -> RasterSource(this)
+      else -> UnknownSource(this)
+    }
+
   override fun getSource(id: String): Source? {
-    return impl.sourceWithIdentifier(id)?.let { UnknownSource(it) }
+    return impl.sourceWithIdentifier(id)?.toSource()
   }
 
   override fun getSources(): List<Source> {
-    return impl.sources.map { UnknownSource(it as MLNSource) }
+    return impl.sources.map { (it as MLNSource).toSource() }
   }
 
   override fun addSource(source: Source) {

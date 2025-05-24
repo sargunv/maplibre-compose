@@ -26,13 +26,14 @@ data class StyleInfo(val name: String, val uri: String, val isDark: Boolean)
 @OptIn(ExperimentalResourceApi::class)
 val ALL_STYLES =
   listOf(
-    StyleInfo("Bright", "https://tiles.openfreemap.org/styles/bright", false),
-    StyleInfo("Liberty", "https://tiles.openfreemap.org/styles/liberty", false),
-    StyleInfo("Positron", "https://tiles.openfreemap.org/styles/positron", false),
-    StyleInfo("Fiord", "https://tiles.openfreemap.org/styles/fiord", true),
-    StyleInfo("Dark", "https://tiles.openfreemap.org/styles/dark", true),
-    StyleInfo("Colorful", Res.getUri("files/styles/colorful.json"), false),
-    StyleInfo("Eclipse", Res.getUri("files/styles/eclipse.json"), true),
+    StyleInfo("Bright", "https://tiles.openfreemap.org/styles/bright", isDark = false),
+    StyleInfo("Liberty", "https://tiles.openfreemap.org/styles/liberty", isDark = false),
+    StyleInfo("Positron", "https://tiles.openfreemap.org/styles/positron", isDark = false),
+    StyleInfo("Fiord", "https://tiles.openfreemap.org/styles/fiord", isDark = true),
+    StyleInfo("Dark", "https://tiles.openfreemap.org/styles/dark", isDark = true),
+    StyleInfo("Colorful", Res.getUri("files/styles/colorful.json"), isDark = false),
+    StyleInfo("Eclipse", Res.getUri("files/styles/eclipse.json"), isDark = true),
+    StyleInfo("OSM Carto", Res.getUri("files/styles/osm-raster.json"), isDark = false),
   )
 
 val DEFAULT_STYLE = ALL_STYLES[0].uri
