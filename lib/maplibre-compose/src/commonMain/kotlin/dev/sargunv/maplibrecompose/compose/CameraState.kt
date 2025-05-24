@@ -203,4 +203,29 @@ public class CameraState(firstPosition: CameraPosition) {
     // TODO at some point, this should be refactored to State, just like the camera position
     return requireMap().getVisibleRegion()
   }
+
+  /**
+   * Takes a snapshot of the map with the specified parameters. Functional on Android and iOS only.
+   *
+   * @param width The width of the snapshot in Dp.
+   * @param height The height of the snapshot in Dp.
+   * @param styleUri The URI of the style to use for the snapshot.
+   * @param region The bounding box of the region to capture in the snapshot.
+   * @param cameraPosition The camera position to use for the snapshot.
+   * @param showLogo Whether to show the logo in the snapshot. Defaults to true.
+   * @return The resulting ImageBitmap of the snapshot.
+   * @throws IllegalStateException if the map is not initialized yet. See [awaitInitialized].
+   * @throws SnapshotException if an error occurs during snapshot generation.
+   */
+  public suspend fun snapshot(
+    width: Dp,
+    height: Dp,
+    styleUri: String,
+    region: BoundingBox? = null,
+    cameraPosition: CameraPosition? = null,
+    showLogo: Boolean = true,
+  ): ImageBitmap =
+    requireMap()
+      .getMapSnapshotter()
+      .snapshot(width, height, styleUri, region, cameraPosition, showLogo)
 }

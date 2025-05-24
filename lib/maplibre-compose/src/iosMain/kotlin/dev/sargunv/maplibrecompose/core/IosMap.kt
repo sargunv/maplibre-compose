@@ -7,7 +7,6 @@ import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Logger
-import cocoapods.MapLibre.MLNAltitudeForZoomLevel
 import cocoapods.MapLibre.MLNCameraChangeReason
 import cocoapods.MapLibre.MLNCameraChangeReasonGestureOneFingerZoom
 import cocoapods.MapLibre.MLNCameraChangeReasonGesturePan
@@ -27,7 +26,6 @@ import cocoapods.MapLibre.MLNLoggingLevelFault
 import cocoapods.MapLibre.MLNLoggingLevelInfo
 import cocoapods.MapLibre.MLNLoggingLevelVerbose
 import cocoapods.MapLibre.MLNLoggingLevelWarning
-import cocoapods.MapLibre.MLNMapCamera
 import cocoapods.MapLibre.MLNMapDebugCollisionBoxesMask
 import cocoapods.MapLibre.MLNMapDebugTileBoundariesMask
 import cocoapods.MapLibre.MLNMapDebugTileInfoMask
@@ -46,9 +44,11 @@ import dev.sargunv.maplibrecompose.core.util.toBoundingBox
 import dev.sargunv.maplibrecompose.core.util.toCGPoint
 import dev.sargunv.maplibrecompose.core.util.toCGRect
 import dev.sargunv.maplibrecompose.core.util.toCLLocationCoordinate2D
+import dev.sargunv.maplibrecompose.core.util.toCameraPosition
 import dev.sargunv.maplibrecompose.core.util.toDpOffset
 import dev.sargunv.maplibrecompose.core.util.toFeature
 import dev.sargunv.maplibrecompose.core.util.toMLNCoordinateBounds
+import dev.sargunv.maplibrecompose.core.util.toMLNMapCamera
 import dev.sargunv.maplibrecompose.core.util.toMLNOrnamentPosition
 import dev.sargunv.maplibrecompose.core.util.toNSPredicate
 import dev.sargunv.maplibrecompose.core.util.toPosition
@@ -86,6 +86,7 @@ import platform.darwin.sel_registerName
 internal class IosMap(
   private var mapView: MLNMapView,
   internal var size: CValue<CGSize>,
+  internal var mapSnapshotter: IosMapSnapshotter,
   internal var layoutDir: LayoutDirection,
   internal var density: Density,
   internal var insetPadding: PaddingValues,
@@ -410,7 +411,7 @@ internal class IosMap(
 
   override fun setCameraPosition(cameraPosition: CameraPosition) {
     mapView.setCamera(
-      cameraPosition.toMLNMapCamera(),
+      cameraPosition.toMLNMapCamera(size),
       withDuration = 0.0,
       animationTimingFunction = null,
       edgePadding = cameraPosition.padding.toEdgeInsets(),
@@ -429,7 +430,7 @@ internal class IosMap(
   override suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration) =
     suspendCoroutine { cont ->
       mapView.flyToCamera(
-        camera = finalPosition.toMLNMapCamera(),
+        camera = finalPosition.toMLNMapCamera(size),
         withDuration = duration.toDouble(DurationUnit.SECONDS),
         edgePadding = finalPosition.padding.toEdgeInsets(),
         completionHandler = { cont.resume(Unit) },
@@ -497,4 +498,6 @@ internal class IosMap(
       .map { (it as MLNFeatureProtocol).toFeature() }
 
   override fun metersPerDpAtLatitude(latitude: Double) = mapView.metersPerPointAtLatitude(latitude)
+
+  override fun getMapSnapshotter() = mapSnapshotter
 }
