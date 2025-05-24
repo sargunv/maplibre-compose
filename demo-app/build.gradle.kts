@@ -53,7 +53,7 @@ kotlin {
 
   cocoapods {
     summary = "MapLibre Compose demo app"
-    homepage = "https://github.com/sargunv/maplibre-compose"
+    homepage = "https://github.com/maplibre/maplibre-compose"
     ios.deploymentTarget = "15.3" // TODO reduce this to same as library target?
     podfile = project.file("../iosApp/Podfile")
     framework {
@@ -64,7 +64,7 @@ kotlin {
   }
 
   compilerOptions {
-    allWarningsAsErrors = true
+    allWarningsAsErrors = false // TODO re-enable after Compose 1.8.1
     freeCompilerArgs.addAll("-Xexpect-actual-classes", "-Xconsistent-data-class-copy-visibility")
   }
 

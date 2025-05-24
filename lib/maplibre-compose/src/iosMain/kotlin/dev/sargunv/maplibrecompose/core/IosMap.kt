@@ -37,6 +37,7 @@ import cocoapods.MapLibre.MLNOrnamentPositionBottomLeft
 import cocoapods.MapLibre.MLNOrnamentPositionBottomRight
 import cocoapods.MapLibre.MLNOrnamentPositionTopLeft
 import cocoapods.MapLibre.MLNOrnamentPositionTopRight
+import cocoapods.MapLibre.MLNSource
 import cocoapods.MapLibre.MLNStyle
 import cocoapods.MapLibre.allowsTilting
 import dev.sargunv.maplibrecompose.core.util.toBoundingBox
@@ -106,7 +107,7 @@ internal class IosMap(
         val point = locationInView(this@IosMap.mapView).toDpOffset()
         callbacks.onClick(this@IosMap, positionFromScreenLocation(point), point)
       },
-      Gesture(UILongPressGestureRecognizer()) {
+      Gesture(UILongPressGestureRecognizer(), isCooperative = false) {
         if (state != UIGestureRecognizerStateBegan) return@Gesture
         val point = locationInView(this@IosMap.mapView).toDpOffset()
         callbacks.onLongClick(this@IosMap, positionFromScreenLocation(point), point)
@@ -158,6 +159,12 @@ internal class IosMap(
         map = map,
         style = IosStyle(style = didFinishLoadingStyle, getScale = { map.density.density }),
       )
+    }
+
+    override fun mapView(mapView: MLNMapView, sourceDidChange: MLNSource) {
+      val sourceId = sourceDidChange.identifier
+      map.logger?.i { "Source $sourceId changed" }
+      map.callbacks.onSourceChanged(map, sourceId)
     }
 
     private val anyGesture =
@@ -373,13 +380,32 @@ internal class IosMap(
     mapView.scaleBarMargins = calculateMargins(mapView.scaleBarPosition, value.padding)
   }
 
+  private fun CameraPosition.toMLNMapCamera(): MLNMapCamera {
+    return MLNMapCamera().let {
+      it.centerCoordinate = target.toCLLocationCoordinate2D()
+      it.pitch = tilt
+      it.heading = bearing
+      it.altitude =
+        MLNAltitudeForZoomLevel(
+          zoomLevel = zoom,
+          pitch = tilt,
+          latitude = target.latitude,
+          size = size,
+        )
+      it
+    }
+  }
+
   override fun getCameraPosition(): CameraPosition {
-    return mapView.camera.toCameraPosition(
-      paddingValues =
+    return CameraPosition(
+      target = mapView.camera.centerCoordinate.toPosition(),
+      bearing = mapView.camera.heading,
+      tilt = mapView.camera.pitch,
+      zoom = mapView.zoomLevel,
+      padding =
         mapView.cameraEdgeInsets.useContents {
           PaddingValues.Absolute(left = left.dp, top = top.dp, right = right.dp, bottom = bottom.dp)
         },
-      size = size,
     )
   }
 
@@ -421,10 +447,15 @@ internal class IosMap(
     suspendCoroutine { cont ->
       mapView.flyToCamera(
         camera =
-          mapView.cameraThatFitsCoordinateBounds(boundingBox.toMLNCoordinateBounds()).apply {
-            heading = bearing
-            pitch = tilt
-          },
+          mapView
+            .cameraThatFitsCoordinateBounds(
+              bounds = boundingBox.toMLNCoordinateBounds(),
+              edgePadding = padding.toEdgeInsets(),
+            )
+            .apply {
+              heading = bearing
+              pitch = tilt
+            },
         withDuration = duration.toDouble(DurationUnit.SECONDS),
         edgePadding = padding.toEdgeInsets(),
         completionHandler = { cont.resume(Unit) },
@@ -433,11 +464,11 @@ internal class IosMap(
   }
 
   override fun positionFromScreenLocation(offset: DpOffset): Position =
-    mapView.convertPoint(point = offset.toCGPoint(), toCoordinateFromView = null).toPosition()
+    mapView.convertPoint(point = offset.toCGPoint(), toCoordinateFromView = mapView).toPosition()
 
   override fun screenLocationFromPosition(position: Position): DpOffset =
     mapView
-      .convertCoordinate(position.toCLLocationCoordinate2D(), toPointToView = null)
+      .convertCoordinate(position.toCLLocationCoordinate2D(), toPointToView = mapView)
       .toDpOffset()
 
   override fun queryRenderedFeatures(

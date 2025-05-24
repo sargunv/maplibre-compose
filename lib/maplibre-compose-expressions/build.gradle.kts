@@ -20,7 +20,7 @@ mavenPublishing {
   pom {
     name = "MapLibre Compose Expressions"
     description = "MapLibre expressions DSL for MapLibre Compose."
-    url = "https://github.com/sargunv/maplibre-compose"
+    url = "https://github.com/maplibre/maplibre-compose"
   }
 }
 

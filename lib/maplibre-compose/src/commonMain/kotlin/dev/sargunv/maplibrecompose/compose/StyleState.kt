@@ -1,9 +1,9 @@
 package dev.sargunv.maplibrecompose.compose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import dev.sargunv.maplibrecompose.core.Style
-import dev.sargunv.maplibrecompose.core.source.AttributionLink
+import dev.sargunv.maplibrecompose.compose.engine.StyleNode
 import dev.sargunv.maplibrecompose.core.source.Source
 
 /** Remember a new [StyleState]. */
@@ -14,25 +14,25 @@ public fun rememberStyleState(): StyleState {
 
 /** Use this class to access information about the style, such as sources and layers. */
 public class StyleState internal constructor() {
-  private var style: Style? = null
+  private var styleNode: StyleNode? = null
 
-  internal fun attach(style: Style?) {
-    if (this.style != style) {
-      this.style = style
+  public val sources: List<Source>
+    get() = sourcesState.value
+
+  private val sourcesState = mutableStateOf(emptyList<Source>())
+
+  internal fun attach(styleNode: StyleNode?) {
+    if (this.styleNode != styleNode) {
+      this.styleNode?.onEndChangesCallback = null
+      this.styleNode = styleNode
+      this.styleNode?.onEndChangesCallback = { updateSources() }
+      updateSources()
     }
   }
 
-  public fun queryAttributionLinks(): List<AttributionLink> {
-    // TODO expose this as State somehow?
-    return style?.getSources()?.flatMap { it.attributionLinks } ?: emptyList()
+  internal fun updateSources() {
+    sourcesState.value = styleNode?.style?.getSources().orEmpty()
   }
-
-  /**
-   * Retrieves all sources from the style.
-   *
-   * @return A list of sources, or an empty list if the style is null or has no sources.
-   */
-  public fun getSources(): List<Source> = style?.getSources() ?: emptyList()
 
   /**
    * Retrieves a source by its [id].
@@ -40,5 +40,5 @@ public class StyleState internal constructor() {
    * @param id The ID of the source to retrieve.
    * @return The source with the specified ID, or null if no such source exists.
    */
-  public fun getSource(id: String): Source? = style?.getSource(id)
+  public fun getSource(id: String): Source? = styleNode?.style?.getSource(id)
 }

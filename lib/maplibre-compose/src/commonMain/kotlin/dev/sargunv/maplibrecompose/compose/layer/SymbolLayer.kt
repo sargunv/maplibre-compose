@@ -330,7 +330,7 @@ import dev.sargunv.maplibrecompose.expressions.value.TranslateAnchor
  * Ignored if [textField] is not specified.
  *
  * NOTE: This property is currently not usable:
- * https://github.com/sargunv/maplibre-compose/issues/143
+ * https://github.com/maplibre/maplibre-compose/issues/143
  *
  * @param textPadding Size of the additional area in dp around the text bounding box used for
  *   detecting symbol collisions.

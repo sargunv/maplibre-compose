@@ -8,7 +8,7 @@ mavenPublishing {
   pom {
     name = "MapLibre GL JS Kotlin"
     description = "Kotlin bindings for MapLibre GL JS."
-    url = "https://github.com/sargunv/maplibre-compose"
+    url = "https://github.com/maplibre/maplibre-compose"
   }
 }
 
